@@ -9,6 +9,12 @@
   },
   "private": true,
   "dependencies": {
+    "@emotion/styled": "^11.8.1",
+    "@material/top-app-bar": "^14.0.0",
+    "@mui/icons-material": "^5.8.3",
+    "@mui/material": "^5.8.3",
+    "@mui/styled-engine": "^5.8.0",
+    "@webcomponents/webcomponentsjs": "^2.6.0",
     "core-js": "^3.6.5",
     "react": "18.1.0",
     "react-dom": "18.1.0",

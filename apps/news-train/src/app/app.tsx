@@ -1,14 +1,9 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './app.module.css';
-import NxWelcome from './nx-welcome';
+import ResponsiveDrawer from './ResponsiveDrawer';
 
 export function App() {
-  return (
-    <>
-      <NxWelcome title="news-train" />
-      <div />
-    </>
-  );
+  return <ResponsiveDrawer />
 }
 
 export default App;

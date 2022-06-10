@@ -1,12 +1,10 @@
 import { render } from '@testing-library/react';
 
-import App from './app';
+import Donate from './Donate';
 
-describe('App', () => {
+describe('Donate', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<App />);
-
+    const { baseElement } = render(<Donate />);
     expect(baseElement).toBeTruthy();
   });
-
 });
