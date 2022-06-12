@@ -1,4 +1,4 @@
-import React, {useCallback, Fragment} from 'react';
+import React, {useCallback} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,14 +8,32 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import DrawerContent from './DrawerContent';
-import Donate from './Donate'
+
+import Contribute from './Contribute'
+import Classifiers from './Classifiers'
+import Posts from './Posts'
+import Categories from './Categories'
 
 const drawerWidth = 240;
 
 export default function ResponsiveDrawer() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(null);
-  const [selectedPageIndex, setSelectedPageIndex] = React.useState(null);
+  const [selectedPageIndex, setSelectedPageIndex] = React.useState('cafe-society.news');
+  const labelOrEcho = (index: string) => {
+    return `${Object.entries({
+      classifiers: 'Classifiers',
+      contribute: 'Contribute',
+      categories: 'Categories',
+      community: 'Community',
+      commerce: 'Commerce',
+      posts: 'Posts'
+    })
+    .filter(labelsEntry => labelsEntry[0] === `${index}`)
+    .map((labelsEntry) => labelsEntry[1])
+    .concat(`${index}`)
+    .find(() => true)}`
+  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -39,8 +57,8 @@ export default function ResponsiveDrawer() {
     setSelectedPageIndexCallback(pageIndex);
   }
 
-  const cloneSelectedCategoryIndex = structuredClone(selectedCategoryIndex)
-  const cloneSelectedPageIndex = structuredClone(selectedPageIndex)
+  const cloneSelectedCategoryIndex = `${selectedCategoryIndex}`
+  const cloneSelectedPageIndex = `${selectedPageIndex}`
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -63,7 +81,7 @@ export default function ResponsiveDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            cafe-society.news
+            {labelOrEcho(`${selectedPageIndex}`)}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -90,6 +108,7 @@ export default function ResponsiveDrawer() {
             handlePageIndexClick={handlePageIndexClick} 
             selectedCategoryIndex={cloneSelectedCategoryIndex}
             selectedPageIndex={cloneSelectedPageIndex}
+            labelOrEcho={labelOrEcho}
           />
         </Drawer>
         <Drawer
@@ -105,6 +124,7 @@ export default function ResponsiveDrawer() {
             handleCategoryClick={handleListItemClick}
             selectedCategoryIndex={cloneSelectedCategoryIndex}
             selectedPageIndex={cloneSelectedPageIndex}
+            labelOrEcho={labelOrEcho}
           />
         </Drawer>
       </Box>
@@ -115,13 +135,23 @@ export default function ResponsiveDrawer() {
         <Toolbar />
         {
           [cloneSelectedPageIndex].flat().filter((pageIndex) => {
-            return ['donate'].indexOf(pageIndex) === -1
-          }).map((pageIndex: string) => <Fragment key={pageIndex}>{pageIndex}</Fragment>)
+            return selectedPageIndex === 'contribute'
+          }).map(() => <Contribute key='contribute'/>)
         }
         {
           [cloneSelectedPageIndex].flat().filter((pageIndex) => {
-            return selectedPageIndex === 'donate'
-          }).map(() => <Donate key='donate'/>)
+            return selectedPageIndex === 'classifiers'
+          }).map(() => <Classifiers key='classifiers'/>)
+        }
+        {
+          [cloneSelectedPageIndex].flat().filter((pageIndex) => {
+            return selectedPageIndex === 'posts'
+          }).map(() => <Posts key='posts' selectedCategoryIndex={cloneSelectedCategoryIndex}/>)
+        }
+        {
+          [cloneSelectedPageIndex].flat().filter((pageIndex) => {
+            return selectedPageIndex === 'categories'
+          }).map(() => <Categories key='categories' />)
         }
       </Box>
     </Box>

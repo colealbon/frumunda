@@ -12,6 +12,7 @@
 # kubectl create -f apps/news-train/service.yaml
 # kubectl expose deployment news-train --type=NodePort
 
+npx nx build news-train --configuration=production
 netlify deploy --dir=./dist/apps/news-train
 
 # docker build -t news-train .

@@ -1,10 +1,11 @@
 import { render } from '@testing-library/react';
 
-import Donate from './Donate';
+import Classifiers from './Classifiers';
 
-describe('Donate', () => {
+describe('Classifiers', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Donate />);
+    const { baseElement } = render(<Classifiers />);
+
     expect(baseElement).toBeTruthy();
   });
 });
