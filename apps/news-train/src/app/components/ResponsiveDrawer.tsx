@@ -8,11 +8,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import DrawerContent from './DrawerContent';
-
+import CategoriesFetch from './CategoriesFetch'
+import DrawerContentCategories from './DrawerContentCategories'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
 import Posts from './Posts'
 import Categories from './Categories'
+
 
 const drawerWidth = 240;
 
@@ -91,42 +93,55 @@ export default function ResponsiveDrawer() {
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-        >
-          <DrawerContent
-            handleCategoryClick={handleListItemClick}
-            handlePageIndexClick={handlePageIndexClick} 
-            selectedCategoryIndex={cloneSelectedCategoryIndex}
-            selectedPageIndex={cloneSelectedPageIndex}
-            labelOrEcho={labelOrEcho}
-          />
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-          open
-        >
+        <CategoriesFetch>
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            sx={{
+              display: { xs: 'block', sm: 'none' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+          >
+            <DrawerContentCategories
+              handleCategoryClick={handleListItemClick}
+              handlePageIndexClick={handlePageIndexClick} 
+              selectedCategoryIndex={cloneSelectedCategoryIndex}
+              selectedPageIndex={cloneSelectedPageIndex}
+              labelOrEcho={labelOrEcho}
+            />
+            <DrawerContent
+              handlePageIndexClick={handlePageIndexClick} 
+              selectedPageIndex={cloneSelectedPageIndex}
+              labelOrEcho={labelOrEcho}
+            />
+          </Drawer>
+
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: 'none', sm: 'block' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+            open
+          >
+            <DrawerContentCategories
+              handleCategoryClick={handleListItemClick}
+              handlePageIndexClick={handlePageIndexClick} 
+              selectedCategoryIndex={cloneSelectedCategoryIndex}
+              selectedPageIndex={cloneSelectedPageIndex}
+              labelOrEcho={labelOrEcho}
+            />
           <DrawerContent 
             handlePageIndexClick={handlePageIndexClick}
-            handleCategoryClick={handleListItemClick}
-            selectedCategoryIndex={cloneSelectedCategoryIndex}
             selectedPageIndex={cloneSelectedPageIndex}
             labelOrEcho={labelOrEcho}
           />
         </Drawer>
+        </CategoriesFetch>
       </Box>
       <Box
         component="main"
