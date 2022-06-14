@@ -5,11 +5,11 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import Toolbar from '@mui/material/Toolbar';
+import {Divider, Toolbar} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import DrawerContent from './DrawerContent';
 import CategoriesFetch from './CategoriesFetch'
-import DrawerContentCategories from './DrawerContentCategories'
+import CategoryChooser from './CategoryChooser'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
 import Posts from './Posts'
@@ -106,7 +106,9 @@ export default function ResponsiveDrawer() {
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
             }}
           >
-            <DrawerContentCategories
+            <Toolbar />
+            <Divider />
+            <CategoryChooser
               handleCategoryClick={handleListItemClick}
               handlePageIndexClick={handlePageIndexClick} 
               selectedCategoryIndex={cloneSelectedCategoryIndex}
@@ -128,19 +130,21 @@ export default function ResponsiveDrawer() {
             }}
             open
           >
-            <DrawerContentCategories
+            <Toolbar />
+            <Divider />
+            <CategoryChooser
               handleCategoryClick={handleListItemClick}
               handlePageIndexClick={handlePageIndexClick} 
               selectedCategoryIndex={cloneSelectedCategoryIndex}
               selectedPageIndex={cloneSelectedPageIndex}
               labelOrEcho={labelOrEcho}
             />
-          <DrawerContent 
-            handlePageIndexClick={handlePageIndexClick}
-            selectedPageIndex={cloneSelectedPageIndex}
-            labelOrEcho={labelOrEcho}
-          />
-        </Drawer>
+            <DrawerContent 
+              handlePageIndexClick={handlePageIndexClick}
+              selectedPageIndex={cloneSelectedPageIndex}
+              labelOrEcho={labelOrEcho}
+            />
+          </Drawer>
         </CategoriesFetch>
       </Box>
       <Box

@@ -1,7 +1,6 @@
 import React, {FunctionComponent, ComponentPropsWithoutRef } from 'react';
 import {ExpandLess, ExpandMore} from '@mui/icons-material';
-import {Divider, List,ListItem,ListItemButton,ListItemText,Collapse } from '@mui/material';
-import Toolbar from '@mui/material/Toolbar';
+import {List,ListItem,ListItemButton,ListItemText,Collapse } from '@mui/material';
 interface DrawerContentProps extends ComponentPropsWithoutRef<"button"> {
   handlePageIndexClick: (index: string) => void
   selectedPageIndex: string
@@ -23,8 +22,6 @@ const DrawerContent: FunctionComponent<DrawerContentProps> = (props: DrawerConte
 
   return (
     <div>
-      <Toolbar />
-      <Divider />
       <List>
         <ListItem key={'classifiers'} disablePadding>
           <ListItemButton disabled={ 'classifiers' === `${selectedPageIndex}`} onClick={() => handlePageIndexClick('classifiers')} >
@@ -42,6 +39,7 @@ const DrawerContent: FunctionComponent<DrawerContentProps> = (props: DrawerConte
         </ListItemButton>
         <Collapse in={openSettings} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
+          <ListItem key={'category_chooser_allcategories'} disablePadding>
             <ListItemButton 
               sx={{ pl: 4 }} 
               disabled={'categories' === `${selectedPageIndex}`} 
@@ -51,6 +49,7 @@ const DrawerContent: FunctionComponent<DrawerContentProps> = (props: DrawerConte
             >
               <ListItemText primary={`${labelOrEcho('categories')}`} />
             </ListItemButton>
+            </ListItem>
           </List>
         </Collapse>
       </List>
