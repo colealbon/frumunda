@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, Suspense} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -7,13 +7,14 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {Divider, Toolbar} from '@mui/material';
 import Typography from '@mui/material/Typography';
-import DrawerContent from './DrawerContent';
+import PageChooser from './PageChooser';
 import CategoriesFetch from './CategoriesFetch'
 import CategoryChooser from './CategoryChooser'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
 import Posts from './Posts'
-import Categories from './Categories'
+import CategoriesEdit from './CategoriesEdit'
+import ErrorBoundary from './ErrorBoundary'
 
 
 const drawerWidth = 240;
@@ -93,59 +94,63 @@ export default function ResponsiveDrawer() {
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <CategoriesFetch>
-          <Drawer
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-            sx={{
-              display: { xs: 'block', sm: 'none' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-            }}
-          >
-            <Toolbar />
-            <Divider />
-            <CategoryChooser
-              handleCategoryClick={handleListItemClick}
-              handlePageIndexClick={handlePageIndexClick} 
-              selectedCategoryIndex={cloneSelectedCategoryIndex}
-              selectedPageIndex={cloneSelectedPageIndex}
-              labelOrEcho={labelOrEcho}
-            />
-            <DrawerContent
-              handlePageIndexClick={handlePageIndexClick} 
-              selectedPageIndex={cloneSelectedPageIndex}
-              labelOrEcho={labelOrEcho}
-            />
-          </Drawer>
+        <ErrorBoundary fallback={<h2>Could not fetch posts.</h2>}>
+          <Suspense fallback={<>loading categories...</>}>
+            <CategoriesFetch>
+              <Drawer
+                variant="temporary"
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+                ModalProps={{
+                  keepMounted: true, // Better open performance on mobile.
+                }}
+                sx={{
+                  display: { xs: 'block', sm: 'none' },
+                  '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                }}
+              >
+                <Toolbar />
+                <Divider />
+                <CategoryChooser
+                  handleCategoryClick={handleListItemClick}
+                  handlePageIndexClick={handlePageIndexClick} 
+                  selectedCategoryIndex={cloneSelectedCategoryIndex}
+                  selectedPageIndex={cloneSelectedPageIndex}
+                  labelOrEcho={labelOrEcho}
+                />
+                <PageChooser
+                  handlePageIndexClick={handlePageIndexClick} 
+                  selectedPageIndex={cloneSelectedPageIndex}
+                  labelOrEcho={labelOrEcho}
+                />
+              </Drawer>
 
-          <Drawer
-            variant="permanent"
-            sx={{
-              display: { xs: 'none', sm: 'block' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-            }}
-            open
-          >
-            <Toolbar />
-            <Divider />
-            <CategoryChooser
-              handleCategoryClick={handleListItemClick}
-              handlePageIndexClick={handlePageIndexClick} 
-              selectedCategoryIndex={cloneSelectedCategoryIndex}
-              selectedPageIndex={cloneSelectedPageIndex}
-              labelOrEcho={labelOrEcho}
-            />
-            <DrawerContent 
-              handlePageIndexClick={handlePageIndexClick}
-              selectedPageIndex={cloneSelectedPageIndex}
-              labelOrEcho={labelOrEcho}
-            />
-          </Drawer>
-        </CategoriesFetch>
+              <Drawer
+                variant="permanent"
+                sx={{
+                  display: { xs: 'none', sm: 'block' },
+                  '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+                }}
+                open
+              >
+                <Toolbar />
+                <Divider />
+                <CategoryChooser
+                  handleCategoryClick={handleListItemClick}
+                  handlePageIndexClick={handlePageIndexClick} 
+                  selectedCategoryIndex={cloneSelectedCategoryIndex}
+                  selectedPageIndex={cloneSelectedPageIndex}
+                  labelOrEcho={labelOrEcho}
+                />
+                <PageChooser 
+                  handlePageIndexClick={handlePageIndexClick}
+                  selectedPageIndex={cloneSelectedPageIndex}
+                  labelOrEcho={labelOrEcho}
+                />
+              </Drawer>
+            </CategoriesFetch>
+          </Suspense>
+        </ErrorBoundary>
       </Box>
       <Box
         component="main"
@@ -170,7 +175,13 @@ export default function ResponsiveDrawer() {
         {
           [cloneSelectedPageIndex].flat().filter((pageIndex) => {
             return selectedPageIndex === 'categories'
-          }).map(() => <Categories key='categories' />)
+          }).map(() => {
+            return (
+              <CategoriesFetch key='categoriesFetch'>
+                <CategoriesEdit key='categories' />
+              </CategoriesFetch>
+            )
+          })
         }
       </Box>
     </Box>

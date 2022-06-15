@@ -1,16 +1,19 @@
 import React, {
   ChangeEvent,
-  FunctionComponent,
   useState,
-  useCallback
+  useCallback,
+  useContext
 } from 'react';
-
 import { TextField } from '@mui/material';
-// import { useCategories } from '../react-hooks/useCategories';
+import { CategoriesContext } from './CategoriesFetch';
 
-const CategoriesAdd: FunctionComponent = () => {
+type categoriesAddProps = {
+  setCategoriesCallback: (categories: object) => void
+};
+const CategoriesAdd = ({setCategoriesCallback} : categoriesAddProps) => {
   const [inputValue, setInputValue] = useState('');
-  //const {categories, setCategories} = useCategories()
+  const categoriesContext = useContext(CategoriesContext);
+  const defaultCategories: object = structuredClone(categoriesContext)
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -21,11 +24,10 @@ const CategoriesAdd: FunctionComponent = () => {
 
   const addCategoryCallback = useCallback(() => {
     const newCategory = JSON.parse(`{"${inputValue}": {"checked": true}}`);
-  //  setCategories({ ...newCategory, ...JSON.parse(JSON.stringify(categories)) });
-  }, [categories, setCategories, inputValue]);
+    setCategoriesCallback({ ...newCategory, ...JSON.parse(JSON.stringify(defaultCategories)) });
+  }, [defaultCategories, setCategoriesCallback, inputValue]);
 
   return (
-    <>
       <TextField
         id="addCategoryTextField"
         placeholder="add category here"
@@ -39,11 +41,10 @@ const CategoriesAdd: FunctionComponent = () => {
             });
         }}
         onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-          //setInputCallback(event.target.value);
+          setInputCallback(event.target.value);
         }}
         fullWidth
       />
-    </>
   );
 };
 

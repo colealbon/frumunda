@@ -1,24 +1,18 @@
 import React, {FunctionComponent, ComponentPropsWithoutRef } from 'react';
-import {ExpandLess, ExpandMore} from '@mui/icons-material';
 import {List,ListItem,ListItemButton,ListItemText,Collapse } from '@mui/material';
-interface DrawerContentProps extends ComponentPropsWithoutRef<"button"> {
+
+interface PageChooserProps extends ComponentPropsWithoutRef<"button"> {
   handlePageIndexClick: (index: string) => void
   selectedPageIndex: string
   labelOrEcho: (index: string) => string
 }
 
-const DrawerContent: FunctionComponent<DrawerContentProps> = (props: DrawerContentProps) => {
+const DrawerContent: FunctionComponent<PageChooserProps> = (props: PageChooserProps) => {
   const {
     handlePageIndexClick, 
     selectedPageIndex,
     labelOrEcho
   } = {...props}
-
-  const [openSettings, setOpenSettings] = React.useState(false);
-
-  const handleClickSettings = () => {
-    setOpenSettings(!openSettings);
-  };
 
   return (
     <div>
@@ -33,22 +27,21 @@ const DrawerContent: FunctionComponent<DrawerContentProps> = (props: DrawerConte
             <ListItemText primary={`${labelOrEcho('contribute')}`} />
           </ListItemButton>
         </ListItem>
-        <ListItemButton onClick={handleClickSettings}>
+        <ListItemButton>
           <ListItemText primary="Settings" />
-          {openSettings ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
-        <Collapse in={openSettings} timeout="auto" unmountOnExit>
+        <Collapse in={true} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-          <ListItem key={'category_chooser_allcategories'} disablePadding>
-            <ListItemButton 
-              sx={{ pl: 4 }} 
-              disabled={'categories' === `${selectedPageIndex}`} 
-              onClick={() => {
-                handlePageIndexClick('categories')
-              } }
-            >
-              <ListItemText primary={`${labelOrEcho('categories')}`} />
-            </ListItemButton>
+            <ListItem key={'category_chooser_allcategories'} disablePadding>
+              <ListItemButton 
+                sx={{ pl: 4 }} 
+                disabled={'categories' === `${selectedPageIndex}`} 
+                onClick={() => {
+                  handlePageIndexClick('categories')
+                } }
+              >
+                <ListItemText primary={`${labelOrEcho('categories')}`} />
+              </ListItemButton>
             </ListItem>
           </List>
         </Collapse>

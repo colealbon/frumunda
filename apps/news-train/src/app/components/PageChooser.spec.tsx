@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 
-import DrawerContent from './DrawerContent';
+import PageChooser from './PageChooser';
 
-describe('DrawerContent', () => {
+describe('PageChooser', () => {
   const labelOrEcho = (index: string) => {
     return `${Object.entries({
       classifiers: 'Classifiers',
@@ -28,7 +28,7 @@ describe('DrawerContent', () => {
   const cloneSelectedPageIndex = 'testpage'
 
   it('should render successfully', () => {
-    const { baseElement } = render(<DrawerContent 
+    const { baseElement } = render(<PageChooser 
       handleCategoryClick={handleCategoryClick}
       handlePageIndexClick={handlePageIndexClick} 
       selectedCategoryIndex={cloneSelectedCategoryIndex}

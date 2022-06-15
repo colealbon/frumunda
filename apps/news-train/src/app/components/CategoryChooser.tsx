@@ -6,7 +6,6 @@ import {
   ListItemText,
   Collapse
 } from '@mui/material';
-import {ExpandLess, ExpandMore} from '@mui/icons-material';
 
 import { CategoriesContext } from './CategoriesFetch';
 
@@ -48,11 +47,10 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
             }
           >
             <ListItemText key={'CategoryChooserAllCategories'} primary={'Posts'} />
-            {open ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
         </ListItem>
 
-        <Collapse in={open} timeout="auto" unmountOnExit>
+        <Collapse in={true} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
         {
           Object.entries(categories)

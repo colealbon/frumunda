@@ -1,17 +1,34 @@
-import React, { FunctionComponent, createContext } from 'react';
-// import { Box } from '@mui/material';
-// import CategoriesAdd from './CategoriesAdd';
+import React, { FunctionComponent, useState, useCallback, useContext, useEffect } from 'react';
+import CategoriesAdd from './CategoriesAdd';
+import { CategoriesContext } from './CategoriesFetch';
+
 // import CategoriesReset from './CategoriesReset';
 // import CategoryToggle from './CategoryToggle';
 // import CategoryDelete from './CategoryDelete';
-export const CategoryContext = createContext('');
 
-const Categories: FunctionComponent = () => {
-  const defaultCategories = {"science":{"checked":true},"bitcoin":{"checked":true},"local":{"checked":true},"business":{"checked":true},"world":{"checked":true},"politics":{"checked":true},"technology":{"checked":true},"variety":{"checked":true},"us":{"checked":false}}
-  // const {categories} = useCategories()
-  return (<pre>{JSON.stringify(defaultCategories, null, 2)}</pre>)
-  // return (
-  //   <>
+const CategoriesEdit: FunctionComponent = () => {
+
+  const [categories, setCategories] = useState()
+  const categoriesContext = useContext(CategoriesContext);
+  
+  const setCategoriesCallback = useCallback((newCategories: object) => {
+    const deepCopyCategories = structuredClone(newCategories)
+    setCategories(deepCopyCategories)
+  }, [setCategories])
+
+  useEffect(() => {
+    const defaultCategories = structuredClone(categoriesContext)
+    setCategoriesCallback(defaultCategories)
+  }, [categoriesContext, setCategoriesCallback] )
+
+  return (
+    <>
+      <CategoriesAdd setCategoriesCallback={setCategoriesCallback} />
+      <pre>
+        {JSON.stringify(categories, null, 2)}
+      </pre>
+    </>
+  )
   //     <Box p={1}>
   //       <CategoriesAdd />
   //     </Box>
@@ -33,8 +50,7 @@ const Categories: FunctionComponent = () => {
   //     <Box p={1}>
   //       <CategoriesReset />
   //     </Box>
-  //   </>
   // );
 };
 
-export default Categories;
+export default CategoriesEdit;
