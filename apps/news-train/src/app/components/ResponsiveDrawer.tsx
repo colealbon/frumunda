@@ -8,14 +8,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {Divider, Toolbar} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import PageChooser from './PageChooser';
-import CategoriesFetch from './CategoriesFetch'
 import CategoryChooser from './CategoryChooser'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
 import Posts from './Posts'
 import CategoriesEdit from './CategoriesEdit'
 import ErrorBoundary from './ErrorBoundary'
-
 
 const drawerWidth = 240;
 
@@ -94,9 +92,7 @@ export default function ResponsiveDrawer() {
         aria-label="mailbox folders"
       >
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-        <ErrorBoundary fallback={<h2>Could not fetch posts.</h2>}>
           <Suspense fallback={<>loading categories...</>}>
-            <CategoriesFetch>
               <Drawer
                 variant="temporary"
                 open={mobileOpen}
@@ -111,20 +107,21 @@ export default function ResponsiveDrawer() {
               >
                 <Toolbar />
                 <Divider />
-                <CategoryChooser
-                  handleCategoryClick={handleListItemClick}
-                  handlePageIndexClick={handlePageIndexClick} 
-                  selectedCategoryIndex={cloneSelectedCategoryIndex}
-                  selectedPageIndex={cloneSelectedPageIndex}
-                  labelOrEcho={labelOrEcho}
-                />
+                  <Suspense fallback={<h2>fetching categories.</h2>}>
+                    <CategoryChooser
+                      handleCategoryClick={handleListItemClick}
+                      handlePageIndexClick={handlePageIndexClick} 
+                      selectedCategoryIndex={cloneSelectedCategoryIndex}
+                      selectedPageIndex={cloneSelectedPageIndex}
+                      labelOrEcho={labelOrEcho}
+                    />
+                  </Suspense>
                 <PageChooser
                   handlePageIndexClick={handlePageIndexClick} 
                   selectedPageIndex={cloneSelectedPageIndex}
                   labelOrEcho={labelOrEcho}
                 />
               </Drawer>
-
               <Drawer
                 variant="permanent"
                 sx={{
@@ -135,51 +132,54 @@ export default function ResponsiveDrawer() {
               >
                 <Toolbar />
                 <Divider />
-                <CategoryChooser
-                  handleCategoryClick={handleListItemClick}
-                  handlePageIndexClick={handlePageIndexClick} 
-                  selectedCategoryIndex={cloneSelectedCategoryIndex}
-                  selectedPageIndex={cloneSelectedPageIndex}
-                  labelOrEcho={labelOrEcho}
-                />
+                  <Suspense fallback={<h2>fetching categories.</h2>}>
+                  <CategoryChooser
+                    handleCategoryClick={handleListItemClick}
+                    handlePageIndexClick={handlePageIndexClick} 
+                    selectedCategoryIndex={cloneSelectedCategoryIndex}
+                    selectedPageIndex={cloneSelectedPageIndex}
+                    labelOrEcho={labelOrEcho}
+                  />
+                  </Suspense>
                 <PageChooser 
                   handlePageIndexClick={handlePageIndexClick}
                   selectedPageIndex={cloneSelectedPageIndex}
                   labelOrEcho={labelOrEcho}
                 />
               </Drawer>
-            </CategoriesFetch>
           </Suspense>
-        </ErrorBoundary>
       </Box>
       <Box
         component="main"
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
+        
         {
-          [cloneSelectedPageIndex].flat().filter((pageIndex) => {
+          [cloneSelectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'contribute'
           }).map(() => <Contribute key='contribute'/>)
         }
         {
-          [cloneSelectedPageIndex].flat().filter((pageIndex) => {
+          [cloneSelectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'classifiers'
           }).map(() => <Classifiers key='classifiers'/>)
         }
         {
-          [cloneSelectedPageIndex].flat().filter((pageIndex) => {
+          [cloneSelectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'posts'
           }).map(() => <Posts key='posts' selectedCategoryIndex={cloneSelectedCategoryIndex}/>)
         }
         {
-          [cloneSelectedPageIndex].flat().filter((pageIndex) => {
+          [cloneSelectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'categories'
           }).map(() => {
             return (
-              <CategoriesFetch key='categoriesFetch'>
-                <CategoriesEdit key='categories' />
-              </CategoriesFetch>
+              <ErrorBoundary fallback={<>error fetching categories</>}>
+                <Suspense fallback={<>...fetching Categories</>}>
+                  <CategoriesEdit key='categories' />
+                </Suspense>
+              </ErrorBoundary>
             )
           })
         }

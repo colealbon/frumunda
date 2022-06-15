@@ -1,4 +1,4 @@
-import React, {useContext, FunctionComponent, ComponentPropsWithoutRef } from 'react';
+import React, { FunctionComponent, ComponentPropsWithoutRef, Suspense} from 'react';
 import {
   List,
   ListItem,
@@ -7,8 +7,7 @@ import {
   Collapse
 } from '@mui/material';
 
-import { CategoriesContext } from './CategoriesFetch';
-
+import {useCategories} from '../react-hooks/useCategories'
 interface CategoryChooserProps extends ComponentPropsWithoutRef<"button"> {
   handleCategoryClick: (index: string) => void
   handlePageIndexClick: (index: string) => void
@@ -23,10 +22,7 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
     handlePageIndexClick, 
     selectedCategoryIndex
   } = {...props}
-
-  const fetchedCategoriesContext = useContext(CategoriesContext);
-  const categories = structuredClone(fetchedCategoriesContext)
-
+  const { categories } = useCategories()
   const [open, setOpen] = React.useState(true);
 
   const handleClick = () => {
@@ -34,6 +30,7 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
   };
 
   return (
+    
       <List>
         <ListItem key={'category_chooser_allcategories'} disablePadding>
           <ListItemButton 
@@ -53,7 +50,7 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
         <Collapse in={true} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
         {
-          Object.entries(categories)
+          Object.entries(categories as object)
           .filter(categoryItem =>  Object.assign(categoryItem[1] as object).checked === true)
           .map((categoryItem) => {
             return (
@@ -88,6 +85,7 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
         </List>
       </Collapse>
   </List>
+  
   );
 }
 export default CategoryChooserCategories

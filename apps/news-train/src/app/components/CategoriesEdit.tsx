@@ -1,33 +1,19 @@
-import React, { FunctionComponent, useState, useCallback, useContext, useEffect } from 'react';
-import CategoriesAdd from './CategoriesAdd';
-import { CategoriesContext } from './CategoriesFetch';
+import React, { FunctionComponent, Suspense } from 'react';
+import { useCategories } from '../react-hooks/useCategories'
 
+// import CategoriesAdd from './CategoriesAdd';
 // import CategoriesReset from './CategoriesReset';
 // import CategoryToggle from './CategoryToggle';
 // import CategoryDelete from './CategoryDelete';
 
 const CategoriesEdit: FunctionComponent = () => {
-
-  const [categories, setCategories] = useState()
-  const categoriesContext = useContext(CategoriesContext);
-  
-  const setCategoriesCallback = useCallback((newCategories: object) => {
-    const deepCopyCategories = structuredClone(newCategories)
-    setCategories(deepCopyCategories)
-  }, [setCategories])
-
-  useEffect(() => {
-    const defaultCategories = structuredClone(categoriesContext)
-    setCategoriesCallback(defaultCategories)
-  }, [categoriesContext, setCategoriesCallback] )
-
+  const { categories } = useCategories()
   return (
-    <>
-      <CategoriesAdd setCategoriesCallback={setCategoriesCallback} />
-      <pre>
-        {JSON.stringify(categories, null, 2)}
-      </pre>
-    </>
+      <Suspense fallback={<h2>fetching categories.</h2>}>
+          <pre>
+            {JSON.stringify(categories, null, 2)}
+          </pre>
+      </Suspense>
   )
   //     <Box p={1}>
   //       <CategoriesAdd />

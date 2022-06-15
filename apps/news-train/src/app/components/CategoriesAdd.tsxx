@@ -2,18 +2,14 @@ import React, {
   ChangeEvent,
   useState,
   useCallback,
-  useContext
 } from 'react';
 import { TextField } from '@mui/material';
-import { CategoriesContext } from './CategoriesFetch';
 
 type categoriesAddProps = {
   setCategoriesCallback: (categories: object) => void
 };
 const CategoriesAdd = ({setCategoriesCallback} : categoriesAddProps) => {
   const [inputValue, setInputValue] = useState('');
-  const categoriesContext = useContext(CategoriesContext);
-  const defaultCategories: object = structuredClone(categoriesContext)
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {

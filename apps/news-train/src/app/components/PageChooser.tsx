@@ -27,9 +27,7 @@ const DrawerContent: FunctionComponent<PageChooserProps> = (props: PageChooserPr
             <ListItemText primary={`${labelOrEcho('contribute')}`} />
           </ListItemButton>
         </ListItem>
-        <ListItemButton>
-          <ListItemText primary="Settings" />
-        </ListItemButton>
+        <ListItemText sx={{ pl: 2 }} primary="Settings" />
         <Collapse in={true} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem key={'category_chooser_allcategories'} disablePadding>
