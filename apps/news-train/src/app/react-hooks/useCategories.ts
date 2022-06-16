@@ -1,7 +1,11 @@
-import useSWR from 'swr';
-export function useCategories () {
+import { useEffect, useState, useCallback} from 'react';
+import useSWR, { useSWRConfig }  from 'swr';
+import localforage from 'localforage'
 
-  const fallback = {
+export function useCategories () {
+  const { mutate } = useSWRConfig()
+
+  const defaultCategories = {
     "science":{"checked":true, "label": "science"},
     "bitcoin":{"checked":true, "label": "bitcoin"},
     "local":{"checked":true, "label": "local"},
@@ -9,27 +13,50 @@ export function useCategories () {
     "world":{"checked":true, "label": "world"},
     "politics":{"checked":true, "label": "politics"},
     "technology":{"checked":true, "label": "technology"}
-    }
-    const fetcher = () => {
-      return new Promise((resolve, reject) => {
-        resolve({
-          "science":{"checked":true, "label": "Science"},
-          "bitcoin":{"checked":true, "label": "Bitcoin"},
-          "local":{"checked":true, "label": "Local"}
-        })
-      })
-    }
-
-    const { data } = useSWR(
-      'categories',
-      fetcher , 
-      {
-        suspense: true,
-        fallbackData: fallback
-      }
-    )
-  
-    return {
-      categories: data
-    }
   }
+  const [persistCategories, setPersistCategories] = useState(defaultCategories)
+
+  const setPersistCategoriesCallback = useCallback((newCategories: unknown) => {
+    const newCategoriesClone = JSON.parse(JSON.stringify(newCategories as object))
+    setPersistCategories(newCategoriesClone)
+  }, [])
+
+  const setCategories = (newCategories: unknown) => {
+    const newCategoriesClone = structuredClone(newCategories)
+    localforage.setItem('categories', newCategoriesClone)
+    mutate('categories', newCategoriesClone)
+  }
+
+  useEffect(() => {
+    localforage.getItem('categories')
+    .then((value: unknown) => {
+      if (!value) {
+        return
+      }
+      setPersistCategoriesCallback(value)
+    })
+  }, [setPersistCategoriesCallback])
+
+  const fallback = structuredClone(persistCategories)
+
+  const fetcher = () => {
+    return new Promise((resolve, reject) => {
+      reject()
+      //fetch from blockstack
+    })
+  }
+
+  const { data } = useSWR(
+    'categories',
+    fetcher , 
+    {
+      suspense: true,
+      fallbackData: fallback
+    }
+  )
+
+  return {
+    categories: data,
+    setCategories: setCategories
+  }
+}

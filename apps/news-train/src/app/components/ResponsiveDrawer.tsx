@@ -175,7 +175,7 @@ export default function ResponsiveDrawer() {
             return selectedPageIndex === 'categories'
           }).map(() => {
             return (
-              <ErrorBoundary fallback={<>error fetching categories</>}>
+              <ErrorBoundary key={'errorBoundarycategories'} fallback={<>error fetching categories</>}>
                 <Suspense fallback={<>...fetching Categories</>}>
                   <CategoriesEdit key='categories' />
                 </Suspense>

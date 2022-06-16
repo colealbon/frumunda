@@ -4,12 +4,12 @@ import React, {
   useCallback,
 } from 'react';
 import { TextField } from '@mui/material';
+import { useCategories } from '../react-hooks/useCategories'
 
-type categoriesAddProps = {
-  setCategoriesCallback: (categories: object) => void
-};
-const CategoriesAdd = ({setCategoriesCallback} : categoriesAddProps) => {
+
+const CategoriesAdd = () => {
   const [inputValue, setInputValue] = useState('');
+  const { categories, setCategories } = useCategories()
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -20,8 +20,9 @@ const CategoriesAdd = ({setCategoriesCallback} : categoriesAddProps) => {
 
   const addCategoryCallback = useCallback(() => {
     const newCategory = JSON.parse(`{"${inputValue}": {"checked": true}}`);
-    setCategoriesCallback({ ...newCategory, ...JSON.parse(JSON.stringify(defaultCategories)) });
-  }, [defaultCategories, setCategoriesCallback, inputValue]);
+    const newCategories = { ...newCategory, ...JSON.parse(JSON.stringify(categories)) }
+    setCategories(newCategories);
+  }, [ categories, setCategories, inputValue]);
 
   return (
       <TextField
