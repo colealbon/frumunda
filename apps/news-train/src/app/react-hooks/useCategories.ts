@@ -22,7 +22,7 @@ export function useCategories () {
   }, [])
 
   const setCategories = (newCategories: unknown) => {
-    const newCategoriesClone = structuredClone(newCategories)
+    const newCategoriesClone = JSON.parse(JSON.stringify(newCategories))
     localforage.setItem('categories', newCategoriesClone)
     mutate('categories', newCategoriesClone)
   }
@@ -37,7 +37,7 @@ export function useCategories () {
     })
   }, [setPersistCategoriesCallback])
 
-  const fallback = structuredClone(persistCategories)
+  const fallback = JSON.parse(JSON.stringify(persistCategories))
 
   const fetcher = () => {
     return new Promise((resolve, reject) => {

@@ -12,6 +12,7 @@ import CategoryChooser from './CategoryChooser'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
 import Posts from './Posts'
+import Stacks from './Stacks'
 import CategoriesEdit from './CategoriesEdit'
 import ErrorBoundary from './ErrorBoundary'
 
@@ -28,7 +29,8 @@ export default function ResponsiveDrawer() {
       categories: 'Categories',
       community: 'Community',
       commerce: 'Commerce',
-      posts: 'Posts'
+      posts: 'Posts',
+      stacks: 'Stacks'
     })
     .filter(labelsEntry => labelsEntry[0] === `${index}`)
     .map((labelsEntry) => labelsEntry[1])
@@ -153,8 +155,7 @@ export default function ResponsiveDrawer() {
         component="main"
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
-        <Toolbar />
-        
+        <Toolbar />    
         {
           [cloneSelectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'contribute'
@@ -175,9 +176,22 @@ export default function ResponsiveDrawer() {
             return selectedPageIndex === 'categories'
           }).map(() => {
             return (
-              <ErrorBoundary key={'errorBoundarycategories'} fallback={<>error fetching categories</>}>
+              <ErrorBoundary key={'errorBoundaryCategories'} fallback={<>error fetching categories</>}>
                 <Suspense fallback={<>...fetching Categories</>}>
                   <CategoriesEdit key='categories' />
+                </Suspense>
+              </ErrorBoundary>
+            )
+          })
+        }
+        {
+          [cloneSelectedPageIndex].flat().filter(() => {
+            return selectedPageIndex === 'stacks'
+          }).map(() => {
+            return (
+              <ErrorBoundary key={'errorBoundaryStacks'} fallback={<>error fetching stacks session</>}>
+                <Suspense fallback={<>...fetching stacks session</>}>
+                  <Stacks key='stacks' />
                 </Suspense>
               </ErrorBoundary>
             )

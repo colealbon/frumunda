@@ -30,7 +30,7 @@ const DrawerContent: FunctionComponent<PageChooserProps> = (props: PageChooserPr
         <ListItemText sx={{ pl: 2 }} primary="Settings" />
         <Collapse in={true} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-            <ListItem key={'category_chooser_allcategories'} disablePadding>
+            <ListItem key={'pageChooserCategories'} disablePadding>
               <ListItemButton 
                 sx={{ pl: 4 }} 
                 disabled={'categories' === `${selectedPageIndex}`} 
@@ -39,6 +39,17 @@ const DrawerContent: FunctionComponent<PageChooserProps> = (props: PageChooserPr
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('categories')}`} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem key={'pageChooserStacks'} disablePadding>
+              <ListItemButton 
+                sx={{ pl: 4 }} 
+                disabled={'stacks' === `${selectedPageIndex}`} 
+                onClick={() => {
+                  handlePageIndexClick('stacks')
+                } }
+              >
+                <ListItemText primary={`${labelOrEcho('stacks')}`} />
               </ListItemButton>
             </ListItem>
           </List>

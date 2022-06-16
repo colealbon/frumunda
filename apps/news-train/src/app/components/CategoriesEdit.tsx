@@ -12,7 +12,6 @@ const CategoriesEdit: FunctionComponent = () => {
   return (
       <Suspense fallback={<h2>fetching categories.</h2>}>
         <CategoriesAdd key='CategoriesAdd' />
-
       </Suspense>
   )
   //     <Box p={1}>
