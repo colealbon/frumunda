@@ -57,6 +57,29 @@ export function useCategories () {
     }
   )
 
+  const factoryReset = useCallback(() => {
+    const newCategoriesClone = JSON.parse(JSON.stringify(defaultCategories as object))
+    const options = { optimisticData: newCategoriesClone, rollbackOnError: false }
+    const updateFn = (newCategories: object) => {
+      const newCategoriesClone = JSON.parse(JSON.stringify(newCategories))
+      return new Promise((resolve) => {
+        localforage.setItem('categories', newCategoriesClone)
+        if( !stacksSession.isUserSignedIn() ) {
+          resolve(newCategoriesClone)
+          return
+        }
+        stacksStorage.putFile(`categories`, JSON.stringify(newCategoriesClone))
+        .then((successMessage) => {})
+        .finally(() => {
+          resolve(newCategoriesClone)
+          return 
+        })
+      })
+    }
+    mutate(updateFn(newCategoriesClone), options);
+
+  }, [ mutate, stacksSession, stacksStorage, defaultCategories])
+
   const publishCategories = useCallback((newCategories: unknown) => {
     const newCategoriesClone = JSON.parse(JSON.stringify(newCategories as object))
     const options = { optimisticData: newCategoriesClone, rollbackOnError: false }
@@ -69,7 +92,7 @@ export function useCategories () {
           return
         }
         stacksStorage.putFile(`categories`, JSON.stringify(newCategoriesClone))
-        .then((successMessage) => console.log(successMessage))
+        .then((successMessage) => {})
         .finally(() => {
           resolve(newCategoriesClone)
           return 
@@ -83,6 +106,7 @@ export function useCategories () {
   return {
     categories: data,
     setCategories: setCategories,
+    factoryReset: factoryReset,
     publishCategories: publishCategories
   }
 }
