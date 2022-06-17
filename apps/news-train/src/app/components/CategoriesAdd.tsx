@@ -6,10 +6,9 @@ import React, {
 import { TextField } from '@mui/material';
 import { useCategories } from '../react-hooks/useCategories'
 
-
 const CategoriesAdd = () => {
   const [inputValue, setInputValue] = useState('');
-  const { categories, setCategories } = useCategories()
+  const { categories, publishCategories } = useCategories()
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -20,9 +19,9 @@ const CategoriesAdd = () => {
 
   const addCategoryCallback = useCallback(() => {
     const newCategory = JSON.parse(`{"${inputValue}": {"checked": true}}`);
-    const newCategories = { ...newCategory, ...JSON.parse(JSON.stringify(categories)) }
-    setCategories(newCategories);
-  }, [ categories, setCategories, inputValue]);
+    const newCategoriesClone = { ...newCategory, ...JSON.parse(JSON.stringify(categories)) }
+    publishCategories(newCategoriesClone);
+  }, [ categories, publishCategories, inputValue]);
 
   return (
       <TextField

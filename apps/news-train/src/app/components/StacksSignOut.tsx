@@ -1,26 +1,32 @@
-import React, { FunctionComponent } from 'react';
+import React, { Fragment, FunctionComponent, useEffect } from 'react';
 import {Button, Typography} from '@mui/material';
 import {useStacks} from '../react-hooks/useStacks';
 
 const BlockstackSignOut: FunctionComponent = () => {
   const { stacksSession }  = useStacks()
+
+  useEffect(() => {
+    console.log('reload')
+    // reload
+  }, [stacksSession])
+
   return (
-    <>
+    <Fragment key='stackssignout'>
       {[stacksSession.isUserSignedIn()]
         .filter(signedIn => !!signedIn)
-        .map(() => {
+        .map((key, index) => {
           return (
             <Button
-              key="blockstacksignout"
+              key={index}
               onClick={() =>
                 stacksSession.signUserOut(window.location.origin)
               }
             >
-              <Typography variant="h2">sign out</Typography>
+              <Typography key='signout' variant="h2">sign out</Typography>
             </Button>
           );
         })}
-    </>
+    </Fragment>
   );
 };
 

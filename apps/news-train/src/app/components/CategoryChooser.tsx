@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ComponentPropsWithoutRef, Suspense} from 'react';
+import React, { FunctionComponent, ComponentPropsWithoutRef} from 'react';
 import {
   List,
   ListItem,

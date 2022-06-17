@@ -1,8 +1,9 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import {Button, Typography} from '@mui/material';
 import {useStacks} from '../react-hooks/useStacks';
 // import { BlockstackSessionContext } from './BlockstackSessionProvider';
 import { showConnect } from '@stacks/connect';
+import { SingleBedOutlined } from '@mui/icons-material';
 
 const StacksSignin: FunctionComponent = () => {
   const { stacksSession }  = useStacks()
@@ -16,6 +17,7 @@ const StacksSignin: FunctionComponent = () => {
       redirectTo: '/',
       onFinish: () => {
         stacksSession.loadUserData();
+        window.location.reload()
       },
     //   finished: () => {
     //     window.location.reload();
@@ -23,6 +25,10 @@ const StacksSignin: FunctionComponent = () => {
       userSession: stacksSession,
     });
   };
+
+  useEffect(() => {
+    console.log('reload')
+  }, [stacksSession])
 
   return (
     <>

@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback} from 'react';
-import useSWR, { useSWRConfig }  from 'swr';
+import useSWR  from 'swr';
 import localforage from 'localforage'
+import { useStacks } from '../react-hooks/useStacks'
 
 export function useCategories () {
-  const { mutate } = useSWRConfig()
+  
+  const { stacksStorage, stacksSession }  = useStacks()
 
   const defaultCategories = {
     "science":{"checked":true, "label": "science"},
@@ -14,49 +16,73 @@ export function useCategories () {
     "politics":{"checked":true, "label": "politics"},
     "technology":{"checked":true, "label": "technology"}
   }
-  const [persistCategories, setPersistCategories] = useState(defaultCategories)
+  const [categories, setCategories] = useState(defaultCategories)
 
-  const setPersistCategoriesCallback = useCallback((newCategories: unknown) => {
+  const setCategoriesCallback = useCallback((newCategories: unknown) => {
     const newCategoriesClone = JSON.parse(JSON.stringify(newCategories as object))
-    setPersistCategories(newCategoriesClone)
-  }, [])
-
-  const setCategories = (newCategories: unknown) => {
-    const newCategoriesClone = JSON.parse(JSON.stringify(newCategories))
-    localforage.setItem('categories', newCategoriesClone)
-    mutate('categories', newCategoriesClone)
-  }
-
+    setCategories(newCategoriesClone)
+  }, [ setCategories])
   useEffect(() => {
     localforage.getItem('categories')
     .then((value: unknown) => {
       if (!value) {
         return
       }
-      setPersistCategoriesCallback(value)
+      setCategoriesCallback(value)
     })
-  }, [setPersistCategoriesCallback])
+  }, [setCategoriesCallback])
 
-  const fallback = JSON.parse(JSON.stringify(persistCategories))
+  const fallback = JSON.parse(JSON.stringify(categories))
 
   const fetcher = () => {
     return new Promise((resolve, reject) => {
-      reject()
-      //fetch from blockstack
+      stacksStorage.getFile(`categories`, {
+        decrypt: true
+      })
+      .then((content) => {
+        const fetchedCategories: object = JSON.parse(`${content}`)
+        resolve(fetchedCategories)
+      })
+      .catch(error => reject())
     })
   }
-
-  const { data } = useSWR(
+  const { data, mutate } = useSWR(
     'categories',
     fetcher , 
     {
       suspense: true,
-      fallbackData: fallback
+      fallbackData: fallback,
+      dedupingInterval: 5000,
+      focusThrottleInterval: 5000
     }
   )
 
+  const publishCategories = useCallback((newCategories: unknown) => {
+    const newCategoriesClone = JSON.parse(JSON.stringify(newCategories as object))
+    const options = { optimisticData: newCategoriesClone, rollbackOnError: false }
+    const updateFn = (newCategories: object) => {
+      const newCategoriesClone = JSON.parse(JSON.stringify(newCategories))
+      return new Promise((resolve) => {
+        localforage.setItem('categories', newCategoriesClone)
+        if( !stacksSession.isUserSignedIn() ) {
+          resolve(newCategoriesClone)
+          return
+        }
+        stacksStorage.putFile(`categories`, JSON.stringify(newCategoriesClone))
+        .then((successMessage) => console.log(successMessage))
+        .finally(() => {
+          resolve(newCategoriesClone)
+          return 
+        })
+      })
+    }
+    mutate(updateFn(newCategoriesClone), options);
+
+  }, [ mutate, stacksSession, stacksStorage])
+
   return {
     categories: data,
-    setCategories: setCategories
+    setCategories: setCategories,
+    publishCategories: publishCategories
   }
 }
