@@ -6,7 +6,7 @@ const BlockstackSignOut: FunctionComponent = () => {
   const { stacksSession }  = useStacks()
 
   useEffect(() => {
-    console.log('reload')
+    // console.log('reload')
     // reload
   }, [stacksSession])
 

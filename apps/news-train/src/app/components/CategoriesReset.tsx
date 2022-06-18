@@ -3,11 +3,9 @@ import Button from '@mui/material/Button';
 import { useCategories } from '../react-hooks/useCategories';
 
 const CategoriesReset: FunctionComponent = () => {
-
-  const { factoryReset } = useCategories();
-
+  const { factoryReset, inFlight } = useCategories();
   return (
-    <Button key="categoriesreset" onClick={() => factoryReset()}>
+    <Button key="categoriesreset" disabled={inFlight} onClick={() => factoryReset()}>
       reset categories
     </Button>
   );

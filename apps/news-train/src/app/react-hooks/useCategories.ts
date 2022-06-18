@@ -4,9 +4,8 @@ import localforage from 'localforage'
 import { useStacks } from '../react-hooks/useStacks'
 
 export function useCategories () {
-  
-  const { stacksStorage, stacksSession }  = useStacks()
 
+  const { stacksStorage, stacksSession }  = useStacks()
   const defaultCategories = {
     "science":{"checked":true, "label": "science"},
     "bitcoin":{"checked":true, "label": "bitcoin"},
@@ -52,37 +51,20 @@ export function useCategories () {
     {
       suspense: true,
       fallbackData: fallback,
-      dedupingInterval: 5000,
-      focusThrottleInterval: 5000
+      shouldRetryOnError: true,
+      errorRetryInterval: 6000,
+      dedupingInterval: 6000,
+      focusThrottleInterval: 6000
     }
   )
 
-  const factoryReset = useCallback(() => {
-    const newCategoriesClone = JSON.parse(JSON.stringify(defaultCategories as object))
-    const options = { optimisticData: newCategoriesClone, rollbackOnError: false }
-    const updateFn = (newCategories: object) => {
-      const newCategoriesClone = JSON.parse(JSON.stringify(newCategories))
-      return new Promise((resolve) => {
-        localforage.setItem('categories', newCategoriesClone)
-        if( !stacksSession.isUserSignedIn() ) {
-          resolve(newCategoriesClone)
-          return
-        }
-        stacksStorage.putFile(`categories`, JSON.stringify(newCategoriesClone))
-        .then((successMessage) => {})
-        .finally(() => {
-          resolve(newCategoriesClone)
-          return 
-        })
-      })
-    }
-    mutate(updateFn(newCategoriesClone), options);
-
-  }, [ mutate, stacksSession, stacksStorage, defaultCategories])
+  const [inFlight, setInFlight] = useState(false)
 
   const publishCategories = useCallback((newCategories: unknown) => {
+    setInFlight(true)
     const newCategoriesClone = JSON.parse(JSON.stringify(newCategories as object))
     const options = { optimisticData: newCategoriesClone, rollbackOnError: false }
+    //const [debouncedText] = useDebounce(text, 500, { leading: true });
     const updateFn = (newCategories: object) => {
       const newCategoriesClone = JSON.parse(JSON.stringify(newCategories))
       return new Promise((resolve) => {
@@ -92,21 +74,26 @@ export function useCategories () {
           return
         }
         stacksStorage.putFile(`categories`, JSON.stringify(newCategoriesClone))
-        .then((successMessage) => {})
         .finally(() => {
+          setInFlight(false)
           resolve(newCategoriesClone)
           return 
         })
       })
     }
     mutate(updateFn(newCategoriesClone), options);
-
   }, [ mutate, stacksSession, stacksStorage])
+
+  const factoryReset = () => {
+    const newCategoriesClone = JSON.parse(JSON.stringify(defaultCategories))
+    publishCategories(newCategoriesClone)
+  }
 
   return {
     categories: data,
     setCategories: setCategories,
     factoryReset: factoryReset,
-    publishCategories: publishCategories
+    publishCategories: publishCategories,
+    inFlight: inFlight
   }
 }

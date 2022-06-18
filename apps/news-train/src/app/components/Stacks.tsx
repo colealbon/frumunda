@@ -6,8 +6,9 @@ import {useStacks} from '../react-hooks/useStacks';
 
 const Stacks: FunctionComponent = () => {
   const {stacksSession} = useStacks()
+  
   useEffect(() => {
-    console.log('reload')
+    // console.log('reload')
   }, [stacksSession])
 
   return (
