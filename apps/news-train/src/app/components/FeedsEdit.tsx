@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { useFeeds } from '../react-hooks/useFeeds'
+import { Card, CardContent } from '@mui/material';
 
 import FeedsAdd from './FeedsAdd';
 import FeedsReset from './FeedsReset';
@@ -18,12 +19,15 @@ const FeedsEdit: FunctionComponent = () => {
       <div />
       {Object.keys(JSON.parse(JSON.stringify(feeds))).map(feed => {
         return (
-          <div key={`feed-edit-${feed}`}>
-            <FeedToggle text={feed} />
-            <FeedDelete text={feed} />
-            <div />
-            <FeedCategories text={feed} />
-          </div>
+          <Card variant="outlined" key={`feed-edit-${feed}`}>
+            <CardContent>
+              <div>
+                <FeedToggle text={feed} />
+                <FeedDelete text={feed} />
+              </div>
+              <FeedCategories text={feed} />
+            </CardContent>
+          </Card>
         );
       })}
     </>
