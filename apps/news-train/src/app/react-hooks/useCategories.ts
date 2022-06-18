@@ -96,9 +96,9 @@ export function useCategories () {
 
   return {
     categories: data,
-    setCategories: setCategories,
-    factoryReset: factoryReset,
-    publishCategories: publishCategories,
-    inFlight: inFlight
+    setCategories, 
+    factoryReset, 
+    publishCategories, 
+    inFlight
   }
 }

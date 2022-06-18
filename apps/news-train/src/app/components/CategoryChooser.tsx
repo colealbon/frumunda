@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ComponentPropsWithoutRef} from 'react';
+import React, { FunctionComponent } from 'react';
 import {
   List,
   ListItem,
@@ -7,24 +7,14 @@ import {
   Collapse
 } from '@mui/material';
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
+import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
+import { useCategories } from '../react-hooks/useCategories'
 
-
-import {useCategories} from '../react-hooks/useCategories'
-interface CategoryChooserProps extends ComponentPropsWithoutRef<"button"> {
-  handleCategoryClick: (index: string) => void
-  selectedCategoryIndex: string
-  labelOrEcho: (index: string) => string
-}
-
-const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (props: CategoryChooserProps) => {
-  const {
-    handleCategoryClick, 
-    selectedCategoryIndex
-  } = {...props}
+const CategoryChooserCategories: FunctionComponent = () => {
   const { categories } = useCategories()
   const [open, setOpen] = React.useState(true);
-  const {selectedPageIndex, persistSelectedPageIndex} = useSelectedPageIndex()
-
+  const {selectedPageIndex, persistSelectedPageIndex, mutate: mutateSelectedPageIndex } = useSelectedPageIndex()
+  const {selectedCategoryIndex, persistSelectedCategoryIndex, mutate: mutateSelectedCategoryIndex } = useSelectedCategoryIndex()
 
   const handleClick = () => {
     setOpen(!open);
@@ -39,7 +29,7 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
             key={'category_chooser_button_allcategories'}
             onClick={() => {
               handleClick()
-              handleCategoryClick('allCategories')
+              persistSelectedCategoryIndex('allCategories')
               persistSelectedPageIndex('posts')
               }
             }
@@ -54,17 +44,18 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
           Object.entries(categories as object)
           .filter(categoryItem =>  Object.assign(categoryItem[1] as object).checked === true)
           .map((categoryItem) => {
+            const categoryIndex = `${categoryItem[0]}`
+            const handleClick = () => {
+                persistSelectedCategoryIndex(categoryIndex)
+                persistSelectedPageIndex('posts')
+            }
             return (
               <ListItem key={`category_chooser_${categoryItem[0]}`} disablePadding>
                 <ListItemButton 
                   sx={{ pl: 4 }} 
                   key={`category_chooser_button_${categoryItem[0]}`}
-                  disabled={`${categoryItem[0]}` === `${selectedCategoryIndex}` && `${selectedPageIndex}` === 'posts'} 
-                  onClick={() => {
-                      handleCategoryClick(`${categoryItem[0]}`)
-                      persistSelectedPageIndex('posts')
-                    }
-                  }
+                  disabled={`${categoryItem[0]}` === `${selectedCategoryIndex}`} 
+                  onClick={handleClick}
                 > 
                   {
                     [Object.entries(categoryItem[1] as object)

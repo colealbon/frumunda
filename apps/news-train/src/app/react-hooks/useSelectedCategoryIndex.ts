@@ -7,8 +7,7 @@ export function useSelectedCategoryIndex () {
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(defaultSelectedCategoryIndex)
 
   const setSelectedCategoryIndexCallback = useCallback((newSelectedCategoryIndex: unknown) => {
-    const newSelectedCategoryIndexClone = JSON.parse(JSON.stringify(newSelectedCategoryIndex as object))
-    setSelectedCategoryIndex(newSelectedCategoryIndexClone)
+    setSelectedCategoryIndex(`${newSelectedCategoryIndex}`)
   }, [ setSelectedCategoryIndex])
 
   useEffect(() => {
@@ -17,7 +16,7 @@ export function useSelectedCategoryIndex () {
       if (!value) {
         return
       }
-      setSelectedCategoryIndexCallback(value)
+      setSelectedCategoryIndexCallback(`${value}`)
     })
   }, [setSelectedCategoryIndexCallback])
 
@@ -42,25 +41,18 @@ export function useSelectedCategoryIndex () {
 
   const persistSelectedCategoryIndex = useCallback((newSelectedCategoryIndex: unknown) => {
     setInFlight(true)
-    const newSelectedCategoryIndexClone = `${newSelectedCategoryIndex}`
-    const options = { optimisticData: newSelectedCategoryIndexClone, rollbackOnError: false }
+    const options = { optimisticData: `${newSelectedCategoryIndex}`, rollbackOnError: false }
     const updateFn = (newSelectedCategoryIndex: string) => {
-      const newSelectedCategoryIndexClone = `${newSelectedCategoryIndex}`
-      return new Promise((resolve) => {
-        localforage.setItem('selectedCategoryIndex', newSelectedCategoryIndexClone)
-        //.then((result) => console.log(result))
-        setInFlight(false)
-        resolve(newSelectedCategoryIndexClone)
-        return
-      })
+      return localforage.setItem('selectedCategoryIndex', `${newSelectedCategoryIndex}`)
     }
-    mutate(updateFn(newSelectedCategoryIndexClone), options);
+    mutate(updateFn(`${newSelectedCategoryIndex}`), options);
+    setInFlight(false)
   }, [ mutate ])
 
   return {
     selectedCategoryIndex: data,
-    persistSelectedCategoryIndex: persistSelectedCategoryIndex,
-    inFlight: inFlight,
-    mutateSelectedCategoryIndex: mutate
+    persistSelectedCategoryIndex,
+    inFlight,
+    mutate
   }
 }

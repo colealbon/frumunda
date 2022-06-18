@@ -1,7 +1,7 @@
 import React, {FunctionComponent, ComponentPropsWithoutRef } from 'react';
 import {List,ListItem,ListItemButton,ListItemText,Collapse } from '@mui/material';
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
-
+import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 interface PageChooserProps extends ComponentPropsWithoutRef<"button"> {
   labelOrEcho: (index: string) => string
 }
@@ -13,30 +13,38 @@ const PageChooser: FunctionComponent<PageChooserProps> = (props: PageChooserProp
   } = {...props}
 
   const {selectedPageIndex, persistSelectedPageIndex} = useSelectedPageIndex()
+  const {persistSelectedCategoryIndex} = useSelectedCategoryIndex()
 
   return (
     <div>
       <List>
         <ListItem key={'classifiers'} disablePadding>
-          <ListItemButton disabled={ 'classifiers' === `${selectedPageIndex}`} onClick={() => persistSelectedPageIndex('classifiers')} >
+          <ListItemButton disabled={ 'classifiers' === `${selectedPageIndex}`} onClick={() => {
+            persistSelectedPageIndex('classifiers')
+            persistSelectedCategoryIndex('')
+          }} >
             <ListItemText primary={`${labelOrEcho('classifiers')}`} />
           </ListItemButton>
         </ListItem>
         <ListItem key={'contribute'} disablePadding>
-          <ListItemButton disabled={ 'contribute' === `${selectedPageIndex}`} onClick={() => persistSelectedPageIndex('contribute')} >
+          <ListItemButton disabled={ 'contribute' === `${selectedPageIndex}`} onClick={() => {
+            persistSelectedPageIndex('contribute')
+            persistSelectedCategoryIndex('')
+          }} >
             <ListItemText primary={`${labelOrEcho('contribute')}`} />
           </ListItemButton>
         </ListItem>
         <ListItemText sx={{ pl: 2 }} primary="Settings" />
         <Collapse in={true} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
-          <ListItem key={'pageChooserFeeds'} disablePadding>
+            <ListItem key={'pageChooserFeeds'} disablePadding>
               <ListItemButton 
                 sx={{ pl: 4 }} 
                 disabled={'feeds' === `${selectedPageIndex}`} 
                 onClick={() => {
                   persistSelectedPageIndex('feeds')
-                } }
+                  persistSelectedCategoryIndex('')
+                }}
               >
                 <ListItemText primary={`${labelOrEcho('feeds')}`} />
               </ListItemButton>
@@ -47,6 +55,7 @@ const PageChooser: FunctionComponent<PageChooserProps> = (props: PageChooserProp
                 disabled={'categories' === `${selectedPageIndex}`} 
                 onClick={() => {
                   persistSelectedPageIndex('categories')
+                  persistSelectedCategoryIndex('')
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('categories')}`} />
@@ -58,6 +67,7 @@ const PageChooser: FunctionComponent<PageChooserProps> = (props: PageChooserProp
                 disabled={'stacks' === `${selectedPageIndex}`} 
                 onClick={() => {
                   persistSelectedPageIndex('stacks')
+                  persistSelectedCategoryIndex('')
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('stacks')}`} />

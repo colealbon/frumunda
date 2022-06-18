@@ -57,10 +57,6 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
                           })
                           .flat()
                           .concat(category)
-                          .map(category => {
-                            console.log(category)
-                            return category
-                          })
                           .every((e: string, i: number, a: string[]) => a.indexOf(e) === i),
                       ]
                         .filter(addCategory => addCategory)

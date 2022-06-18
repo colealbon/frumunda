@@ -105,11 +105,7 @@ export default function ResponsiveDrawer() {
                 <Toolbar />
                 <Divider />
                   <Suspense fallback={<h2>fetching categories.</h2>}>
-                    <CategoryChooser
-                      handleCategoryClick={handleListItemClick}
-                      selectedCategoryIndex={cloneSelectedCategoryIndex}
-                      labelOrEcho={labelOrEcho}
-                    />
+                    <CategoryChooser />
                   </Suspense>
                 <PageChooser
                   labelOrEcho={labelOrEcho}
@@ -126,11 +122,7 @@ export default function ResponsiveDrawer() {
                 <Toolbar />
                 <Divider />
                   <Suspense fallback={<h2>fetching categories.</h2>}>
-                  <CategoryChooser
-                    handleCategoryClick={handleListItemClick}
-                    selectedCategoryIndex={cloneSelectedCategoryIndex}
-                    labelOrEcho={labelOrEcho}
-                  />
+                  <CategoryChooser/>
                   </Suspense>
                 <PageChooser labelOrEcho={labelOrEcho} />
               </Drawer>

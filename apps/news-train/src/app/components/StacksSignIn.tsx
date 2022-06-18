@@ -7,8 +7,8 @@ import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 
 const StacksSignin: FunctionComponent = () => {
   const { stacksSession }  = useStacks()
-  const { mutateSelectedCategoryIndex } = useSelectedCategoryIndex()
-  const { mutateSelectedPageIndex } = useSelectedPageIndex()
+  const { mutate: mutateSelectedCategoryIndex } = useSelectedCategoryIndex()
+  const { mutate: mutateSelectedPageIndex } = useSelectedPageIndex()
 
   const authenticate = () => {
     showConnect({

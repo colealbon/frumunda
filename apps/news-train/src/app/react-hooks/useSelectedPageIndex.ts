@@ -7,9 +7,8 @@ export function useSelectedPageIndex () {
   const [selectedPageIndex, setSelectedPageIndex] = useState(defaultSelectedPageIndex)
 
   const setSelectedPageIndexCallback = useCallback((newSelectedPageIndex: unknown) => {
-    const newSelectedPageIndexClone = JSON.parse(JSON.stringify(newSelectedPageIndex as object))
-    setSelectedPageIndex(newSelectedPageIndexClone)
-  }, [ setSelectedPageIndex])
+    setSelectedPageIndex(`${newSelectedPageIndex}`)
+  }, [ setSelectedPageIndex ])
 
   useEffect(() => {
     localforage.getItem('selectedPageIndex')
@@ -17,8 +16,7 @@ export function useSelectedPageIndex () {
       if (!value) {
         return
       }
-
-      setSelectedPageIndexCallback(value)
+      setSelectedPageIndexCallback(`${value}`)
     })
   }, [setSelectedPageIndexCallback])
 
@@ -43,19 +41,18 @@ export function useSelectedPageIndex () {
 
   const persistSelectedPageIndex = useCallback((newSelectedPageIndex: unknown) => {
     setInFlight(true)
-    const newSelectedPageIndexClone = `${newSelectedPageIndex}`
-    const options = { optimisticData: newSelectedPageIndexClone, rollbackOnError: false }
+    const options = { optimisticData: `${newSelectedPageIndex}`, rollbackOnError: false }
     const updateFn = (newSelectedPageIndex: string) => {
       return localforage.setItem('selectedPageIndex', `${newSelectedPageIndex}`)
     }
-    mutate(updateFn(newSelectedPageIndexClone), options);
+    mutate(updateFn(`${newSelectedPageIndex}`), options);
     setInFlight(false)
   }, [ mutate ])
 
   return {
     selectedPageIndex: data,
-    persistSelectedPageIndex: persistSelectedPageIndex,
-    inFlight: inFlight,
-    mutateSelectedPageIndex: mutate
+    persistSelectedPageIndex,
+    inFlight,
+    mutate
   }
 }
