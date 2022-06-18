@@ -8,7 +8,7 @@ import { useCategories } from '../react-hooks/useCategories'
 
 const CategoriesAdd = () => {
   const [inputValue, setInputValue] = useState('');
-  const { categories, publishCategories } = useCategories()
+  const { categories, publishCategories, inFlight } = useCategories()
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -25,6 +25,7 @@ const CategoriesAdd = () => {
 
   return (
       <TextField
+        disabled={inFlight}
         id="addCategoryTextField"
         placeholder="add category here"
         value={inputValue}
