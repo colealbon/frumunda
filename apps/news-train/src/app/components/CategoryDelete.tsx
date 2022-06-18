@@ -1,21 +1,16 @@
 import React, {
-  // useContext,
   useCallback,
   FunctionComponent,
   Fragment,
-  useState
 } from 'react';
 import { IconButton } from '@mui/material';
-import { DeleteOutlined } from '@mui/icons-material';
+import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
+import { useCategories } from '../react-hooks/useCategories';
 
 const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-
-  // const { categories, setCategories } = useCategories();
-
-  const [categories, setCategories] = useState({"science":{"checked":true},"bitcoin":{"checked":true},"local":{"checked":true},"business":{"checked":true},"world":{"checked":true},"politics":{"checked":true},"technology":{"checked":true},"variety":{"checked":true},"us":{"checked":false}});
-  
+  const { categories, publishCategories, inFlight } = useCategories()
 
   const deleteCategory = useCallback(() => {
     const newCategories = JSON.parse(
@@ -27,8 +22,8 @@ const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
         ),
       })
     );
-    setCategories(newCategories);
-  }, [categories, props.text, setCategories]);
+    publishCategories(newCategories);
+  }, [categories, props.text, publishCategories]);
 
   return (
     <Fragment>
@@ -37,7 +32,7 @@ const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
         .map((category: [string, unknown]) => {
           return (
             <Fragment key={`${category}`}>
-              <IconButton aria-label="Delete Category" onClick={deleteCategory}>
+              <IconButton disabled={inFlight} aria-label="Delete Category" onClick={deleteCategory}>
                 <DeleteOutlined />
               </IconButton>
             </Fragment>

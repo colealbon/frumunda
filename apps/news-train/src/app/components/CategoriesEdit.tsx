@@ -4,8 +4,8 @@ import { useCategories } from '../react-hooks/useCategories'
 import CategoriesAdd from './CategoriesAdd';
 import CategoriesReset from './CategoriesReset';
 
-// import CategoryToggle from './CategoryToggle';
-// import CategoryDelete from './CategoryDelete';
+import CategoryToggle from './CategoryToggle';
+import CategoryDelete from './CategoryDelete';
 
 const CategoriesEdit: FunctionComponent = () => {
   const { categories } = useCategories()
@@ -16,14 +16,18 @@ const CategoriesEdit: FunctionComponent = () => {
           <CategoriesAdd key='CategoriesAdd' />
           <div />
           <CategoriesReset />
+          <div />
+          {Object.keys(JSON.parse(JSON.stringify(categories))).map(category => {
+            return (
+              <div key={`category-edit-${category}`}>
+                <CategoryToggle text={category} />
+                <CategoryDelete text={category} />
+              </div>
+            );
+          })}
         </>
       </Suspense>
   )
-
-  //     <Box p={1}>
-  //       <CategoriesReset />
-  //     </Box>
-  // );
 };
 
 export default CategoriesEdit;

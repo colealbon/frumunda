@@ -20,6 +20,7 @@ export function useCategories () {
     const newCategoriesClone = JSON.parse(JSON.stringify(newCategories as object))
     setCategories(newCategoriesClone)
   }, [ setCategories])
+
   useEffect(() => {
     localforage.getItem('categories')
     .then((value: unknown) => {

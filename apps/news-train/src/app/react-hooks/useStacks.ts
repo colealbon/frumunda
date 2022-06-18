@@ -5,7 +5,7 @@ export function useStacks () {
   const appConfig = new AppConfig(['store_write', 'publish_data']);
   const userSession: UserSession = new UserSession({ appConfig });
   const storageOptions: StorageOptions = { userSession };
-  const storage = new Storage(storageOptions); // eslint-disable-line @typescript-eslint/no-unused-vars
+  const storage = new Storage(storageOptions);
   
   return {
     stacksSession: userSession,

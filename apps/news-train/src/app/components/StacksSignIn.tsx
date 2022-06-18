@@ -32,7 +32,7 @@ const StacksSignin: FunctionComponent = () => {
         .map(() => {
           return (
             <Button key="blockstacksignin" onClick={() => authenticate()}>
-              <Typography variant="h3">sign in</Typography>
+              <Typography>sign in</Typography>
             </Button>
           );
         })}

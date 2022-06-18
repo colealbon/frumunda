@@ -22,7 +22,7 @@ const BlockstackSignOut: FunctionComponent = () => {
                 stacksSession.signUserOut(window.location.origin)
               }
             >
-              <Typography key='signout' variant="h2">sign out</Typography>
+              <Typography key='signout'>sign out</Typography>
             </Button>
           );
         })}
