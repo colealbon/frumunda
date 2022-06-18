@@ -13,11 +13,11 @@ const Stacks: FunctionComponent = () => {
 
   return (
     <div>
+      <StacksProfileDisplay/>
       <div>
         <StacksSignIn />
         <StacksSignOut />
       </div>
-      <StacksProfileDisplay/>
     </div>
   );
 };
