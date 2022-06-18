@@ -20,7 +20,8 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
   const {
     handleCategoryClick, 
     handlePageIndexClick, 
-    selectedCategoryIndex
+    selectedCategoryIndex,
+    selectedPageIndex
   } = {...props}
   const { categories } = useCategories()
   const [open, setOpen] = React.useState(true);
@@ -58,7 +59,7 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
                 <ListItemButton 
                   sx={{ pl: 4 }} 
                   key={`category_chooser_button_${categoryItem[0]}`}
-                  disabled={`${categoryItem[0]}` === `${selectedCategoryIndex}`} 
+                  disabled={`${categoryItem[0]}` === `${selectedCategoryIndex}` && `${selectedPageIndex}` === 'posts'} 
                   onClick={() => {
                       handleCategoryClick(`${categoryItem[0]}`)
                       handlePageIndexClick('posts')

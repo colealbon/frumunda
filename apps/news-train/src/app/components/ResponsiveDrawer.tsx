@@ -15,13 +15,15 @@ import Posts from './Posts'
 import Stacks from './Stacks'
 import CategoriesEdit from './CategoriesEdit'
 import ErrorBoundary from './ErrorBoundary'
+import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
+import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 
 const drawerWidth = 240;
 
 export default function ResponsiveDrawer() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(null);
-  const [selectedPageIndex, setSelectedPageIndex] = React.useState('cafe-society.news');
+  const {selectedCategoryIndex, persistSelectedCategoryIndex} = useSelectedCategoryIndex();
+  const { selectedPageIndex, persistSelectedPageIndex} = useSelectedPageIndex();
   const labelOrEcho = (index: string) => {
     return `${Object.entries({
       classifiers: 'Classifiers',
@@ -44,13 +46,13 @@ export default function ResponsiveDrawer() {
 
   const setSelectedCategoryIndexCallback = useCallback((selectedCategoryIndex: string) => {
     const cloneSelectedIndex = structuredClone(selectedCategoryIndex)
-    setSelectedCategoryIndex(cloneSelectedIndex)
-  }, [setSelectedCategoryIndex])
+    persistSelectedCategoryIndex(cloneSelectedIndex)
+  }, [persistSelectedCategoryIndex])
 
   const setSelectedPageIndexCallback = useCallback((selectedPageIndex: string) => {
     const cloneSelectedPageIndex = structuredClone(selectedPageIndex)
-    setSelectedPageIndex(cloneSelectedPageIndex)
-  }, [setSelectedPageIndex])
+    persistSelectedPageIndex(cloneSelectedPageIndex)
+  }, [persistSelectedPageIndex])
 
   const handleListItemClick = (listItemIndex: string) => {
     setSelectedCategoryIndexCallback(listItemIndex);
