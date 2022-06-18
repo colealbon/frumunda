@@ -1,26 +1,26 @@
 import React, { useCallback, FunctionComponent, Fragment } from 'react';
 import { Switch, FormControlLabel,Typography} from '@mui/material';
+import { useFeeds } from '../react-hooks/useFeeds';
 
-const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
+const FeedToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  // const { categories, setCategories } = useCategories();
-  //const {categories, setCategories} = useCategories()
-  
 
-  const setCategoriesCallback = useCallback(() => {
-    const newCategory = JSON.parse(
+  const { feeds, publishFeeds, inFlight } = useFeeds()
+
+  const setFeedsCallback = useCallback(() => {
+    const newFeed = JSON.parse(
       JSON.stringify({
         ...Object.fromEntries(
-          Object.entries(JSON.parse(JSON.stringify(categories)))
-            .filter((category: [string, unknown]) => category[0] === props.text)
-            .map((category: [string, unknown]) => {
+          Object.entries(JSON.parse(JSON.stringify(feeds)))
+            .filter((feed: [string, unknown]) => feed[0] === props.text)
+            .map((feed: [string, unknown]) => {
               return [
-                category[0],
+                feed[0],
                 {
                   ...Object.fromEntries(
                     Object.entries({
-                      ...(category[1] as Record<string, unknown>),
+                      ...(feed[1] as Record<string, unknown>),
                     })
                       .filter(
                         (attribute: [string, unknown]) =>
@@ -30,7 +30,7 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
                   ),
                   ...Object.fromEntries(
                     Object.entries({
-                      ...(category[1] as Record<string, unknown>),
+                      ...(feed[1] as Record<string, unknown>),
                     }).filter((attribute : [string, unknown]) => attribute[0] !== 'checked')
                   ),
                 },
@@ -39,18 +39,21 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
         ),
       })
     );
-    setCategories({ ...JSON.parse(JSON.stringify(categories)), ...newCategory });
-  }, [categories, props.text, setCategories]);
+    const newFeeds = { ...JSON.parse(JSON.stringify(feeds)), ...newFeed }
+    publishFeeds(newFeeds)
+
+  }, [feeds, props.text, publishFeeds]);
 
   return (
     <Fragment>
-      {Object.entries(JSON.parse(JSON.stringify(categories)))
-        .filter((category : [string, unknown]) => category[0] === props.text)
-        .map((category : [string, unknown]) => {
-          const attributes = category[1] as Record<string, unknown>;
+      {Object.entries(JSON.parse(JSON.stringify(feeds)))
+        .filter((feed : [string, unknown]) => feed[0] === props.text)
+        .map((feed : [string, unknown]) => {
+          const attributes = feed[1] as Record<string, unknown>;
           return (
             <FormControlLabel
-              key={category[0]}
+              disabled={inFlight}
+              key={feed[0]}
               control={
                 <Switch
                   size='medium'
@@ -61,11 +64,11 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
                       )
                     )
                   ).some(checked => checked)}
-                  onChange={() => setCategoriesCallback()}
+                  onChange={() => setFeedsCallback()}
                   name={props.text}
                 />
               }
-              label={<Typography variant="h3">{props.text}</Typography>}
+              label={<Typography>{props.text}</Typography>}
             />
           );
         })}
@@ -73,4 +76,4 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
   );
 };
 
-export default CategoryToggle;
+export default FeedToggle;

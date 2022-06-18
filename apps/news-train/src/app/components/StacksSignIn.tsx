@@ -19,17 +19,14 @@ const StacksSignin: FunctionComponent = () => {
       redirectTo: '/',
       onFinish: () => {
         stacksSession.loadUserData();
+        window.location.reload()
         mutateSelectedCategoryIndex()
         mutateSelectedPageIndex()
-        window.location.reload()
       },
       userSession: stacksSession,
     });
   };
 
-  useEffect(() => {
-
-  }, [mutateSelectedCategoryIndex, mutateSelectedPageIndex])
 
   return (
     <>

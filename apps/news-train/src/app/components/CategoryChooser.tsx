@@ -6,25 +6,25 @@ import {
   ListItemText,
   Collapse
 } from '@mui/material';
+import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
+
 
 import {useCategories} from '../react-hooks/useCategories'
 interface CategoryChooserProps extends ComponentPropsWithoutRef<"button"> {
   handleCategoryClick: (index: string) => void
-  handlePageIndexClick: (index: string) => void
   selectedCategoryIndex: string
-  selectedPageIndex: string
   labelOrEcho: (index: string) => string
 }
 
 const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (props: CategoryChooserProps) => {
   const {
     handleCategoryClick, 
-    handlePageIndexClick, 
-    selectedCategoryIndex,
-    selectedPageIndex
+    selectedCategoryIndex
   } = {...props}
   const { categories } = useCategories()
   const [open, setOpen] = React.useState(true);
+  const {selectedPageIndex, persistSelectedPageIndex} = useSelectedPageIndex()
+
 
   const handleClick = () => {
     setOpen(!open);
@@ -40,7 +40,7 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
             onClick={() => {
               handleClick()
               handleCategoryClick('allCategories')
-              handlePageIndexClick('posts')
+              persistSelectedPageIndex('posts')
               }
             }
           >
@@ -62,7 +62,7 @@ const CategoryChooserCategories: FunctionComponent<CategoryChooserProps> = (prop
                   disabled={`${categoryItem[0]}` === `${selectedCategoryIndex}` && `${selectedPageIndex}` === 'posts'} 
                   onClick={() => {
                       handleCategoryClick(`${categoryItem[0]}`)
-                      handlePageIndexClick('posts')
+                      persistSelectedPageIndex('posts')
                     }
                   }
                 > 

@@ -14,6 +14,7 @@ import Classifiers from './Classifiers'
 import Posts from './Posts'
 import Stacks from './Stacks'
 import CategoriesEdit from './CategoriesEdit'
+import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
@@ -23,7 +24,8 @@ const drawerWidth = 240;
 export default function ResponsiveDrawer() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const {selectedCategoryIndex, persistSelectedCategoryIndex} = useSelectedCategoryIndex();
-  const { selectedPageIndex, persistSelectedPageIndex} = useSelectedPageIndex();
+  const { selectedPageIndex } = useSelectedPageIndex();
+
   const labelOrEcho = (index: string) => {
     return `${Object.entries({
       classifiers: 'Classifiers',
@@ -32,6 +34,7 @@ export default function ResponsiveDrawer() {
       community: 'Community',
       commerce: 'Commerce',
       posts: 'Posts',
+      feeds: 'Feeds',
       stacks: 'Stacks'
     })
     .filter(labelsEntry => labelsEntry[0] === `${index}`)
@@ -49,21 +52,11 @@ export default function ResponsiveDrawer() {
     persistSelectedCategoryIndex(cloneSelectedIndex)
   }, [persistSelectedCategoryIndex])
 
-  const setSelectedPageIndexCallback = useCallback((selectedPageIndex: string) => {
-    const cloneSelectedPageIndex = structuredClone(selectedPageIndex)
-    persistSelectedPageIndex(cloneSelectedPageIndex)
-  }, [persistSelectedPageIndex])
-
   const handleListItemClick = (listItemIndex: string) => {
     setSelectedCategoryIndexCallback(listItemIndex);
   }
 
-  const handlePageIndexClick = (pageIndex: string) => {
-    setSelectedPageIndexCallback(pageIndex);
-  }
-
   const cloneSelectedCategoryIndex = `${selectedCategoryIndex}`
-  const cloneSelectedPageIndex = `${selectedPageIndex}`
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -114,15 +107,11 @@ export default function ResponsiveDrawer() {
                   <Suspense fallback={<h2>fetching categories.</h2>}>
                     <CategoryChooser
                       handleCategoryClick={handleListItemClick}
-                      handlePageIndexClick={handlePageIndexClick} 
                       selectedCategoryIndex={cloneSelectedCategoryIndex}
-                      selectedPageIndex={cloneSelectedPageIndex}
                       labelOrEcho={labelOrEcho}
                     />
                   </Suspense>
                 <PageChooser
-                  handlePageIndexClick={handlePageIndexClick} 
-                  selectedPageIndex={cloneSelectedPageIndex}
                   labelOrEcho={labelOrEcho}
                 />
               </Drawer>
@@ -139,17 +128,11 @@ export default function ResponsiveDrawer() {
                   <Suspense fallback={<h2>fetching categories.</h2>}>
                   <CategoryChooser
                     handleCategoryClick={handleListItemClick}
-                    handlePageIndexClick={handlePageIndexClick} 
                     selectedCategoryIndex={cloneSelectedCategoryIndex}
-                    selectedPageIndex={cloneSelectedPageIndex}
                     labelOrEcho={labelOrEcho}
                   />
                   </Suspense>
-                <PageChooser 
-                  handlePageIndexClick={handlePageIndexClick}
-                  selectedPageIndex={cloneSelectedPageIndex}
-                  labelOrEcho={labelOrEcho}
-                />
+                <PageChooser labelOrEcho={labelOrEcho} />
               </Drawer>
           </Suspense>
       </Box>
@@ -159,22 +142,22 @@ export default function ResponsiveDrawer() {
       >
         <Toolbar />    
         {
-          [cloneSelectedPageIndex].flat().filter(() => {
+          [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'contribute'
           }).map(() => <Contribute key='contribute'/>)
         }
         {
-          [cloneSelectedPageIndex].flat().filter(() => {
+          [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'classifiers'
           }).map(() => <Classifiers key='classifiers'/>)
         }
         {
-          [cloneSelectedPageIndex].flat().filter(() => {
+          [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'posts'
           }).map(() => <Posts key='posts' selectedCategoryIndex={cloneSelectedCategoryIndex}/>)
         }
         {
-          [cloneSelectedPageIndex].flat().filter(() => {
+          [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'categories'
           }).map(() => {
             return (
@@ -187,7 +170,20 @@ export default function ResponsiveDrawer() {
           })
         }
         {
-          [cloneSelectedPageIndex].flat().filter(() => {
+          [selectedPageIndex].flat().filter(() => {
+            return selectedPageIndex === 'feeds'
+          }).map(() => {
+            return (
+              <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching feeds</>}>
+                <Suspense fallback={<>...fetching Feeds</>}>
+                  <FeedsEdit key='feedsedit' />
+                </Suspense>
+              </ErrorBoundary>
+            )
+          })
+        }
+        {
+          [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'stacks'
           }).map(() => {
             return (
