@@ -146,7 +146,7 @@ export default function ResponsiveDrawer() {
         {
           [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'posts'
-          }).map(() => <Posts key='posts' selectedCategoryIndex={cloneSelectedCategoryIndex}/>)
+          }).map(() => <Posts key='posts' />)
         }
         {
           [selectedPageIndex].flat().filter(() => {
