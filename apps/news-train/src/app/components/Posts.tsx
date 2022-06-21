@@ -38,8 +38,7 @@ const Posts = () => {
 
   return (
     <>
-    <pre>{`${JSON.stringify(payload, null, 2)}`} </pre>
-    <pre>{`${JSON.stringify(selectedCategoryIndex, null, 2)}`} </pre>
+      <pre>{`${JSON.stringify(payload, null, 2)}`} </pre>
     </>
   );
 };

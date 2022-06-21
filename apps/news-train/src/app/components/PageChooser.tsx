@@ -2,15 +2,9 @@ import React, {FunctionComponent, ComponentPropsWithoutRef } from 'react';
 import {List,ListItem,ListItemButton,ListItemText,Collapse } from '@mui/material';
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
-interface PageChooserProps extends ComponentPropsWithoutRef<"button"> {
-  labelOrEcho: (index: string) => string
-}
+import { labelOrEcho } from './ResponsiveDrawer'
 
-
-const PageChooser: FunctionComponent<PageChooserProps> = (props: PageChooserProps) => {
-  const {
-    labelOrEcho
-  } = {...props}
+const PageChooser: FunctionComponent = () => {
 
   const {selectedPageIndex, persistSelectedPageIndex} = useSelectedPageIndex()
   const {persistSelectedCategoryIndex} = useSelectedCategoryIndex()
@@ -71,6 +65,18 @@ const PageChooser: FunctionComponent<PageChooserProps> = (props: PageChooserProp
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('stacks')}`} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem key={'pageChooserCorsProxies'} disablePadding>
+              <ListItemButton 
+                sx={{ pl: 4 }} 
+                disabled={'corsproxies' === `${selectedPageIndex}`} 
+                onClick={() => {
+                  persistSelectedPageIndex('corsproxies')
+                  persistSelectedCategoryIndex('')
+                } }
+              >
+                <ListItemText primary={`${labelOrEcho('corsproxies')}`} />
               </ListItemButton>
             </ListItem>
           </List>

@@ -14,6 +14,7 @@ import Classifiers from './Classifiers'
 import Posts from './Posts'
 import Stacks from './Stacks'
 import CategoriesEdit from './CategoriesEdit'
+import CorsProxiesEdit from './CorsProxiesEdit'
 import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
@@ -21,27 +22,28 @@ import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 
 const drawerWidth = 240;
 
+export const labelOrEcho = (index: string) => {
+  return `${Object.entries({
+    classifiers: 'Classifiers',
+    contribute: 'Contribute',
+    categories: 'Categories',
+    community: 'Community',
+    commerce: 'Commerce',
+    posts: 'Posts',
+    feeds: 'Feeds',
+    stacks: 'Stacks',
+    corsproxies: 'Cors Proxies'
+  })
+  .filter(labelsEntry => labelsEntry[0] === `${index}`)
+  .map((labelsEntry) => labelsEntry[1])
+  .concat(`${index}`)
+  .find(() => true)}`
+}
+
 export default function ResponsiveDrawer() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const {selectedCategoryIndex, persistSelectedCategoryIndex} = useSelectedCategoryIndex();
   const { selectedPageIndex } = useSelectedPageIndex();
-
-  const labelOrEcho = (index: string) => {
-    return `${Object.entries({
-      classifiers: 'Classifiers',
-      contribute: 'Contribute',
-      categories: 'Categories',
-      community: 'Community',
-      commerce: 'Commerce',
-      posts: 'Posts',
-      feeds: 'Feeds',
-      stacks: 'Stacks'
-    })
-    .filter(labelsEntry => labelsEntry[0] === `${index}`)
-    .map((labelsEntry) => labelsEntry[1])
-    .concat(`${index}`)
-    .find(() => true)}`
-  }
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -107,9 +109,7 @@ export default function ResponsiveDrawer() {
                   <Suspense fallback={<h2>fetching categories.</h2>}>
                     <CategoryChooser />
                   </Suspense>
-                <PageChooser
-                  labelOrEcho={labelOrEcho}
-                />
+                <PageChooser />
               </Drawer>
               <Drawer
                 variant="permanent"
@@ -124,7 +124,7 @@ export default function ResponsiveDrawer() {
                   <Suspense fallback={<h2>fetching categories.</h2>}>
                   <CategoryChooser/>
                   </Suspense>
-                <PageChooser labelOrEcho={labelOrEcho} />
+                <PageChooser/>
               </Drawer>
           </Suspense>
       </Box>
@@ -182,6 +182,19 @@ export default function ResponsiveDrawer() {
               <ErrorBoundary key={'errorBoundaryStacks'} fallback={<>error fetching stacks session</>}>
                 <Suspense fallback={<>...fetching stacks session</>}>
                   <Stacks key='stacks' />
+                </Suspense>
+              </ErrorBoundary>
+            )
+          })
+        }
+        {
+          [selectedPageIndex].flat().filter(() => {
+            return selectedPageIndex === 'corsproxies'
+          }).map(() => {
+            return (
+              <ErrorBoundary key={'errorBoundaryCorsProxies'} fallback={<>error fetching cors proxies</>}>
+                <Suspense fallback={<>...fetching corsproxies </>}>
+                  <CorsProxiesEdit key='corsproxies' />
                 </Suspense>
               </ErrorBoundary>
             )
