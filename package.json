@@ -9,7 +9,7 @@
   },
   "private": true,
   "dependencies": {
-    "@emotion/styled": "^11.8.1",
+    "@emotion/styled": "^11.9.3",
     "@material/top-app-bar": "^14.0.0",
     "@mui/icons-material": "^5.8.3",
     "@mui/material": "^5.8.3",
