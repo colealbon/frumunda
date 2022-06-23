@@ -68,7 +68,7 @@ const CorsProxyToggle: FunctionComponent<{ text: string }> = (props: {
                   name={props.text}
                 />
               }
-              label={<Typography variant="h3">{props.text}</Typography>}
+              label={<Typography>{props.text}</Typography>}
             />
           );
         })}

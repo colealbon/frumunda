@@ -6,8 +6,9 @@ import { useStacks } from '../react-hooks/useStacks'
 export function useCorsProxies () {
   const { stacksStorage, stacksSession }  = useStacks()
   const defaultCorsProxies = {
-        '/.netlify/functions/node-fetch?url=': { checked: true },
-        'http://localhost:8080/': { checked: false }
+        '/.netlify/functions/node-fetch?url=': { checked: false },
+        'http://localhost:8080/': { checked: false },
+        '': { checked: true }
   }
   const [corsProxies, setCorsProxies] = useState(defaultCorsProxies)
 

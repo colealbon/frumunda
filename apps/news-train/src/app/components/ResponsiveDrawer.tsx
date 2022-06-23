@@ -1,4 +1,4 @@
-import React, {useCallback, Suspense} from 'react';
+import React, {Suspense, useEffect} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -17,8 +17,9 @@ import CategoriesEdit from './CategoriesEdit'
 import CorsProxiesEdit from './CorsProxiesEdit'
 import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
-import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
+import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
+
 
 const drawerWidth = 240;
 
@@ -40,25 +41,23 @@ export const labelOrEcho = (index: string) => {
   .find(() => true)}`
 }
 
+
+
 export default function ResponsiveDrawer() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const {selectedCategoryIndex, persistSelectedCategoryIndex} = useSelectedCategoryIndex();
   const { selectedPageIndex } = useSelectedPageIndex();
+  const { selectedCategoryIndex } = useSelectedCategoryIndex();
+
+  useEffect(() => {
+    //reload
+    console.log('responsiveDrawer')
+    console.log(selectedPageIndex)
+    console.log(selectedCategoryIndex)
+  })
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  const setSelectedCategoryIndexCallback = useCallback((selectedCategoryIndex: string) => {
-    const cloneSelectedIndex = structuredClone(selectedCategoryIndex)
-    persistSelectedCategoryIndex(cloneSelectedIndex)
-  }, [persistSelectedCategoryIndex])
-
-  const handleListItemClick = (listItemIndex: string) => {
-    setSelectedCategoryIndexCallback(listItemIndex);
-  }
-
-  const cloneSelectedCategoryIndex = `${selectedCategoryIndex}`
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -81,7 +80,15 @@ export default function ResponsiveDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            {labelOrEcho(`${selectedPageIndex}`)}
+          {[selectedPageIndex].flat()
+          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .map(() => labelOrEcho(`${selectedPageIndex}`))
+          }
+          {[selectedPageIndex].flat()
+          .filter(() => selectedCategoryIndex !== '' )
+          .filter(() =>selectedCategoryIndex !== 'allCategories')
+          .map(() => 'Posts')
+          }
           </Typography>
         </Toolbar>
       </AppBar>
@@ -121,10 +128,10 @@ export default function ResponsiveDrawer() {
               >
                 <Toolbar />
                 <Divider />
-                  <Suspense fallback={<h2>fetching categories.</h2>}>
+                <Suspense fallback={<>loading menu items</>}>
                   <CategoryChooser/>
-                  </Suspense>
-                <PageChooser/>
+                  <PageChooser/>
+                </Suspense>
               </Drawer>
           </Suspense>
       </Box>
@@ -136,22 +143,75 @@ export default function ResponsiveDrawer() {
         {
           [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'contribute'
-          }).map(() => <Contribute key='contribute'/>)
+          })
+          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .map(() => <Contribute key='contribute'/>)
         }
         {
           [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'classifiers'
-          }).map(() => <Classifiers key='classifiers'/>)
+          })
+          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .map(() => <Classifiers key='classifiers'/>)
         }
         {
-          [selectedPageIndex].flat().filter(() => {
-            return selectedPageIndex === 'posts'
-          }).map(() => <Posts key='posts' />)
+          [selectedPageIndex].flat()
+          .filter(() => selectedPageIndex === 'posts')
+          .filter(() => selectedCategoryIndex === 'allCategories')
+          
+          .map(() => {
+            return (
+              <>
+              <>posts 1</>
+              <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
+                <Suspense fallback={<>fetching posts...</>}>
+                  <Posts key='posts' />
+                </Suspense>
+              </ErrorBoundary>
+              </>
+            )
+          })
+        }
+        {
+          [selectedPageIndex].flat()
+          .filter(() => selectedPageIndex === 'posts')
+          .filter(() => selectedCategoryIndex === '')
+          .map(() => {
+            return (
+              <>
+              <>posts 2</>
+              <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
+                <Suspense fallback={<>fetching posts...</>}>
+                  <Posts key='posts' />
+                </Suspense>
+              </ErrorBoundary>
+              </>
+            )
+          })
+        }
+        {
+          [selectedCategoryIndex].flat()
+          .filter(() => selectedCategoryIndex !== '')
+          .filter(() => selectedCategoryIndex !== 'allCategories')
+          .map(() => {
+            return (
+              <>
+              <>posts 3</>
+              <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
+                <Suspense fallback={<>fetching posts...</>}>
+                  <Posts key='posts' />
+                </Suspense>
+              </ErrorBoundary>
+              </>
+            )
+          })
         }
         {
           [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'categories'
-          }).map(() => {
+          })
+          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryCategories'} fallback={<>error fetching categories</>}>
                 <Suspense fallback={<>...fetching Categories</>}>
@@ -164,7 +224,9 @@ export default function ResponsiveDrawer() {
         {
           [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'feeds'
-          }).map(() => {
+          })
+          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching feeds</>}>
                 <Suspense fallback={<>...fetching Feeds</>}>
@@ -177,7 +239,9 @@ export default function ResponsiveDrawer() {
         {
           [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'stacks'
-          }).map(() => {
+          })
+          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryStacks'} fallback={<>error fetching stacks session</>}>
                 <Suspense fallback={<>...fetching stacks session</>}>
@@ -190,7 +254,9 @@ export default function ResponsiveDrawer() {
         {
           [selectedPageIndex].flat().filter(() => {
             return selectedPageIndex === 'corsproxies'
-          }).map(() => {
+          })
+          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryCorsProxies'} fallback={<>error fetching cors proxies</>}>
                 <Suspense fallback={<>...fetching corsproxies </>}>

@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useEffect } from 'react';
 import {
   List,
   ListItem,
@@ -20,6 +20,12 @@ const CategoryChooserCategories: FunctionComponent = () => {
     setOpen(!open);
   };
 
+  // useEffect(() => {
+  //   //reload
+  //   console.log('categoryChooser')
+  // }, [selectedPageIndex, selectedCategoryIndex])
+
+
   return (
     
       <List>
@@ -31,6 +37,8 @@ const CategoryChooserCategories: FunctionComponent = () => {
               handleClick()
               persistSelectedCategoryIndex('allCategories')
               persistSelectedPageIndex('posts')
+              mutateSelectedCategoryIndex()
+              mutateSelectedPageIndex()
               }
             }
           >
@@ -46,8 +54,10 @@ const CategoryChooserCategories: FunctionComponent = () => {
           .map((categoryItem) => {
             const categoryIndex = `${categoryItem[0]}`
             const handleClick = () => {
-                persistSelectedCategoryIndex(categoryIndex)
+                persistSelectedCategoryIndex(`${categoryIndex}`)
                 persistSelectedPageIndex('posts')
+                mutateSelectedCategoryIndex(`${categoryIndex}`)
+                mutateSelectedPageIndex('posts')
             }
             return (
               <ListItem key={`category_chooser_${categoryItem[0]}`} disablePadding>

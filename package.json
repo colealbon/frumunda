@@ -17,6 +17,7 @@
     "@stacks/connect": "^6.8.6",
     "@stacks/storage": "^4.3.0",
     "@webcomponents/webcomponentsjs": "^2.6.0",
+    "axios": "^0.27.2",
     "buffer": "^6.0.3",
     "core-js": "^3.6.5",
     "localforage": "^1.10.0",
