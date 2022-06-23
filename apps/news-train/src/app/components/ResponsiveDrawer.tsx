@@ -48,13 +48,6 @@ export default function ResponsiveDrawer() {
   const { selectedPageIndex } = useSelectedPageIndex();
   const { selectedCategoryIndex } = useSelectedCategoryIndex();
 
-  useEffect(() => {
-    //reload
-    console.log('responsiveDrawer')
-    console.log(selectedPageIndex)
-    console.log(selectedCategoryIndex)
-  })
-
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
