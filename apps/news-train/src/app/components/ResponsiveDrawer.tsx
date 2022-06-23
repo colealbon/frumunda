@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from 'react';
+import React, {Suspense} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -19,7 +19,6 @@ import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
-
 
 const drawerWidth = 240;
 
@@ -154,14 +153,11 @@ export default function ResponsiveDrawer() {
           
           .map(() => {
             return (
-              <>
-              <>posts 1</>
               <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
-                <Suspense fallback={<>fetching posts...</>}>
+                <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
                   <Posts key='posts' />
                 </Suspense>
               </ErrorBoundary>
-              </>
             )
           })
         }
@@ -171,14 +167,11 @@ export default function ResponsiveDrawer() {
           .filter(() => selectedCategoryIndex === '')
           .map(() => {
             return (
-              <>
-              <>posts 2</>
               <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
-                <Suspense fallback={<>fetching posts...</>}>
+                <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
                   <Posts key='posts' />
                 </Suspense>
               </ErrorBoundary>
-              </>
             )
           })
         }
@@ -188,14 +181,11 @@ export default function ResponsiveDrawer() {
           .filter(() => selectedCategoryIndex !== 'allCategories')
           .map(() => {
             return (
-              <>
-              <>posts 3</>
               <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
-                <Suspense fallback={<>fetching posts...</>}>
+                <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
                   <Posts key='posts' />
                 </Suspense>
               </ErrorBoundary>
-              </>
             )
           })
         }
