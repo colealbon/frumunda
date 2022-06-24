@@ -1,16 +1,16 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/backend-netlify/src",
+  "sourceRoot": "apps/axios-fetch/src",
   "projectType": "application",
   "targets": {
     "build": {
       "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/backend-netlify",
-        "main": "apps/backend-netlify/src/main.ts",
-        "tsConfig": "apps/backend-netlify/tsconfig.app.json",
-        "assets": ["apps/backend-netlify/src/assets"]
+        "outputPath": "dist/apps/axios-fetch",
+        "main": "apps/axios-fetch/src/main.ts",
+        "tsConfig": "apps/axios-fetch/tsconfig.app.json",
+        "assets": ["apps/axios-fetch/src/assets"]
       },
       "configurations": {
         "production": {
@@ -19,8 +19,8 @@
           "inspect": false,
           "fileReplacements": [
             {
-              "replace": "apps/backend-netlify/src/environments/environment.ts",
-              "with": "apps/backend-netlify/src/environments/environment.prod.ts"
+              "replace": "apps/axios-fetch/src/environments/environment.ts",
+              "with": "apps/axios-fetch/src/environments/environment.prod.ts"
             }
           ]
         }
@@ -29,21 +29,21 @@
     "serve": {
       "executor": "@nrwl/node:node",
       "options": {
-        "buildTarget": "backend-netlify:build"
+        "buildTarget": "axios-fetch:build"
       }
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/backend-netlify/**/*.ts"]
+        "lintFilePatterns": ["apps/axios-fetch/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/backend-netlify"],
+      "outputs": ["coverage/apps/axios-fetch"],
       "options": {
-        "jestConfig": "apps/backend-netlify/jest.config.ts",
+        "jestConfig": "apps/axios-fetch/jest.config.ts",
         "passWithNoTests": true
       }
     }

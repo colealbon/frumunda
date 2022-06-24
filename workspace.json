@@ -2,7 +2,7 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
-    "backend-netlify": "apps/backend-netlify",
+    "axios-fetch": "apps/axios-fetch",
     "news-train": "apps/news-train",
     "news-train-e2e": "apps/news-train-e2e"
   }

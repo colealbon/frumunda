@@ -1,7 +1,4 @@
 [functions]
-  # Directory with serverless functions, including background 
-  # functions, to deploy. This is relative to the base directory
-  # if one has been set, or the root directory if
-  # a base hasn’t been set.
-  directory = "dist/apps/backend-netlify"
-  
+  directory = "dist/apps/axios-fetch"
+[build]
+  publish = "dist/apps/news-train"
