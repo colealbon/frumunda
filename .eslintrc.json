@@ -19,7 +19,7 @@
             ]
           }
         ],
-        "complexity": ["error", 2]
+        "complexity": ["error", 3]
       }
     },
     {
