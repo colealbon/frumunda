@@ -12,7 +12,7 @@ const Posts: FunctionComponent = () => {
   const { corsProxies } = useCorsProxies();
 
   useEffect(() => {
-    console.log(corsProxies)
+    // console.log(corsProxies)
   }, [corsProxies])
   
   const checkedFeedsForCategory = Object.entries(feeds)
@@ -89,7 +89,7 @@ const Posts: FunctionComponent = () => {
         )
       );
       Promise.all(feedQueue).then(fetchedContent => {
-        resolve(fetchedContent);
+        resolve(Object.fromEntries(Object.assign(fetchedContent as object)));
       })
       .catch(() => resolve({}))
     });
