@@ -1,9 +1,9 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import useSWR  from 'swr';
-import axios from 'axios';
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 import { useFeeds } from '../react-hooks/useFeeds'
 import { useCorsProxies } from '../react-hooks/useCorsProxies'
+const { parse } = require('rss-to-json');
 
 const Posts: FunctionComponent = () => {
 
@@ -13,7 +13,7 @@ const Posts: FunctionComponent = () => {
 
   useEffect(() => {
     // console.log(corsProxies)
-  }, [corsProxies])
+  }, [corsProxies, selectedCategoryIndex, feeds ])
   
   const checkedFeedsForCategory = Object.entries(feeds)
     .filter(feedEntry => {
@@ -44,7 +44,7 @@ const Posts: FunctionComponent = () => {
     .filter(corsProxyEntry => Object.assign(corsProxyEntry[1] as object).checked === true)
     .map((corsProxyEntry: [string, unknown]) => corsProxyEntry[0])
     .filter(noblanks => !!noblanks);
-  
+
   const fetchFeedContent = (feedUrl: string, corsProxies: string[]): Promise<object> => {
     return new Promise((resolve, reject) => {
       const [corsProxy, ...rest] = corsProxies;
@@ -55,9 +55,8 @@ const Posts: FunctionComponent = () => {
         })
         .forEach(corsProxyItem => {
           console.log(`${corsProxyItem}${feedUrl}`)
-          axios
-            .get(`${corsProxyItem}${feedUrl}`)
-            .then(response => {
+          parse(`${corsProxyItem}${feedUrl}`)
+            .then((response: object) => {
               resolve(response);
               return;
             })
@@ -97,7 +96,7 @@ const Posts: FunctionComponent = () => {
   const fetcher = () => {
     return new Promise((resolve, reject) => {
       fetchFeedContentMulti(checkedFeedsForCategory, checkedCorsProxies)
-      .then(fetchedContent => resolve(fetchedContent))
+      .then(parsedContent => resolve(parsedContent))
       .catch(error => reject(error))
     })
   }
