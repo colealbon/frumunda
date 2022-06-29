@@ -47,12 +47,12 @@ export function useCorsProxies () {
     fetcher , 
     {
       suspense: true,
-      fallbackData: fallback,
-      shouldRetryOnError: true,
-      errorRetryInterval: 6000,
-      dedupingInterval: 6000,
-      focusThrottleInterval: 6000,
-      errorRetryCount: 3
+      fallbackData: fallback
+      // shouldRetryOnError: true,
+      // errorRetryInterval: 6000,
+      // dedupingInterval: 6000,
+      // focusThrottleInterval: 6000,
+      // errorRetryCount: 3
     }
   )
 
