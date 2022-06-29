@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useEffect, createContext } from 'react';
 import useSWR  from 'swr';
+import { Grid, Paper, Typography } from '@mui/material';
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 import { useFeeds } from '../react-hooks/useFeeds'
 import { useCorsProxies } from '../react-hooks/useCorsProxies'
@@ -120,18 +121,32 @@ const Feeds: FunctionComponent = () => {
   const fetchedContent: unknown = Object.assign(data as object)
 
   return (
-    <>
+    <Grid container spacing={2}>
       {
         Object.values(fetchedContent as object)
-        .map((parsedFeedContent: {title: string, }) => {
+        .map((parsedFeedContent: unknown) => {
+          
+          const feedTitleText = Object.entries(Object.assign({...parsedFeedContent as object}).title)
+          .filter(titleEntry => {
+            return titleEntry[0] === "$text"
+          })
+          .map(titleEntry => titleEntry[1])
+          .concat(Object.assign({...parsedFeedContent as object}).title)
+          .find(() => true)
+
           return (
             <ParsedFeedContentContext.Provider value={parsedFeedContent as object}>
-              <Posts />
+              <Paper key={`${feedTitleText}`} elevation={3}>
+                <Typography variant="h1" component="div" gutterBottom>
+                  {`${feedTitleText}`}
+                </Typography>
+                <pre>{JSON.stringify(Object.assign({...parsedFeedContent as object}).title, null, 2)}</pre>
+              </Paper>
             </ParsedFeedContentContext.Provider>
           )
         })
       }
-    </>
+    </Grid>
   )
 };
 
