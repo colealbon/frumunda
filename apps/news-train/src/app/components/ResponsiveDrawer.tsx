@@ -11,7 +11,7 @@ import PageChooser from './PageChooser';
 import CategoryChooser from './CategoryChooser'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
-import Posts from './Posts'
+import Feeds from './Feeds'
 import Stacks from './Stacks'
 import CategoriesEdit from './CategoriesEdit'
 import CorsProxiesEdit from './CorsProxiesEdit'
@@ -155,7 +155,7 @@ export default function ResponsiveDrawer() {
             return (
               <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
                 <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
-                  <Posts key='posts' />
+                  <Feeds key='feedsdisplay' />
                 </Suspense>
               </ErrorBoundary>
             )
@@ -167,9 +167,9 @@ export default function ResponsiveDrawer() {
           .filter(() => selectedCategoryIndex === '')
           .map(() => {
             return (
-              <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
+              <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
                 <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
-                  <Posts key='posts' />
+                  <Feeds key='feedsdisplay' />
                 </Suspense>
               </ErrorBoundary>
             )
@@ -181,9 +181,9 @@ export default function ResponsiveDrawer() {
           .filter(() => selectedCategoryIndex !== 'allCategories')
           .map(() => {
             return (
-              <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
+              <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
                 <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
-                  <Posts key='posts' />
+                  <Feeds key='feedsdisplay' />
                 </Suspense>
               </ErrorBoundary>
             )
