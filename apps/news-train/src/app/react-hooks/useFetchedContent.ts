@@ -1,15 +1,11 @@
 // import { useEffect, useState, useCallback} from 'react';
 import useSWR  from 'swr';
 import axios from 'axios';
-// import localforage from 'localforage'
-// import { useStacks } from '../react-hooks/useStacks'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 import { useFeeds } from '../react-hooks/useFeeds'
 import { useCorsProxies } from '../react-hooks/useCorsProxies'
 
 export function useFetchedContent () {
-// const { stacksStorage, stacksSession }  = useStacks()
-// const [fetchedContent, setFetchedContent] = useState(defaultFetchedContent)
   const { selectedCategoryIndex } = useSelectedCategoryIndex();
   const { feeds } = useFeeds()
   const { corsProxies } = useCorsProxies();
@@ -45,6 +41,8 @@ export function useFetchedContent () {
     .filter(noblanks => !!noblanks);
   
   const fetchFeedContent = (feedUrl: string, corsProxies: string[]): Promise<object> => {
+    console.log(feedUrl)
+    console.log(corsProxies)
     return new Promise((resolve, reject) => {
       const [corsProxy, ...rest] = corsProxies;
       [corsProxy]
@@ -71,9 +69,7 @@ export function useFetchedContent () {
     });
   };
   const fetchFeedContentMulti = (feeds: string[], corsProxies: string[]): Promise<object> => {
-    // console.log(feeds)
-    // console.log(corsProxies)
-    // console.log(checkedCorsProxies)
+    console.log('fetchFeedContentMulti')
     return new Promise((resolve, reject) => {
       const feedQueue: object[] = [];
       Object.values(feeds).map(feed =>
@@ -89,90 +85,29 @@ export function useFetchedContent () {
           })
         )
       );
+      console.log(feedQueue)
       Promise.all(feedQueue).then(fetchedContent => {
+        console.log(fetchedContent)
         resolve(fetchedContent);
       })
       .catch(() => resolve({}))
     });
   };
-
-
-//   const setFetchedContentCallback = useCallback((newFetchedContent: unknown) => {
-//     const newFetchedContentClone = JSON.parse(JSON.stringify(newFetchedContent as object))
-//     setFetchedContent(newFetchedContentClone)
-//   }, [ setFetchedContent])
-
-//   useEffect(() => {
-//     localforage.getItem('fetchedContent')
-//     .then((value: unknown) => {
-//       if (!value) {
-//         return
-//       }
-//       setFetchedContentCallback(value)
-//     })
-//   }, [setFetchedContentCallback])
-
-//   const fallback = JSON.parse(JSON.stringify(fetchedContent))
-
   const fetcher = () => {
-    console.log('fetcher')
     return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve({fetchedContent: fetchFeedContentMulti(checkedFeedsForCategory, checkedCorsProxies)})
-      }, 2000)
-//       stacksStorage.getFile(`fetchedContent`, {
-//         decrypt: true
-//       })
-//       .then((content) => {
-//         const fetchedFetchedContent: object = JSON.parse(`${content}`)
-//         resolve(fetchedFetchedContent)
-//       })
-//       .catch(error => reject())
+      fetchFeedContentMulti(checkedFeedsForCategory, checkedCorsProxies)
+      .then(fetchedContent => resolve(fetchedContent))
+      .catch(error => reject(error))
     })
   }
 
   const { data } = useSWR(
     `fetchedContent-${selectedCategoryIndex}`,
-    fetcher , 
+    fetcher, 
     {
       suspense: true
-
-      // fallbackData: fallback,
-      // shouldRetryOnError: true,
-      // errorRetryInterval: 6000,
-      // dedupingInterval: 10000,
-      // focusThrottleInterval: 6000,
-      // errorRetryCount: 3
     }
   )
-
-//   const [inFlight, setInFlight] = useState(false)
-
-//   const publishFetchedContent = useCallback((newFetchedContent: unknown) => {
-//     setInFlight(true)
-//     const newFetchedContentClone = JSON.parse(JSON.stringify(newFetchedContent as object))
-//     const options = { optimisticData: newFetchedContentClone, rollbackOnError: true }
-//     const updateFn = (newFetchedContent: object) => {
-//       const newFetchedContentClone = JSON.parse(JSON.stringify(newFetchedContent))
-//       return new Promise((resolve) => {
-//         if( !stacksSession.isUserSignedIn() ) {
-//           localforage.setItem('fetchedContent', newFetchedContentClone)
-//           setInFlight(false)
-//           resolve(newFetchedContentClone)
-//           return
-//         }
-//         stacksStorage.putFile(`fetchedContent`, JSON.stringify(newFetchedContentClone))
-//         .catch((error) => console.log(error))
-//         .finally(() => {
-//           localforage.setItem('fetchedContent', newFetchedContentClone)
-//           setInFlight(false)
-//           resolve(newFetchedContentClone)
-//           return 
-//         })
-//       })
-//     }
-//     mutate(updateFn(newFetchedContentClone), options);
-//   }, [ mutate, stacksSession, stacksStorage])
   
   const fetchedContent: unknown = Object.assign(data as object)
 
