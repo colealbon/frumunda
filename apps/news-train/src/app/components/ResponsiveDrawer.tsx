@@ -17,6 +17,7 @@ import CategoriesEdit from './CategoriesEdit'
 import CorsProxiesEdit from './CorsProxiesEdit'
 import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
+import CorsProxiesLoad from './CorsProxiesLoad'
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
@@ -155,7 +156,9 @@ export default function ResponsiveDrawer() {
             return (
               <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
                 <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
-                  <Feeds key='feedsdisplay' />
+                  <CorsProxiesLoad>
+                    <Feeds key='feedsdisplay' />
+                  </CorsProxiesLoad>
                 </Suspense>
               </ErrorBoundary>
             )
@@ -169,7 +172,9 @@ export default function ResponsiveDrawer() {
             return (
               <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
                 <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
-                  <Feeds key='feedsdisplay' />
+                  <CorsProxiesLoad>
+                    <Feeds key='feedsdisplay' />
+                  </CorsProxiesLoad>
                 </Suspense>
               </ErrorBoundary>
             )
@@ -183,7 +188,9 @@ export default function ResponsiveDrawer() {
             return (
               <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
                 <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
-                  <Feeds key='feedsdisplay' />
+                  <CorsProxiesLoad>
+                    <Feeds key='feedsdisplay' />
+                  </CorsProxiesLoad>
                 </Suspense>
               </ErrorBoundary>
             )

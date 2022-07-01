@@ -7,10 +7,11 @@ export function useCorsProxies () {
   const { stacksStorage, stacksSession }  = useStacks()
   const defaultCorsProxies = {
         '/.netlify/functions/node-fetch?url=': { checked: false },
-        'http://localhost:8080/': { checked: false },
+        '/.netlify/functions/main?url=': { checked: false },
         '': { checked: true }
   }
   const [corsProxies, setCorsProxies] = useState(defaultCorsProxies)
+  const [checkedCorsProxies, setCheckedCorsProxies] = useState(defaultCorsProxies)
 
   const setCorsProxiesCallback = useCallback((newCorsProxies: unknown) => {
     const newCorsProxiesClone = JSON.parse(JSON.stringify(newCorsProxies as object))
@@ -47,12 +48,12 @@ export function useCorsProxies () {
     fetcher , 
     {
       suspense: true,
-      fallbackData: fallback
-      // shouldRetryOnError: true,
-      // errorRetryInterval: 6000,
+      // fallbackData: fallback
+      shouldRetryOnError: true,
+      errorRetryInterval: 600,
       // dedupingInterval: 6000,
       // focusThrottleInterval: 6000,
-      // errorRetryCount: 3
+      errorRetryCount: 3
     }
   )
 
