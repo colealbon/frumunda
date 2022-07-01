@@ -7,8 +7,8 @@ export function useCorsProxies () {
   const { stacksStorage, stacksSession }  = useStacks()
   const defaultCorsProxies = {
         '/.netlify/functions/node-fetch?url=': { checked: false },
-        '/.netlify/functions/main?url=': { checked: false },
-        '': { checked: true }
+        'http://localhost:8888/.netlify/functions/main?url=': { checked: true },
+        '': { checked: false }
   }
   const [corsProxies, setCorsProxies] = useState(defaultCorsProxies)
   const [checkedCorsProxies, setCheckedCorsProxies] = useState(defaultCorsProxies)
