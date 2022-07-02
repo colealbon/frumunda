@@ -6,13 +6,13 @@ const PostsDisplay: FunctionComponent = () => {
   const parsedFeedContent = structuredClone(parsedFeedContentContext)
   
   return (
-    <div>
+    <>
       {
         parsedFeedContent.items.map((post: {
           title: string
-        }) => <div>{`${post.title}`}</div>)
+        }) => <>{`${post.title}`}<br/></>)
       }
-    </div>
+    </>
   )
 };
 

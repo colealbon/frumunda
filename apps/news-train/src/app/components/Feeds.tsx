@@ -1,6 +1,6 @@
 import React, { FunctionComponent, createContext, useContext, ReactNode } from 'react';
 import useSWR  from 'swr';
-import { Grid, Paper, Typography } from '@mui/material';
+import { Grid, Paper, Box } from '@mui/material';
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxiesLoad'
@@ -121,31 +121,48 @@ const Feeds: FunctionComponent<Props> = ({children}: Props) => {
   const fetchedContent: unknown = Object.assign(data as object)
 
   return (
-    <Grid container spacing={2}>
-      {
-        Object.values(fetchedContent as object)
-        .map((parsedFeedContent: unknown) => {
-          const feedTitleText = Object.entries(Object.assign({...parsedFeedContent as object} || {title: ''}).title)
-          .filter(titleEntry => {
-            return titleEntry[0] === "$text"
-          })
-          .map(titleEntry => titleEntry[1])
-          .concat(Object.assign({...parsedFeedContent as object}).title)
-          .find(() => true)
+    <Paper 
+      elevation={3} 
+      style={{ 
+        width: "95%",
+        minHeight: "95vh"
+      }}
+    >
+      <Grid>
+        {
+          Object.values(fetchedContent as object)
+          .filter((noEmpties: unknown) => !!noEmpties)
+          .map((parsedFeedContent: unknown) => {
+            const feedTitleText = Object.entries(Object.assign({...parsedFeedContent as object} || {title: ''}).title)
+            .filter(titleEntry => {
+              return titleEntry[0] === "$text"
+            })
+            .map(titleEntry => titleEntry[1])
+            .concat(Object.assign({...parsedFeedContent as object}).title)
+            .find(() => true)
 
-          return (
-            <ParsedFeedContentContext.Provider value={parsedFeedContent as object}>
-              <Paper key={`${feedTitleText}`} elevation={3}>
-                <Typography variant="h2" component="div" gutterBottom>
-                  {`${feedTitleText}`}
-                </Typography>
+            return (
+              <ParsedFeedContentContext.Provider value={parsedFeedContent as object}>
+                <div
+                  style={{ 
+                    width: "80%"
+                  }}
+                >
+                  <div
+                    style={{ 
+                      width: "70%"
+                    }}
+                  >
+                    {`${feedTitleText}`}
+                  </div>
                 {children}
-              </Paper>
-            </ParsedFeedContentContext.Provider>
-          )
-        })
-      }
-    </Grid>
+               </div>
+              </ParsedFeedContentContext.Provider>
+            )
+          })
+        }
+      </Grid>
+    </Paper>
   )
 };
 
