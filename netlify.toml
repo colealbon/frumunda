@@ -1,4 +1,5 @@
 [functions]
   directory = "dist/apps/axios-fetch"
+  
 [build]
   publish = "dist/apps/news-train"

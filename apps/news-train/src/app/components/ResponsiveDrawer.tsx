@@ -12,6 +12,7 @@ import CategoryChooser from './CategoryChooser'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
 import Feeds from './Feeds'
+import Posts from './Posts'
 import Stacks from './Stacks'
 import CategoriesEdit from './CategoriesEdit'
 import CorsProxiesEdit from './CorsProxiesEdit'
@@ -80,7 +81,7 @@ export default function ResponsiveDrawer() {
           {[selectedPageIndex].flat()
           .filter(() => selectedCategoryIndex !== '' )
           .filter(() =>selectedCategoryIndex !== 'allCategories')
-          .map(() => 'Posts')
+          .map(() => `Posts - ${selectedCategoryIndex}`)
           }
           </Typography>
         </Toolbar>
@@ -155,9 +156,11 @@ export default function ResponsiveDrawer() {
           .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
-                <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
+                <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
                   <CorsProxiesLoad>
-                    <Feeds key='feedsdisplay' />
+                    <Feeds key='feedsdisplay'>
+                      <Posts />
+                    </Feeds>
                   </CorsProxiesLoad>
                 </Suspense>
               </ErrorBoundary>
@@ -171,9 +174,11 @@ export default function ResponsiveDrawer() {
           .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
-                <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
+                <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
                   <CorsProxiesLoad>
-                    <Feeds key='feedsdisplay' />
+                    <Feeds key='feedsdisplay'>
+                      <Posts />
+                    </Feeds>
                   </CorsProxiesLoad>
                 </Suspense>
               </ErrorBoundary>
@@ -187,9 +192,11 @@ export default function ResponsiveDrawer() {
           .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
-                <Suspense fallback={<>{`fetching ${selectedCategoryIndex} posts...`}</>}>
+                <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
                   <CorsProxiesLoad>
-                    <Feeds key='feedsdisplay' />
+                    <Feeds key='feedsdisplay'>
+                      <Posts />
+                    </Feeds>
                   </CorsProxiesLoad>
                 </Suspense>
               </ErrorBoundary>

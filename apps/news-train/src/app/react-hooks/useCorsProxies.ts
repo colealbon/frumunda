@@ -6,12 +6,11 @@ import { useStacks } from '../react-hooks/useStacks'
 export function useCorsProxies () {
   const { stacksStorage, stacksSession }  = useStacks()
   const defaultCorsProxies = {
-        '/.netlify/functions/node-fetch?url=': { checked: false },
-        'http://localhost:8888/.netlify/functions/main?url=': { checked: true },
+        '/.netlify/functions/node-fetch?url=': { checked: true },
+        'http://localhost:8888/.netlify/functions/main?url=': { checked: false },
         '': { checked: false }
   }
   const [corsProxies, setCorsProxies] = useState(defaultCorsProxies)
-  const [checkedCorsProxies, setCheckedCorsProxies] = useState(defaultCorsProxies)
 
   const setCorsProxiesCallback = useCallback((newCorsProxies: unknown) => {
     const newCorsProxiesClone = JSON.parse(JSON.stringify(newCorsProxies as object))
@@ -48,11 +47,11 @@ export function useCorsProxies () {
     fetcher , 
     {
       suspense: true,
-      // fallbackData: fallback
+      // fallbackData: fallback,
       shouldRetryOnError: true,
-      errorRetryInterval: 600,
-      // dedupingInterval: 6000,
-      // focusThrottleInterval: 6000,
+      errorRetryInterval: 500,
+      dedupingInterval: 1000,
+      // focusThrottleInterval: 1000,
       errorRetryCount: 3
     }
   )

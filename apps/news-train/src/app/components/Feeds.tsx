@@ -1,4 +1,4 @@
-import React, { FunctionComponent, createContext, useContext } from 'react';
+import React, { FunctionComponent, createContext, useContext, ReactNode } from 'react';
 import useSWR  from 'swr';
 import { Grid, Paper, Typography } from '@mui/material';
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
@@ -9,7 +9,9 @@ import { CorsProxiesContext } from './CorsProxiesLoad'
 const { parse } = require('rss-to-json');
 
 export const ParsedFeedContentContext = createContext({});
-const Feeds: FunctionComponent = () => {
+
+type Props = {children: ReactNode}
+const Feeds: FunctionComponent<Props> = ({children}: Props) => {
 
   const { selectedCategoryIndex } = useSelectedCategoryIndex();
   const { feeds } = useFeeds()
@@ -123,8 +125,7 @@ const Feeds: FunctionComponent = () => {
       {
         Object.values(fetchedContent as object)
         .map((parsedFeedContent: unknown) => {
-          
-          const feedTitleText = Object.entries(Object.assign({...parsedFeedContent as object}).title)
+          const feedTitleText = Object.entries(Object.assign({...parsedFeedContent as object} || {title: ''}).title)
           .filter(titleEntry => {
             return titleEntry[0] === "$text"
           })
@@ -138,7 +139,7 @@ const Feeds: FunctionComponent = () => {
                 <Typography variant="h2" component="div" gutterBottom>
                   {`${feedTitleText}`}
                 </Typography>
-                <pre>{JSON.stringify(Object.assign({...parsedFeedContent as object}).title, null, 2)}</pre>
+                {children}
               </Paper>
             </ParsedFeedContentContext.Provider>
           )

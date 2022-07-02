@@ -51,7 +51,8 @@
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "news-train:build",
-        "hmr": true
+        "hmr": true,
+        "proxyConfig": "apps/news-train/proxy.conf.json"
       },
       "configurations": {
         "development": {
