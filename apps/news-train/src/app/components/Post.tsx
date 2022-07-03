@@ -1,8 +1,20 @@
 import React, { FunctionComponent, useContext, createContext, Fragment } from 'react';
-import { 
+import {
+    Box,
+    Link,
+    ListItem,
+    ListItemText,
+    Typography,
+  } from '@mui/material';
+//   import htmlToText from 'html-to-text';
+  import { 
     PostContext
     //, FeedContext 
-} from './Posts';
+  } from './Posts';
+  import {CategoryContext} from './Category'
+
+import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
+
 // import {
 //   Box,
 //   Link,
@@ -13,14 +25,56 @@ import {
 // import htmlToText from 'html-to-text';
 // import { CategoryContext } from './Categories';
 const Post: FunctionComponent = () => {
+  const { selectedCategoryIndex } = useSelectedCategoryIndex();
   const postContext = useContext(PostContext)
   const postItem = Object.assign(postContext)
-//   const categoryContext = useContext(CategoryContext);
-//   const category = `${categoryContext}`;
+  const categoryContext = useContext(CategoryContext);
+  const category = `${categoryContext}`;
 //   const feedContext = useContext(FeedContext)
 //   const feed = Object.assign(feedContext)[0]
   return (
-    <pre>{`${JSON.stringify(postItem, null, 2)}`}</pre>
+    <ListItem
+    key={`item-${category}-${
+      JSON.stringify(
+        postItem
+      ) || ''
+    }`}
+    className="post-item-anchor"
+  >
+    <ListItemText
+      primary={
+        <Link
+          key={postItem.link}
+          href={new URL(
+            `${postItem.link}`
+            //,
+            // new URL(
+            //   `${postItem.link}`,
+            //   new URL(
+            //     feed
+            //   )
+            // )
+          ).toString()}
+          target="news-train"
+        >
+          <Box
+            style={{
+              marginBottom: 25,
+              marginTop: 40,
+            }}
+          >
+            <Typography>
+              {postItem.title.replace(
+                '&mdash;',
+                ''
+              )}
+            </Typography>
+          </Box>
+        </Link>
+      }
+    />
+  </ListItem>
+
 //     <Box
 //       style={{
 //         textAlign: 'center',

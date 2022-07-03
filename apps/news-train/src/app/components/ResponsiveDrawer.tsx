@@ -8,6 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {Divider, Toolbar} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import PageChooser from './PageChooser';
+import Category from './Category'
 import CategoryChooser from './CategoryChooser'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
@@ -158,9 +159,11 @@ export default function ResponsiveDrawer() {
               <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
                 <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
                   <CorsProxiesLoad>
-                    <Feeds key='feedsdisplay'>
-                      <Posts />
-                    </Feeds>
+                    <Category>
+                      <Feeds key='feedsdisplay'>
+                        <Posts />
+                      </Feeds>
+                    </Category>
                   </CorsProxiesLoad>
                 </Suspense>
               </ErrorBoundary>
@@ -175,11 +178,13 @@ export default function ResponsiveDrawer() {
             return (
               <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
                 <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
-                  <CorsProxiesLoad>
-                    <Feeds key='feedsdisplay'>
-                      <Posts />
-                    </Feeds>
-                  </CorsProxiesLoad>
+                  <Category>
+                    <CorsProxiesLoad>
+                      <Feeds key='feedsdisplay'>
+                        <Posts />
+                      </Feeds>
+                    </CorsProxiesLoad>
+                  </Category>
                 </Suspense>
               </ErrorBoundary>
             )
@@ -193,11 +198,13 @@ export default function ResponsiveDrawer() {
             return (
               <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
                 <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
-                  <CorsProxiesLoad>
-                    <Feeds key='feedsdisplay'>
-                      <Posts />
-                    </Feeds>
-                  </CorsProxiesLoad>
+                  <Category>
+                    <CorsProxiesLoad>
+                      <Feeds key='feedsdisplay'>
+                        <Posts />
+                      </Feeds>
+                    </CorsProxiesLoad>
+                  </Category>
                 </Suspense>
               </ErrorBoundary>
             )

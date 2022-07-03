@@ -1,9 +1,9 @@
 import React, { FunctionComponent, createContext, useContext, ReactNode } from 'react';
 import useSWR  from 'swr';
 import { Grid, Paper } from '@mui/material';
-import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxiesLoad'
+import { CategoryContext } from './Category';
 import VisibilitySensor from 'react-visibility-sensor';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -14,15 +14,17 @@ export const ParsedFeedContentContext = createContext({});
 type Props = {children: ReactNode}
 const Feeds: FunctionComponent<Props> = ({children}: Props) => {
 
-  const { selectedCategoryIndex } = useSelectedCategoryIndex();
   const { feeds } = useFeeds()
+
+  const categoryContext = useContext(CategoryContext)
+  const category = `${categoryContext}`
 
   const corsProxiesContext = useContext(CorsProxiesContext)
   const corsProxies = Object.assign(corsProxiesContext)
   
   const checkedFeedsForCategory = Object.entries(feeds)
     .filter(feedEntry => {
-      if (`${selectedCategoryIndex}` === 'allCategories') {
+      if (category === 'allCategories') {
         return feedEntry
       }
       return Object.entries(feedEntry[1] as object)
@@ -30,7 +32,7 @@ const Feeds: FunctionComponent<Props> = ({children}: Props) => {
           return feedEntryAttribute[0] === 'categories';
         })
         .find(feedEntryAttribute => {
-          return [feedEntryAttribute[1]].flat().indexOf(`${selectedCategoryIndex}`) !== -1;
+          return [feedEntryAttribute[1]].flat().indexOf(category) !== -1;
         });
     })
     .filter((feedEntry) => {
@@ -113,7 +115,7 @@ const Feeds: FunctionComponent<Props> = ({children}: Props) => {
   }
 
   const { data } = useSWR(
-    `fetchedContent-${selectedCategoryIndex}`,
+    `fetchedContent-${category}`,
     fetcher, 
     {
       suspense: true
