@@ -1,16 +1,30 @@
-import React, { FunctionComponent, useContext } from 'react';
+import React, { FunctionComponent, useContext, createContext } from 'react';
 import { ParsedFeedContentContext } from './Feeds';
+import Post from './Post'
+export const PostContext = createContext({});
 
 const PostsDisplay: FunctionComponent = () => {
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
-  const parsedFeedContent = structuredClone(parsedFeedContentContext)
-  
+  const parsedFeedContent = structuredClone(parsedFeedContentContext);
   return (
     <>
       {
-        parsedFeedContent.items.map((post: {
+        parsedFeedContent.items.map((postItem: {
           title: string
-        }) => <>{`${post.title}`}<br/></>)
+        }) => {
+          return (
+            <>
+              <span style={{color: 'red'}}>{`${postItem.title}`}</span> 
+              <br/>
+              <PostContext.Provider
+                value={postItem}
+                key={JSON.stringify(postItem)}
+              >
+                <Post />
+              </PostContext.Provider>
+            </>
+          )
+        })
       }
     </>
   )

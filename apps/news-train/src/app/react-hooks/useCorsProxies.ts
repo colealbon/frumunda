@@ -30,16 +30,17 @@ export function useCorsProxies () {
   const fallback = JSON.parse(JSON.stringify(corsProxies))
 
   const fetcher = () => {
-    return new Promise((resolve, reject) => {
-      stacksStorage.getFile(`corsProxies`, {
-        decrypt: true
-      })
-      .then((content) => {
-        const fetchedCorsProxies: object = JSON.parse(`${content}`)
-        resolve(fetchedCorsProxies)
-      })
-      .catch(error => reject())
-    })
+    return Promise.reject(new Error('(hack) do not sync this to blockstack'))
+    // return new Promise((resolve, reject) => {
+    //   stacksStorage.getFile(`corsProxies`, {
+    //     decrypt: true
+    //   })
+    //   .then((content) => {
+    //     const fetchedCorsProxies: object = JSON.parse(`${content}`)
+    //     resolve(fetchedCorsProxies)
+    //   })
+    //   .catch(error => reject())
+    // })
   }
 
   const { data, mutate } = useSWR(
@@ -47,12 +48,8 @@ export function useCorsProxies () {
     fetcher , 
     {
       suspense: true,
-      // fallbackData: fallback,
-      shouldRetryOnError: true,
-      errorRetryInterval: 500,
-      dedupingInterval: 1000,
-      // focusThrottleInterval: 1000,
-      errorRetryCount: 3
+      fallbackData: fallback,
+      shouldRetryOnError: false
     }
   )
 
@@ -63,22 +60,11 @@ export function useCorsProxies () {
     const newCorsProxiesClone = JSON.parse(JSON.stringify(newCorsProxies as object))
     const options = { optimisticData: newCorsProxiesClone, rollbackOnError: true }
     const updateFn = (newCorsProxies: object) => {
-      const newCorsProxiesClone = JSON.parse(JSON.stringify(newCorsProxies))
       return new Promise((resolve) => {
-        if( !stacksSession.isUserSignedIn() ) {
-          localforage.setItem('corsProxies', newCorsProxiesClone)
-          setInFlight(false)
-          resolve(newCorsProxiesClone)
-          return
-        }
-        stacksStorage.putFile(`corsProxies`, JSON.stringify(newCorsProxiesClone))
-        .catch((error) => console.log(error))
-        .finally(() => {
-          localforage.setItem('corsProxies', newCorsProxiesClone)
-          setInFlight(false)
-          resolve(newCorsProxiesClone)
-          return 
-        })
+        localforage.setItem('corsProxies', newCorsProxiesClone)
+        setInFlight(false)
+        resolve(newCorsProxiesClone)
+        return 
       })
     }
     mutate(updateFn(newCorsProxiesClone), options);

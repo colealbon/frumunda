@@ -1,9 +1,10 @@
 import React, { FunctionComponent, createContext, useContext, ReactNode } from 'react';
 import useSWR  from 'swr';
-import { Grid, Paper, Box } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxiesLoad'
+import VisibilitySensor from 'react-visibility-sensor';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { parse } = require('rss-to-json');
@@ -15,6 +16,7 @@ const Feeds: FunctionComponent<Props> = ({children}: Props) => {
 
   const { selectedCategoryIndex } = useSelectedCategoryIndex();
   const { feeds } = useFeeds()
+
   const corsProxiesContext = useContext(CorsProxiesContext)
   const corsProxies = Object.assign(corsProxiesContext)
   
@@ -140,7 +142,6 @@ const Feeds: FunctionComponent<Props> = ({children}: Props) => {
             .map(titleEntry => titleEntry[1])
             .concat(Object.assign({...parsedFeedContent as object}).title)
             .find(() => true)
-
             return (
               <ParsedFeedContentContext.Provider value={parsedFeedContent as object}>
                 <div
