@@ -6,9 +6,9 @@ const CorsProxyToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
 
-  const { corsProxies, publishCorsProxies, inFlight } = useCorsProxies()
+  const { corsProxies, persistCorsProxies, inFlight } = useCorsProxies()
 
-  const setCorsProxiesCallback = useCallback(() => {
+  const updateCorsProxies = useCallback(() => {
     const newCorsProxy = JSON.parse(
       JSON.stringify({
         ...Object.fromEntries(
@@ -40,9 +40,9 @@ const CorsProxyToggle: FunctionComponent<{ text: string }> = (props: {
       })
     );
     const newCorsProxies = { ...JSON.parse(JSON.stringify(corsProxies)), ...newCorsProxy }
-    publishCorsProxies(newCorsProxies)
+    persistCorsProxies(newCorsProxies)
 
-  }, [corsProxies, props.text, publishCorsProxies]);
+  }, [corsProxies, props.text, persistCorsProxies]);
 
   return (
     <Fragment>
@@ -64,7 +64,7 @@ const CorsProxyToggle: FunctionComponent<{ text: string }> = (props: {
                       )
                     )
                   ).some(checked => checked)}
-                  onChange={() => setCorsProxiesCallback()}
+                  onChange={() => updateCorsProxies()}
                   name={props.text}
                 />
               }

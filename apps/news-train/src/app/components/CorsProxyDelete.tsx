@@ -10,7 +10,7 @@ import { useCorsProxies } from '../react-hooks/useCorsProxies';
 const CorsProxyDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { corsProxies, publishCorsProxies, inFlight } = useCorsProxies()
+  const { corsProxies, persistCorsProxies, inFlight } = useCorsProxies()
 
   const deleteCorsProxy = useCallback(() => {
     const newCorsProxies = JSON.parse(
@@ -22,8 +22,8 @@ const CorsProxyDelete: FunctionComponent<{ text: string }> = (props: {
         ),
       })
     );
-    publishCorsProxies(newCorsProxies);
-  }, [corsProxies, props.text, publishCorsProxies]);
+    persistCorsProxies(newCorsProxies);
+  }, [corsProxies, props.text, persistCorsProxies]);
 
   return (
     <Fragment>

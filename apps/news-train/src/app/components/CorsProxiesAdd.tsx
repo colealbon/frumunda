@@ -8,7 +8,7 @@ import { useCorsProxies } from '../react-hooks/useCorsProxies'
 
 const CorsProxiesAdd = () => {
   const [inputValue, setInputValue] = useState('');
-  const { corsProxies, publishCorsProxies, inFlight } = useCorsProxies()
+  const { corsProxies, persistCorsProxies, inFlight } = useCorsProxies()
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -20,8 +20,8 @@ const CorsProxiesAdd = () => {
   const addCorsProxyCallback = useCallback(() => {
     const newCorsProxy = JSON.parse(`{"${inputValue}": {"checked": true}}`);
     const newCorsProxiesClone = { ...newCorsProxy, ...JSON.parse(JSON.stringify(corsProxies)) }
-    publishCorsProxies(newCorsProxiesClone);
-  }, [ corsProxies, publishCorsProxies, inputValue]);
+    persistCorsProxies(newCorsProxiesClone);
+  }, [ corsProxies, persistCorsProxies, inputValue]);
 
   return (
       <TextField
