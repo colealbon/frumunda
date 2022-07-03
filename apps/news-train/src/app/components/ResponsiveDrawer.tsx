@@ -20,6 +20,7 @@ import CorsProxiesEdit from './CorsProxiesEdit'
 import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
 import CorsProxiesLoad from './CorsProxiesLoad'
+import ProcessedPostsLoad from './ProcessedPostsLoad'
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
@@ -50,9 +51,28 @@ export default function ResponsiveDrawer() {
   const { selectedPageIndex } = useSelectedPageIndex();
   const { selectedCategoryIndex } = useSelectedCategoryIndex();
 
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  const fetchRenderPosts = () => {
+    return (
+      <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
+        <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
+          <ProcessedPostsLoad>
+            <CorsProxiesLoad>
+              <Category>
+                <Feeds key='feedsdisplay'>
+                  <Posts />
+                </Feeds>
+              </Category>
+            </CorsProxiesLoad>
+          </ProcessedPostsLoad>
+        </Suspense>
+      </ErrorBoundary>
+    )
+  }
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -149,71 +169,28 @@ export default function ResponsiveDrawer() {
           .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
           .map(() => <Classifiers key='classifiers'/>)
         }
+        
         {
           [selectedPageIndex].flat()
           .filter(() => selectedPageIndex === 'posts')
           .filter(() => selectedCategoryIndex === 'allCategories')
-          
-          .map(() => {
-            return (
-              <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
-                <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
-                  <CorsProxiesLoad>
-                    <Category>
-                      <Feeds key='feedsdisplay'>
-                        <Posts />
-                      </Feeds>
-                    </Category>
-                  </CorsProxiesLoad>
-                </Suspense>
-              </ErrorBoundary>
-            )
-          })
+          .map(() => fetchRenderPosts())
         }
         {
           [selectedPageIndex].flat()
           .filter(() => selectedPageIndex === 'posts')
-          .filter(() => selectedCategoryIndex === '')
-          .map(() => {
-            return (
-              <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
-                <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
-                  <Category>
-                    <CorsProxiesLoad>
-                      <Feeds key='feedsdisplay'>
-                        <Posts />
-                      </Feeds>
-                    </CorsProxiesLoad>
-                  </Category>
-                </Suspense>
-              </ErrorBoundary>
-            )
-          })
+          .filter(() => `${selectedCategoryIndex}` === '')
+          .map(() => fetchRenderPosts())
         }
         {
           [selectedCategoryIndex].flat()
-          .filter(() => selectedCategoryIndex !== '')
+          .filter(() => `${selectedCategoryIndex}` !== '')
           .filter(() => selectedCategoryIndex !== 'allCategories')
-          .map(() => {
-            return (
-              <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching posts</>}>
-                <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
-                  <Category>
-                    <CorsProxiesLoad>
-                      <Feeds key='feedsdisplay'>
-                        <Posts />
-                      </Feeds>
-                    </CorsProxiesLoad>
-                  </Category>
-                </Suspense>
-              </ErrorBoundary>
-            )
-          })
+          .map(() => fetchRenderPosts())
         }
         {
-          [selectedPageIndex].flat().filter(() => {
-            return selectedPageIndex === 'categories'
-          })
+          [selectedPageIndex].flat()
+          .filter(() => selectedPageIndex === 'categories')
           .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
           .map(() => {
             return (

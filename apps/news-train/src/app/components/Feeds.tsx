@@ -145,7 +145,7 @@ const Feeds: FunctionComponent<Props> = ({children}: Props) => {
             .concat(Object.assign({...parsedFeedContent as object}).title)
             .find(() => true)
             return (
-              <ParsedFeedContentContext.Provider value={parsedFeedContent as object}>
+              <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContent as object}>
                 <div
                   style={{ 
                     width: "80%"
