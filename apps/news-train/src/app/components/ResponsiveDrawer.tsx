@@ -12,7 +12,7 @@ import Category from './Category'
 import CategoryChooser from './CategoryChooser'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
-import Feeds from './Feeds'
+import Feed from './Feed'
 import Posts from './Posts'
 import Stacks from './Stacks'
 import CategoriesEdit from './CategoriesEdit'
@@ -56,16 +56,18 @@ export default function ResponsiveDrawer() {
     setMobileOpen(!mobileOpen);
   };
 
-  const fetchRenderPosts = () => {
+  const fetchAndRenderPosts = () => {
     return (
       <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
         <Suspense fallback={`fetching ${selectedCategoryIndex} posts...`}>
           <ProcessedPostsLoad>
             <CorsProxiesLoad>
               <Category>
-                <Feeds key='feedsdisplay'>
-                  <Posts />
-                </Feeds>
+                <Feed>
+
+                    <Posts />
+
+                </Feed>
               </Category>
             </CorsProxiesLoad>
           </ProcessedPostsLoad>
@@ -174,19 +176,19 @@ export default function ResponsiveDrawer() {
           [selectedPageIndex].flat()
           .filter(() => selectedPageIndex === 'posts')
           .filter(() => selectedCategoryIndex === 'allCategories')
-          .map(() => fetchRenderPosts())
+          .map(() => fetchAndRenderPosts())
         }
         {
           [selectedPageIndex].flat()
           .filter(() => selectedPageIndex === 'posts')
           .filter(() => `${selectedCategoryIndex}` === '')
-          .map(() => fetchRenderPosts())
+          .map(() => fetchAndRenderPosts())
         }
         {
           [selectedCategoryIndex].flat()
           .filter(() => `${selectedCategoryIndex}` !== '')
           .filter(() => selectedCategoryIndex !== 'allCategories')
-          .map(() => fetchRenderPosts())
+          .map(() => fetchAndRenderPosts())
         }
         {
           [selectedPageIndex].flat()

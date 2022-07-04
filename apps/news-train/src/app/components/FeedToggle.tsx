@@ -6,7 +6,7 @@ const FeedToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
 
-  const { feeds, publishFeeds, inFlight } = useFeeds()
+  const { feeds, persistFeeds, inFlight } = useFeeds()
 
   const setFeedsCallback = useCallback(() => {
     const newFeed = JSON.parse(
@@ -40,9 +40,9 @@ const FeedToggle: FunctionComponent<{ text: string }> = (props: {
       })
     );
     const newFeeds = { ...JSON.parse(JSON.stringify(feeds)), ...newFeed }
-    publishFeeds(newFeeds)
+    persistFeeds(newFeeds)
 
-  }, [feeds, props.text, publishFeeds]);
+  }, [feeds, props.text, persistFeeds]);
 
   return (
     <Fragment>

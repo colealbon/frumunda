@@ -68,7 +68,7 @@ const ProcessedPostsLoad: FunctionComponent<Props> = ({children}: Props ) => {
   //     <>{children}</>
   //   </ProcessedPostsContext.Provider>
   // );
-  return (<>{children}</>)
+  return <span>{children}</span>
 };
 
 export default ProcessedPostsLoad;

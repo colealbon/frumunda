@@ -4,25 +4,24 @@ import { Grid, Paper } from '@mui/material';
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxiesLoad'
 import { CategoryContext } from './Category';
-import VisibilitySensor from 'react-visibility-sensor';
-
+// import VisibilitySensor from 'react-visibility-sensor';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { parse } = require('rss-to-json');
 
 export const ParsedFeedContentContext = createContext({});
+// export const FeedContext = createContext('');
 
 type Props = {children: ReactNode}
-const Feeds: FunctionComponent<Props> = ({children}: Props) => {
+const Feed: FunctionComponent<Props> = ({children}: Props) => {
 
   const { feeds } = useFeeds()
-
   const categoryContext = useContext(CategoryContext)
   const category = `${categoryContext}`
 
   const corsProxiesContext = useContext(CorsProxiesContext)
   const corsProxies = Object.assign(corsProxiesContext)
   
-  const checkedFeedsForCategory = Object.entries(feeds)
+  const checkedFeedsForCategory = Object.entries(feeds as object)
     .filter(feedEntry => {
       if (category === 'allCategories') {
         return feedEntry
@@ -105,7 +104,10 @@ const Feeds: FunctionComponent<Props> = ({children}: Props) => {
     });
   };
   const fetcher = () => {
+    //console.log(checkedFeedsForCategory)
     return new Promise((resolve, reject) => {
+      console.log(checkedFeedsForCategory)
+      console.log(checkedCorsProxies)
       fetchFeedContentMulti(checkedFeedsForCategory, checkedCorsProxies)
       .then(parsedContent => {
         resolve(parsedContent)
@@ -125,8 +127,19 @@ const Feeds: FunctionComponent<Props> = ({children}: Props) => {
   const fetchedContent: unknown = Object.assign(data as object)
 
   return (
+    // <>
+    // {
+    //   checkedFeedsForCategory.map(feed => {
+    //     return (
+    //       <FeedContext.Provider key={`${feed}`} value={`${feed}`}>
+    //         {children}
+    //       </FeedContext.Provider>
+    //     )
+    //     })
+    // }
+    // </>
     <Paper 
-      elevation={3} 
+      elevation={0} 
       style={{ 
         width: "95%",
         minHeight: "95vh"
@@ -169,7 +182,7 @@ const Feeds: FunctionComponent<Props> = ({children}: Props) => {
   )
 };
 
-export default Feeds;
+export default Feed;
 
 // {[0, 1, 2].map((item) => (
 //   <ListItem key={`item-${sectionId}-${item}`}>

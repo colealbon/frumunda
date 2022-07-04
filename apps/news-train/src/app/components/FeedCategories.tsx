@@ -6,18 +6,18 @@ import { useCategories } from '../react-hooks/useCategories';
 const FeedCategories: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { feeds, publishFeeds } = useFeeds();
+  const { feeds, persistFeeds } = useFeeds();
   const { categories } = useCategories();
 
-  const publishFeedsCallback = useCallback(
+  const persistFeedsCallback = useCallback(
     (newFeeds: object) => {
-      publishFeeds(newFeeds);
+      persistFeeds(newFeeds);
     },
-    [publishFeeds]
+    [persistFeeds]
   );
 
   const appendOrRemoveChip = (category: string) => {
-    publishFeedsCallback({
+    persistFeedsCallback({
       ...JSON.parse(JSON.stringify(feeds)),
       ...Object.fromEntries(
         Object.entries(JSON.parse(JSON.stringify(feeds)))

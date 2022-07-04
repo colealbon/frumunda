@@ -1,4 +1,4 @@
-import { useState, useCallback} from 'react';
+import { useState, useCallback } from 'react';
 import useSWR  from 'swr';
 import localforage from 'localforage'
 
@@ -15,7 +15,7 @@ export function useCorsProxies () {
       localforage.getItem('corsProxies')
       .then((value: unknown) => {
         if (!value) {
-          reject(new Error('no local corsProxies to recover'))
+          reject(new Error('no stored corsProxies using defaultCorsProxies'))
         }
         resolve(value)
       })
@@ -36,21 +36,21 @@ export function useCorsProxies () {
 
   const persistCorsProxies = useCallback((newCorsProxies: unknown) => {
     setInFlight(true)
-    const newCorsProxiesClone = JSON.parse(JSON.stringify(newCorsProxies as object))
-    const options = { optimisticData: newCorsProxiesClone, rollbackOnError: true }
+    const newCorsProxiesClone = structuredClone(newCorsProxies as object)
     const updateFn = (newCorsProxies: object) => {
       return new Promise((resolve) => {
         localforage.setItem('corsProxies', newCorsProxiesClone)
-        setInFlight(false)
-        resolve(newCorsProxiesClone)
-        return 
+        .then(() => {
+          setInFlight(false)
+          resolve(newCorsProxies)
+        })
       })
     }
-    mutate(updateFn(newCorsProxiesClone), options);
+    mutate(updateFn(newCorsProxiesClone), {});
   }, [ mutate ])
 
   const factoryReset = () => {
-    const newCorsProxiesClone = JSON.parse(JSON.stringify(defaultCorsProxies))
+    const newCorsProxiesClone = structuredClone(defaultCorsProxies)
     persistCorsProxies(newCorsProxiesClone)
   }
 

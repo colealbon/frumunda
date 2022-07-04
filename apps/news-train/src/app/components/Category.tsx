@@ -30,7 +30,7 @@ const Category: FunctionComponent<Props> = ({children}: Props) => {
       {
         checkedCategories.map(category => {
           return (
-            <CategoryContext.Provider value={`${category}`}>
+            <CategoryContext.Provider key={`${category}`} value={`${category}`}>
               {children}
             </CategoryContext.Provider>
           )

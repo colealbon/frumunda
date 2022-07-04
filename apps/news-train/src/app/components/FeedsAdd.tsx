@@ -8,7 +8,7 @@ import { useFeeds } from '../react-hooks/useFeeds'
 
 const FeedsAdd = () => {
   const [inputValue, setInputValue] = useState('');
-  const { feeds, publishFeeds, inFlight } = useFeeds()
+  const { feeds, persistFeeds, inFlight } = useFeeds()
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -20,8 +20,8 @@ const FeedsAdd = () => {
   const addFeedCallback = useCallback(() => {
     const newFeed = JSON.parse(`{"${inputValue}": {"checked": true, "categories": []}}`);
     const newFeedsClone = { ...newFeed, ...JSON.parse(JSON.stringify(feeds)) }
-    publishFeeds(newFeedsClone);
-  }, [ feeds, publishFeeds, inputValue]);
+    persistFeeds(newFeedsClone);
+  }, [ feeds, persistFeeds, inputValue]);
 
   return (
       <TextField

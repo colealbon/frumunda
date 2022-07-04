@@ -10,7 +10,7 @@ import { useFeeds } from '../react-hooks/useFeeds';
 const FeedDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { feeds, publishFeeds, inFlight } = useFeeds()
+  const { feeds, persistFeeds, inFlight } = useFeeds()
 
   const deleteFeed = useCallback(() => {
     const newFeeds = JSON.parse(
@@ -22,8 +22,8 @@ const FeedDelete: FunctionComponent<{ text: string }> = (props: {
         ),
       })
     );
-    publishFeeds(newFeeds);
-  }, [feeds, props.text, publishFeeds]);
+    persistFeeds(newFeeds);
+  }, [feeds, props.text, persistFeeds]);
 
   return (
     <Fragment>

@@ -2,13 +2,9 @@ import React, { FunctionComponent, useEffect } from 'react';
 import {Button, Typography} from '@mui/material';
 import {useStacks} from '../react-hooks/useStacks';
 import { showConnect } from '@stacks/connect';
-import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
-import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 
 const StacksSignin: FunctionComponent = () => {
   const { stacksSession }  = useStacks()
-  const { mutate: mutateSelectedCategoryIndex } = useSelectedCategoryIndex()
-  const { mutate: mutateSelectedPageIndex } = useSelectedPageIndex()
 
   const authenticate = () => {
     showConnect({
@@ -20,8 +16,6 @@ const StacksSignin: FunctionComponent = () => {
       onFinish: () => {
         stacksSession.loadUserData();
         window.location.reload()
-        mutateSelectedCategoryIndex()
-        mutateSelectedPageIndex()
       },
       userSession: stacksSession,
     });

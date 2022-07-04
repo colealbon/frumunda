@@ -1,10 +1,9 @@
-import { useEffect, useState, useCallback} from 'react';
+import { useState, useCallback } from 'react';
 import useSWR  from 'swr';
 import localforage from 'localforage'
-import { useStacks } from '../react-hooks/useStacks'
 
 export function useFeeds () {
-  const { stacksStorage, stacksSession }  = useStacks()
+
   const defaultFeeds = 
   {
     "https://material.io/feed.xml":{"checked":false,"categories":["technology"]},
@@ -41,35 +40,16 @@ export function useFeeds () {
     "https://oilprice.com/rss/main":{"checked":false,"categories":["world"]},
     "https://news.google.com/_/rss?hl=en-US&gl=US&ceid=US:en":{"categories":["variety"],"checked":false}
   }
-  const [feeds, setFeeds] = useState(defaultFeeds)
-
-  const setFeedsCallback = useCallback((newFeeds: unknown) => {
-    const newFeedsClone = JSON.parse(JSON.stringify(newFeeds as object))
-    setFeeds(newFeedsClone)
-  }, [ setFeeds])
-
-  useEffect(() => {
-    localforage.getItem('feeds')
-    .then((value: unknown) => {
-      if (!value) {
-        return
-      }
-      setFeedsCallback(value)
-    })
-  }, [setFeedsCallback])
-
-  const fallback = JSON.parse(JSON.stringify(feeds))
 
   const fetcher = () => {
     return new Promise((resolve, reject) => {
-      stacksStorage.getFile(`feeds`, {
-        decrypt: true
+      localforage.getItem('feeds')
+      .then((value: unknown) => {
+        if (!value) {
+          reject(new Error('no stored feeds using defaultFeeds'))
+        }
+        resolve(value)
       })
-      .then((content) => {
-        const fetchedFeeds: object = JSON.parse(`${content}`)
-        resolve(fetchedFeeds)
-      })
-      .catch(error => reject())
     })
   }
 
@@ -78,54 +58,37 @@ export function useFeeds () {
     fetcher , 
     {
       suspense: true,
-      fallbackData: fallback
-      // shouldRetryOnError: true,
-      // errorRetryInterval: 6000,
-      // dedupingInterval: 6000,
-      // focusThrottleInterval: 6000,
-      // errorRetryCount: 3
+      fallbackData: defaultFeeds,
+      shouldRetryOnError: false
     }
   )
 
   const [inFlight, setInFlight] = useState(false)
 
-  const publishFeeds = useCallback((newFeeds: unknown) => {
+  const persistFeeds = useCallback((newFeeds: unknown) => {
     setInFlight(true)
-    const newFeedsClone = JSON.parse(JSON.stringify(newFeeds as object))
-    const options = { optimisticData: newFeedsClone, rollbackOnError: true }
+    const newFeedsClone = structuredClone(newFeeds as object)
     const updateFn = (newFeeds: object) => {
-      const newFeedsClone = JSON.parse(JSON.stringify(newFeeds))
       return new Promise((resolve) => {
-        if( !stacksSession.isUserSignedIn() ) {
-          localforage.setItem('feeds', newFeedsClone)
+        localforage.setItem('feeds', newFeedsClone)
+        .then(() => {
           setInFlight(false)
           resolve(newFeedsClone)
-          return
-        }
-        stacksStorage.putFile(`feeds`, JSON.stringify(newFeedsClone))
-        .catch((error) => console.log(error))
-        .finally(() => {
-          localforage.setItem('feeds', newFeedsClone)
-          setInFlight(false)
-          resolve(newFeedsClone)
-          return 
         })
       })
     }
-    mutate(updateFn(newFeedsClone), options);
-  }, [ mutate, stacksSession, stacksStorage])
+    mutate(updateFn(newFeedsClone), {})
+  }, [ mutate ])
 
   const factoryReset = () => {
-    const newFeedsClone = JSON.parse(JSON.stringify(defaultFeeds))
-    localforage.setItem('feeds', newFeedsClone)
-    publishFeeds(newFeedsClone)
+    const newFeedsClone = structuredClone(defaultFeeds)
+    persistFeeds(newFeedsClone)
   }
 
   return {
     feeds: data,
-    setFeeds: setFeeds,
-    factoryReset: factoryReset,
-    publishFeeds: publishFeeds,
-    inFlight: inFlight
+    persistFeeds,
+    factoryReset,
+    inFlight
   }
 }
