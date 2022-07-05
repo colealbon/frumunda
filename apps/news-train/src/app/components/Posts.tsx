@@ -14,16 +14,12 @@ const PostsDisplay: FunctionComponent = () => {
           title: string
         }) => {
           return (
-            <>
-              <span style={{color: 'red'}}>{`${postItem.title}`}</span> 
-              <br/>
-              <PostContext.Provider
-                value={postItem}
-                key={JSON.stringify(postItem)}
-              >
-                <Post />
-              </PostContext.Provider>
-            </>
+            <PostContext.Provider
+              value={postItem}
+              key={JSON.stringify(postItem)}
+            >
+              <Post />
+            </PostContext.Provider>
           )
         })
       }

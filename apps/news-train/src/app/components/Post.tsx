@@ -5,13 +5,15 @@ import {
     ListItem,
     ListItemText,
     Typography,
+    Divider
   } from '@mui/material';
 //   import htmlToText from 'html-to-text';
-  import { 
-    PostContext
-    //, FeedContext 
-  } from './Posts';
-  import {CategoryContext} from './Category'
+import { 
+  PostContext
+  //, FeedContext 
+} from './Posts';
+import {CategoryContext} from './Category'
+import {htmlToText} from 'html-to-text';
 
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
@@ -32,156 +34,74 @@ const Post: FunctionComponent = () => {
   const category = `${categoryContext}`;
 //   const feedContext = useContext(FeedContext)
 //   const feed = Object.assign(feedContext)[0]
-  return (
-    <ListItem
-    key={`item-${category}-${
-      JSON.stringify(
-        postItem
-      ) || ''
-    }`}
-    className="post-item-anchor"
-  >
-    <ListItemText
-      primary={
-        <Link
-          key={postItem.link}
-          href={new URL(
-            `${postItem.link}`
-            //,
-            // new URL(
-            //   `${postItem.link}`,
-            //   new URL(
-            //     feed
-            //   )
-            // )
-          ).toString()}
-          target="news-train"
-        >
-          <Box
-            style={{
-              marginBottom: 25,
-              marginTop: 40,
-            }}
-          >
-            <Typography>
-              {postItem.title.replace(
-                '&mdash;',
-                ''
-              )}
-            </Typography>
-          </Box>
-        </Link>
-      }
-    />
-  </ListItem>
 
-//     <Box
-//       style={{
-//         textAlign: 'center',
-//         maxWidth: 600
-//       }}
-//     >
-//       <ListItem
-//         key={`item-${category}-${
-//           JSON.stringify(
-//             postItem
-//           ) || ''
-//         }`}
-//         className="post-item-anchor"
-//       >
-//         <ListItemText
-//           primary={
-//             <Link
-//               key={postItem.link}
-//               href={new URL(
-//                 `${postItem.link}`,
-//                 new URL(
-//                   `${postItem.link}`,
-//                   new URL(
-//                     feed
-//                   )
-//                 )
-//               ).toString()}
-//               target="news-train"
-//             >
-//               <Box
-//                 style={{
-//                   marginBottom: 25,
-//                   marginTop: 40,
-//                 }}
-//               >
-//                 <Typography variant="h3">
-//                   {postItem.title.replace(
-//                     '&mdash;',
-//                     ''
-//                   )}
-//                 </Typography>
-//               </Box>
-//             </Link>
-//           }
-//         />
-//       </ListItem>
-//       <ListItem
-//         key={`item-${category}-${
-//           JSON.stringify(
-//             postItem
-//           ) || ''
-//         }xxx`}
-//       >
-//         <ListItemText
-//           primary={[
-//             [postItem.description]
-//               .flat()
-//               .filter(
-//                 description =>
-//                   !!description
-//               )
-//               .filter(
-//                 description =>
-//                   description !==
-//                   'undefined'
-//               )
-//               .find(() => true),
-//           ]
-//             .flat()
-//             .filter(
-//               (
-//                 description?: string
-//               ) => !!description
-//             )
-//             .map(
-//               (
-//                 description?: string
-//               ) => {
-//                 const theText =
-//                   htmlToText
-//                     .fromString(
-//                       description ||
-//                         '',
-//                       {
-//                         ignoreHref:
-//                           true,
-//                         ignoreImage:
-//                           true,
-//                       }
-//                     )
-//                     .replace(
-//                       '&mdash;',
-//                       ''
-//                     );
-//                 return (
-//                   <Typography
-//                     variant="h3"
-//                     key={theText}
-//                   >
-//                     {theText}
-//                   </Typography>
-//                 );
-//               }
-//             )}
-//         />
-//       </ListItem>
-//    </Box>
+
+const postTitle: string = htmlToText(
+    postItem.title,
+    {
+      ignoreHref:
+        true,
+      ignoreImage:
+        true,
+    }
+  )
+
+  const postDescription = htmlToText(
+    postItem.description,
+    {
+      ignoreHref:
+        true,
+      ignoreImage:
+        true,
+    }
+  )
+
+  return (
+    <Box style={{
+      textAlign: 'center',
+      maxWidth: 600
+    }}>
+      <ListItem
+      key={`item-${category}-${
+        JSON.stringify(
+          postItem
+        ) || ''
+      }`}
+      className="post-item-anchor"
+    >
+      <ListItemText
+        primary={
+          <Link
+            key={postItem.link}
+            href={new URL(
+              `${postItem.link}`
+              //,
+              // new URL(
+              //   `${postItem.link}`,
+              //   new URL(
+              //     feed
+              //   )
+              // )
+            ).toString()}
+            target="news-train"
+          >
+            <Box
+              style={{
+                marginBottom: 25,
+                marginTop: 40,
+              }}
+            >
+              <Typography>
+                {postTitle}
+              </Typography>
+            </Box>
+          </Link>
+        }
+        secondary={postDescription}
+      />
+      <Divider />
+    </ListItem>
+   </Box>
   );
 };
 

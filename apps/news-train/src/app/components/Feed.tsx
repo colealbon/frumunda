@@ -1,6 +1,13 @@
 import React, { FunctionComponent, createContext, useContext, ReactNode } from 'react';
 import useSWR  from 'swr';
-import { Grid, Paper, Link, Tooltip} from '@mui/material';
+import {
+  Grid,
+  Box, 
+  Link, 
+  Tooltip, 
+  Divider, 
+  Typography
+} from '@mui/material';
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxiesLoad'
 import { CategoryContext } from './Category';
@@ -70,8 +77,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
             return;
           })
           .catch(() => {
-            console.log('badurl')
-            console.log(`${corsProxyItem}${feedUrl}`)
+            console.log(`badurl ${corsProxyItem}${feedUrl}`)
             if (rest.length === 0) {
               reject();
             }
@@ -140,8 +146,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
   const fetchedContent: unknown = Object.assign(data as object)
 
   return (
-    <Paper 
-      elevation={0} 
+    <Box 
       style={{ 
         width: "95%",
         minHeight: "95vh"
@@ -152,7 +157,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
           Object.values(fetchedContent as object)
           .filter((noEmpties: unknown) => !!noEmpties)
           .map((parsedFeedContent: unknown) => {
-
+            
             const feedTitleText = `${Object.assign({...parsedFeedContent as object}).feedLabel} `.concat(`${Object.entries(Object.assign({...parsedFeedContent as object} || {title: ''}).title)
               .filter(titleEntry => {
                 return titleEntry[0] === "$text"
@@ -208,26 +213,26 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
               <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContent as object}>
                 <div
                   style={{ 
-                    width: "80%"
+                    width: "90%"
                   }}
                 >
-                  <div
-                    style={{ 
-                      width: "70%"
-                    }}
-                  >
-                    <Tooltip title={`${feedDescription}`}>
-                      <Link href={`${feedLink}`}>{`${feedTitleText}`}</Link>
-                    </Tooltip>
-                  </div>
-                {children}
-               </div>
+                  <Tooltip title={`${feedDescription}`}>
+                    <Link href={`${feedLink}`}>
+                      <Typography variant="h3">
+                        {feedTitleText}
+                      </Typography>
+                    </Link>
+                  </Tooltip>
+                  <Divider />
+                  {children}
+                  <Divider />
+                </div>
               </ParsedFeedContentContext.Provider>
             )
           })
         }
       </Grid>
-    </Paper>
+    </Box>
   )
 };
 
