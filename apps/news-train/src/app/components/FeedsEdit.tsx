@@ -23,8 +23,9 @@ const FeedsEdit: FunctionComponent = () => {
           <Card variant="outlined" key={`feed-edit-${feed}`}>
             <CardContent>
               <div>
-                <FeedToggle text={feed} />
                 <FeedDelete text={feed} />
+                <FeedToggle text={feed} />
+                
               </div>
               <div>
               <FeedCategories text={feed} />

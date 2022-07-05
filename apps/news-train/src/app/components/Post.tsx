@@ -1,6 +1,8 @@
 import React, { FunctionComponent, useContext, createContext, Fragment } from 'react';
 import {
     Box,
+    Card,
+    CardContent,
     Link,
     ListItem,
     ListItemText,
@@ -57,51 +59,42 @@ const postTitle: string = htmlToText(
   )
 
   return (
-    <Box style={{
-      textAlign: 'center',
-      maxWidth: 600
-    }}>
-      <ListItem
-      key={`item-${category}-${
+    <Card variant="outlined" key={`item-${category}-${
         JSON.stringify(
           postItem
         ) || ''
-      }`}
-      className="post-item-anchor"
-    >
-      <ListItemText
-        primary={
-          <Link
-            key={postItem.link}
-            href={new URL(
-              `${postItem.link}`
-              //,
-              // new URL(
-              //   `${postItem.link}`,
-              //   new URL(
-              //     feed
-              //   )
-              // )
-            ).toString()}
-            target="news-train"
-          >
-            <Box
-              style={{
-                marginBottom: 25,
-                marginTop: 40,
-              }}
-            >
-              <Typography>
-                {postTitle}
-              </Typography>
-            </Box>
-          </Link>
-        }
-        secondary={postDescription}
-      />
-      <Divider />
-    </ListItem>
-   </Box>
+      }`}>
+      <CardContent>
+        <ListItem
+          className="post-item-anchor"
+        >
+          <ListItemText
+            primary={
+              <Link
+                key={postItem.link}
+                href={new URL(
+                  `${postItem.link}`
+                  //,
+                  // new URL(
+                  //   `${postItem.link}`,
+                  //   new URL(
+                  //     feed
+                  //   )
+                  // )
+                ).toString()}
+                target="news-train"
+              >
+                  <Typography>
+                    {postTitle}
+                  </Typography>
+              </Link>
+            }
+            secondary={postDescription}
+          />
+          <Divider />
+        </ListItem>
+      </CardContent>
+   </Card>
   );
 };
 
