@@ -5,9 +5,8 @@ import localforage from 'localforage'
 export function useCorsProxies () {
 
   const defaultCorsProxies = {
-    '/.netlify/functions/main?url=': { checked: false },
-    'http://localhost:8888/.netlify/functions/main?url=': { checked: true },
-    '': { checked: false }
+    '.netlify/functions/main?url=': { checked: true },
+    'http://localhost:8888/.netlify/functions/main?url=': { checked: false }
   }
 
   const fetcher = () => {
