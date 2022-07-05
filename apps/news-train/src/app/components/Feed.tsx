@@ -128,9 +128,10 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
     `fetchedContent-${category}`,
     fetcher, 
     {
-      suspense: true,
-      dedupingInterval: 60 * 1000, 
-      shouldRetryOnError: false,
+      suspense: true
+      //,
+      // dedupingInterval: 60 * 1000, 
+      // shouldRetryOnError: false,
       // revalidateOnFocus: false
     }
   )
