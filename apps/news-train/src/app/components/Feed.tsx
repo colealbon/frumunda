@@ -4,6 +4,7 @@ import { Grid, Paper, Link, Tooltip} from '@mui/material';
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxiesLoad'
 import { CategoryContext } from './Category';
+import htmlToText from 'html-to-text';
 // import VisibilitySensor from 'react-visibility-sensor';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { parse } = require('rss-to-json');
@@ -156,7 +157,21 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
               .filter(titleEntry => {
                 return titleEntry[0] === "$text"
               })
-              .map(titleEntry => titleEntry[1])
+              .map(titleEntry => htmlToText
+                .fromString(
+                  `${titleEntry[1]}`,
+                  {
+                    ignoreHref:
+                      true,
+                    ignoreImage:
+                      true,
+                  }
+                )
+                .replace(
+                  '&mdash;',
+                  ''
+                ))
+
               .concat(Object.assign({...parsedFeedContent as object}).title)
               .find(() => true)}`)
 
@@ -172,7 +187,20 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
               .filter(descriptionEntry => {
                 return descriptionEntry[0] === "$text"
               })
-              .map(descriptionEntry => descriptionEntry[1])
+              .map(descriptionEntry => htmlToText
+                .fromString(
+                  `${descriptionEntry[1]}`,
+                  {
+                    ignoreHref:
+                      true,
+                    ignoreImage:
+                      true,
+                  }
+                )
+                .replace(
+                  '&mdash;',
+                  ''
+                ))
               .concat(Object.assign({...parsedFeedContent as object}).description)
               .find(() => true)
 

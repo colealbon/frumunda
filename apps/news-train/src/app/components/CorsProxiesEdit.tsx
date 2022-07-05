@@ -20,8 +20,8 @@ const CorsProxiesEdit: FunctionComponent = () => {
           {Object.keys(JSON.parse(JSON.stringify(corsProxies))).map(corsProxy => {
             return (
               <div key={`corsProxy-edit-${corsProxy}`}>
-                <CorsProxyToggle text={corsProxy} />
                 <CorsProxyDelete text={corsProxy} />
+                <CorsProxyToggle text={corsProxy} />
               </div>
             );
           })}
