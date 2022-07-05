@@ -1,6 +1,6 @@
 import React, { FunctionComponent, createContext, useContext, ReactNode } from 'react';
 import useSWR  from 'swr';
-import { Grid, Paper } from '@mui/material';
+import { Grid, Paper, Link, Tooltip} from '@mui/material';
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxiesLoad'
 import { CategoryContext } from './Category';
@@ -44,7 +44,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
         })
         .find(() => true);
     })
-    .map((feedEntry) => feedEntry[0])
+    //.map((feedEntry) => feedEntry[0])
 
     const checkedCorsProxies = Object.entries(corsProxies)
     .filter(corsProxyEntry => Object.assign(corsProxyEntry[1] as object).checked === true)
@@ -79,16 +79,27 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
         });
     });
   };
-  const fetchFeedContentMulti = (feeds: string[], corsProxies: string[]): Promise<object> => {
+  const fetchFeedContentMulti = (feeds: object[], corsProxies: string[]): Promise<object> => {
     return new Promise((resolve, reject) => {
       const feedQueue: object[] = [];
-      Object.values(feeds).map(feed =>
+      feeds.forEach(feed => {
+
+        const feedLabel = Object.entries(Object.values(feed)[1])
+          .filter(feedEntryAttribute => {
+            return feedEntryAttribute[0] === 'label';
+          })
+          .map(feedEntryAttribute => {
+            return `${feedEntryAttribute[1]}`
+          })
+          .find(() => true) || ''
+        
         feedQueue.push(
           new Promise((resolve, reject) => {
-            fetchFeedContent(feed, corsProxies)
+            const feedKey = feed.toString().split(',')[0]
+            fetchFeedContent(feedKey, corsProxies)
               .then((fetchedContent: object) => {
                 return [fetchedContent].flat().forEach(fetchedContentItem => {
-                  resolve([feed, fetchedContent]);
+                  resolve([feedKey, {feedLabel: `${feedLabel}`, ...fetchedContent}]);
                 });
               })
               .catch((error) => {
@@ -96,7 +107,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
               });
           })
         )
-      );
+      });
       Promise.all(feedQueue).then(fetchedContent => {
         resolve(Object.fromEntries(Object.assign(fetchedContent as object)));
       })
@@ -104,10 +115,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
     });
   };
   const fetcher = () => {
-    //console.log(checkedFeedsForCategory)
     return new Promise((resolve, reject) => {
-      console.log(checkedFeedsForCategory)
-      console.log(checkedCorsProxies)
       fetchFeedContentMulti(checkedFeedsForCategory, checkedCorsProxies)
       .then(parsedContent => {
         resolve(parsedContent)
@@ -120,24 +128,16 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
     `fetchedContent-${category}`,
     fetcher, 
     {
-      suspense: true
+      suspense: true,
+      dedupingInterval: 60 * 1000, 
+      shouldRetryOnError: false,
+      // revalidateOnFocus: false
     }
   )
   
   const fetchedContent: unknown = Object.assign(data as object)
 
   return (
-    // <>
-    // {
-    //   checkedFeedsForCategory.map(feed => {
-    //     return (
-    //       <FeedContext.Provider key={`${feed}`} value={`${feed}`}>
-    //         {children}
-    //       </FeedContext.Provider>
-    //     )
-    //     })
-    // }
-    // </>
     <Paper 
       elevation={0} 
       style={{ 
@@ -150,13 +150,31 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
           Object.values(fetchedContent as object)
           .filter((noEmpties: unknown) => !!noEmpties)
           .map((parsedFeedContent: unknown) => {
-            const feedTitleText = Object.entries(Object.assign({...parsedFeedContent as object} || {title: ''}).title)
-            .filter(titleEntry => {
-              return titleEntry[0] === "$text"
-            })
-            .map(titleEntry => titleEntry[1])
-            .concat(Object.assign({...parsedFeedContent as object}).title)
-            .find(() => true)
+
+            const feedTitleText = `${Object.assign({...parsedFeedContent as object}).feedLabel} `.concat(`${Object.entries(Object.assign({...parsedFeedContent as object} || {title: ''}).title)
+              .filter(titleEntry => {
+                return titleEntry[0] === "$text"
+              })
+              .map(titleEntry => titleEntry[1])
+              .concat(Object.assign({...parsedFeedContent as object}).title)
+              .find(() => true)}`)
+
+            const feedLink = Object.entries(Object.assign({...parsedFeedContent as object} || {link: ''}).link)
+              .filter(linkEntry => {
+                return linkEntry[0] === "$text"
+              })
+              .map(linkEntry => linkEntry[1])
+              .concat(Object.assign({...parsedFeedContent as object}).link)
+              .find(() => true)
+          
+              const feedDescription = Object.entries(Object.assign({...parsedFeedContent as object} || {link: ''}).description)
+              .filter(descriptionEntry => {
+                return descriptionEntry[0] === "$text"
+              })
+              .map(descriptionEntry => descriptionEntry[1])
+              .concat(Object.assign({...parsedFeedContent as object}).description)
+              .find(() => true)
+
             return (
               <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContent as object}>
                 <div
@@ -169,7 +187,9 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
                       width: "70%"
                     }}
                   >
-                    {`${feedTitleText}`}
+                    <Tooltip title={`${feedDescription}`}>
+                      <Link href={`${feedLink}`}>{`${feedTitleText}`}</Link>
+                    </Tooltip>
                   </div>
                 {children}
                </div>

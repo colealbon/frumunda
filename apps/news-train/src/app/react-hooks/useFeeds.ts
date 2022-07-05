@@ -34,7 +34,7 @@ export function useFeeds () {
     "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/world/rss.xml":{"checked":false,"categories":["world"]},
     "https://www.nytimes.com/svc/collections/v1/publish/https://www.nytimes.com/section/us/rss.xml":{"checked":false,"categories":["us"]},
     "https://rt.com/rss":{"checked":false,"categories":["world"]},
-    "https://ft.com/?format=rss":{"checked":true,"categories":["business"]},
+    "https://ft.com/?format=rss":{"checked":true,"categories":["business"], "label":"Financial Times"},
     "https://www.scmp.com/rss/91/feed":{"checked":true,"categories":["world"]},
     "https://www.scmp.com/rss/5/feed":{"checked":false,"categories":["world"]},
     "https://oilprice.com/rss/main":{"checked":false,"categories":["world"]},

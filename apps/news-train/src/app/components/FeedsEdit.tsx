@@ -7,6 +7,7 @@ import FeedsReset from './FeedsReset';
 import FeedCategories from './FeedCategories';
 import FeedToggle from './FeedToggle';
 import FeedDelete from './FeedDelete';
+import FeedLabel from './FeedLabel';
 
 const FeedsEdit: FunctionComponent = () => {
   const { feeds } = useFeeds()
@@ -17,7 +18,7 @@ const FeedsEdit: FunctionComponent = () => {
       <div /> 
       <FeedsReset />
       <div />
-      {Object.keys(JSON.parse(JSON.stringify(feeds))).map(feed => {
+      {Object.keys(feeds as object).map(feed => {
         return (
           <Card variant="outlined" key={`feed-edit-${feed}`}>
             <CardContent>
@@ -25,7 +26,12 @@ const FeedsEdit: FunctionComponent = () => {
                 <FeedToggle text={feed} />
                 <FeedDelete text={feed} />
               </div>
+              <div>
               <FeedCategories text={feed} />
+              </div>
+              <CardContent>
+                <FeedLabel text={feed} />
+              </CardContent>
             </CardContent>
           </Card>
         );
