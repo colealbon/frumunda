@@ -4,7 +4,7 @@ import React, {
   Fragment,
 } from 'react';
 import { IconButton } from '@mui/material';
-import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
+import { DeleteOutlined } from '@mui/icons-material';
 import { useCategories } from '../react-hooks/useCategories';
 
 const CategoryDelete: FunctionComponent<{ text: string }> = (props: {

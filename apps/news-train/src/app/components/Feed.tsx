@@ -11,13 +11,13 @@ import {
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxiesLoad'
 import { CategoryContext } from './Category';
-import htmlToText from 'html-to-text';
+import MarkFeedProcessedButton from './MarkFeedProcessedButton'
+import { htmlToText } from 'html-to-text';
 // import VisibilitySensor from 'react-visibility-sensor';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { parse } = require('rss-to-json');
 
 export const ParsedFeedContentContext = createContext({});
-// export const FeedContext = createContext('');
 
 type Props = {children: ReactNode}
 const Feed: FunctionComponent<Props> = ({children}: Props) => {
@@ -154,16 +154,15 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
     >
       <Grid>
         {
-          Object.values(fetchedContent as object)
-          .filter((noEmpties: unknown) => !!noEmpties)
-          .map((parsedFeedContent: unknown) => {
+          Object.entries(fetchedContent as object)
+          .filter((parsedFeedContent) => !!parsedFeedContent[1])
+          .map((parsedFeedContent: [string, unknown]) => {
             
-            const feedTitleText = `${Object.assign({...parsedFeedContent as object}).feedLabel} `.concat(`${Object.entries(Object.assign({...parsedFeedContent as object} || {title: ''}).title)
+            const feedTitleText = `${Object.assign({...parsedFeedContent[1] as object}).feedLabel} `.concat(`${Object.entries(Object.assign({...parsedFeedContent[1] as object} || {title: ''}).title)
               .filter(titleEntry => {
                 return titleEntry[0] === "$text"
               })
-              .map(titleEntry => htmlToText
-                .fromString(
+              .map(titleEntry => htmlToText(
                   `${titleEntry[1]}`,
                   {
                     ignoreHref:
@@ -177,24 +176,22 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
                   ''
                 ))
 
-              .concat(Object.assign({...parsedFeedContent as object}).title)
+              .concat(Object.assign({...parsedFeedContent[1] as object}).title)
               .find(() => true)}`)
 
-            const feedLink = Object.entries(Object.assign({...parsedFeedContent as object} || {link: ''}).link)
+            const feedLink = Object.entries(Object.assign({...parsedFeedContent[1] as object} || {link: ''}).link)
               .filter(linkEntry => {
                 return linkEntry[0] === "$text"
               })
               .map(linkEntry => linkEntry[1])
-              .concat(Object.assign({...parsedFeedContent as object}).link)
+              .concat(Object.assign({...parsedFeedContent[1] as object}).link)
               .find(() => true)
           
-              const feedDescription = Object.entries(Object.assign({...parsedFeedContent as object} || {link: ''}).description)
+              const feedDescription = Object.entries(Object.assign({...parsedFeedContent[1] as object} || {link: ''}).description)
               .filter(descriptionEntry => {
                 return descriptionEntry[0] === "$text"
               })
-              .map(descriptionEntry => htmlToText
-                .fromString(
-                  `${descriptionEntry[1]}`,
+              .map(descriptionEntry => htmlToText(`${descriptionEntry[1]}`,
                   {
                     ignoreHref:
                       true,
@@ -206,23 +203,26 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
                   '&mdash;',
                   ''
                 ))
-              .concat(Object.assign({...parsedFeedContent as object}).description)
+              .concat(Object.assign({...parsedFeedContent[1] as object}).description)
               .find(() => true)
 
+            const parsedFeedContentObj = Object.fromEntries([parsedFeedContent])
+
             return (
-              <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContent as object}>
+              <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContentObj as object}>
                 <div
                   style={{ 
                     width: "90%"
                   }}
                 >
-                  <Tooltip title={`${feedDescription}`}>
-                    <Link href={`${feedLink}`}>
-                      <Typography variant="h3">
+                  <Typography variant="h3">
+                    <MarkFeedProcessedButton />
+                    <Tooltip title={`${feedDescription}`}>
+                      <Link href={`${feedLink}`}>
                         {feedTitleText}
-                      </Typography>
-                    </Link>
-                  </Tooltip>
+                      </Link>
+                    </Tooltip>
+                  </Typography>
                   <Divider />
                   {children}
                   <Divider />
