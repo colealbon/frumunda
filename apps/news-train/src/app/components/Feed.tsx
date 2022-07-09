@@ -3,16 +3,13 @@ import useSWR  from 'swr';
 import {
   Grid,
   Box, 
-  Link, 
-  Tooltip, 
-  Divider, 
-  Typography
 } from '@mui/material';
 import { useFeeds } from '../react-hooks/useFeeds'
-import { CorsProxiesContext } from './CorsProxiesLoad'
+import { CorsProxiesContext } from './CorsProxies'
 import { CategoryContext } from './Category';
-import MarkFeedProcessedButton from './MarkFeedProcessedButton'
 import { htmlToText } from 'html-to-text';
+import MarkFeedProcessedButton from './MarkFeedProcessedButton'
+
 // import VisibilitySensor from 'react-visibility-sensor';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { parse } = require('rss-to-json');
@@ -32,7 +29,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
   const checkedFeedsForCategory = Object.entries(feeds as object)
     .filter(feedEntry => {
       if (category === 'allCategories') {
-        return feedEntry
+        return true
       }
       return Object.entries(feedEntry[1] as object)
         .filter(feedEntryAttribute => {
@@ -136,15 +133,13 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
     fetcher, 
     {
       suspense: true
-      //,
-      // dedupingInterval: 60 * 1000, 
+      ,dedupingInterval: 10 * 1000, 
       // shouldRetryOnError: false,
       // revalidateOnFocus: false
     }
   )
   
   const fetchedContent: unknown = Object.assign(data as object)
-
   return (
     <Box 
       style={{ 
@@ -157,76 +152,33 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
           Object.entries(fetchedContent as object)
           .filter((parsedFeedContent) => !!parsedFeedContent[1])
           .map((parsedFeedContent: [string, unknown]) => {
-            
+
+
             const feedTitleText = `${Object.assign({...parsedFeedContent[1] as object}).feedLabel} `.concat(`${Object.entries(Object.assign({...parsedFeedContent[1] as object} || {title: ''}).title)
-              .filter(titleEntry => {
-                return titleEntry[0] === "$text"
-              })
-              .map(titleEntry => htmlToText(
-                  `${titleEntry[1]}`,
-                  {
-                    ignoreHref:
-                      true,
-                    ignoreImage:
-                      true,
-                  }
-                )
-                .replace(
-                  '&mdash;',
-                  ''
-                ))
+            .filter(titleEntry => {
+              return titleEntry[0] === "$text"
+            })
+            .map(titleEntry => htmlToText(
+                `${titleEntry[1]}`,
+                {
+                  ignoreHref:
+                    true,
+                  ignoreImage:
+                    true,
+                }
+              )
+              .replace(
+                '&mdash;',
+                ''
+              ))
 
-              .concat(Object.assign({...parsedFeedContent[1] as object}).title)
-              .find(() => true)}`)
-
-            const feedLink = Object.entries(Object.assign({...parsedFeedContent[1] as object} || {link: ''}).link)
-              .filter(linkEntry => {
-                return linkEntry[0] === "$text"
-              })
-              .map(linkEntry => linkEntry[1])
-              .concat(Object.assign({...parsedFeedContent[1] as object}).link)
-              .find(() => true)
-          
-              const feedDescription = Object.entries(Object.assign({...parsedFeedContent[1] as object} || {link: ''}).description)
-              .filter(descriptionEntry => {
-                return descriptionEntry[0] === "$text"
-              })
-              .map(descriptionEntry => htmlToText(`${descriptionEntry[1]}`,
-                  {
-                    ignoreHref:
-                      true,
-                    ignoreImage:
-                      true,
-                  }
-                )
-                .replace(
-                  '&mdash;',
-                  ''
-                ))
-              .concat(Object.assign({...parsedFeedContent[1] as object}).description)
-              .find(() => true)
+            .concat(Object.assign({...parsedFeedContent[1] as object}).title)
+            .find(() => true)}`)
 
             const parsedFeedContentObj = Object.fromEntries([parsedFeedContent])
-
             return (
               <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContentObj as object}>
-                <div
-                  style={{ 
-                    width: "90%"
-                  }}
-                >
-                  <Typography variant="h3">
-                    <MarkFeedProcessedButton />
-                    <Tooltip title={`${feedDescription}`}>
-                      <Link href={`${feedLink}`}>
-                        {feedTitleText}
-                      </Link>
-                    </Tooltip>
-                  </Typography>
-                  <Divider />
                   {children}
-                  <Divider />
-                </div>
               </ParsedFeedContentContext.Provider>
             )
           })

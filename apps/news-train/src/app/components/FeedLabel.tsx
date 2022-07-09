@@ -22,7 +22,7 @@ const FeedLabelEdit: FunctionComponent<Props> = ({text}: Props) => {
         .map(feedItemAttribute => feedItemAttribute[1])
     )
     .flat(Infinity)
-    .find(() => true) || 'optional feed label'
+    .find(() => true) || 'Add feed label here (optional)'
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {

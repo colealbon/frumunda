@@ -2,7 +2,7 @@ import React, {FunctionComponent, ComponentPropsWithoutRef } from 'react';
 import {List,ListItem,ListItemButton,ListItemText,Collapse } from '@mui/material';
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
-import { labelOrEcho } from './ResponsiveDrawer'
+import { labelOrEcho } from '../utils'
 
 const PageChooser: FunctionComponent = () => {
 

@@ -39,7 +39,7 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
         ),
       })
     );
-    const newCategories = { ...JSON.parse(JSON.stringify(categories)), ...newCategory }
+    const newCategories = { ...categories as object, ...newCategory }
     publishCategories(newCategories)
 
   }, [categories, props.text, publishCategories]);

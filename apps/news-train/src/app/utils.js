@@ -22,3 +22,21 @@ const theUrl = new URL(text)
 const newPath = removePunctuation(`${theUrl.hostname}${theUrl.pathname}`)
 return newPath
 }
+
+export const labelOrEcho = (index) => {
+  return `${Object.entries({
+    classifiers: 'classifiers',
+    contribute: 'contribute',
+    categories: 'categories',
+    community: 'community',
+    commerce: 'commerce',
+    posts: 'posts',
+    feeds: 'feeds',
+    stacks: 'stacks',
+    corsproxies: 'cors proxies'
+  })
+  .filter(labelsEntry => labelsEntry[0] === `${index}`)
+  .map((labelsEntry) => labelsEntry[1])
+  .concat(`${index}`)
+  .find(() => true)}`
+}

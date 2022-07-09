@@ -10,14 +10,10 @@ export function useCorsProxies () {
   }
 
   const fetcher = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       localforage.getItem('corsProxies')
-      .then((value: unknown) => {
-        if (!value) {
-          reject(new Error('no stored corsProxies using defaultCorsProxies'))
-        }
-        resolve(value)
-      })
+      .then((corsProxies) => resolve(corsProxies))
+      .catch(() => resolve(defaultCorsProxies))
     })
   }
 
@@ -25,9 +21,7 @@ export function useCorsProxies () {
     'corsProxies',
     fetcher, 
     {
-      suspense: true,
-      fallbackData: defaultCorsProxies,
-      shouldRetryOnError: false
+      suspense: true
     }
   )
 
@@ -53,8 +47,10 @@ export function useCorsProxies () {
     persistCorsProxies(newCorsProxiesClone)
   }
 
+  const corsProxies = structuredClone(data)
+
   return {
-    corsProxies: data,
+    corsProxies,
     persistCorsProxies,
     factoryReset,
     inFlight

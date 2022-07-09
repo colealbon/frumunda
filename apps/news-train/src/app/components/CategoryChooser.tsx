@@ -42,7 +42,7 @@ const CategoryChooserCategories: FunctionComponent = () => {
               }
             }
           >
-            <ListItemText key={'CategoryChooserAllCategories'} primary={'Posts'} />
+            <ListItemText key={'CategoryChooserAllCategories'} primary={'posts'} />
           </ListItemButton>
         </ListItem>
 

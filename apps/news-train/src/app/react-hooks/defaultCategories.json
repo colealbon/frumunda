@@ -1,0 +1,35 @@
+{
+  "maritime": {
+    "checked": true
+  },
+  "work": {
+    "checked": true
+  },
+  "science": {
+    "checked": true
+  },
+  "bitcoin": {
+    "checked": true
+  },
+  "local": {
+    "checked": true
+  },
+  "business": {
+    "checked": true
+  },
+  "world": {
+    "checked": true
+  },
+  "politics": {
+    "checked": true
+  },
+  "technology": {
+    "checked": true
+  },
+  "variety": {
+    "checked": true
+  },
+  "us": {
+    "checked": false
+  }
+}

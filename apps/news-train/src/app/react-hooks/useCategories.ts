@@ -1,48 +1,40 @@
-import { useEffect, useState, useCallback} from 'react';
+import { useState, useCallback} from 'react';
 import useSWR  from 'swr';
 import localforage from 'localforage'
 import { useStacks } from '../react-hooks/useStacks'
+import defaultCategories from './defaultCategories.json'
 
 export function useCategories () {
   const { stacksStorage, stacksSession }  = useStacks()
-  const defaultCategories = {
-    "science":{"checked":true, "label": "science"},
-    "bitcoin":{"checked":true, "label": "bitcoin"},
-    "local":{"checked":true, "label": "local"},
-    "business":{"checked":true, "label": "business"},
-    "world":{"checked":true, "label": "world"},
-    "politics":{"checked":true, "label": "politics"},
-    "technology":{"checked":true, "label": "technology"}
-  }
-  const [categories, setCategories] = useState(defaultCategories)
-
-  const setCategoriesCallback = useCallback((newCategories: unknown) => {
-    const newCategoriesClone = JSON.parse(JSON.stringify(newCategories as object))
-    setCategories(newCategoriesClone)
-  }, [ setCategories])
-
-  useEffect(() => {
-    localforage.getItem('categories')
-    .then((value: unknown) => {
-      if (!value) {
-        return
-      }
-      setCategoriesCallback(value)
-    })
-  }, [setCategoriesCallback])
-
-  const fallback = JSON.parse(JSON.stringify(categories))
 
   const fetcher = () => {
     return new Promise((resolve, reject) => {
+      if( !stacksSession.isUserSignedIn() ) {
+        localforage.getItem('categories')
+        .then((value: unknown) => {
+          if (!value) {
+            reject(new Error('no stored feeds using defaultFeeds'))
+          }
+          resolve(value)
+        })
+      }
       stacksStorage.getFile(`categories`, {
         decrypt: true
       })
       .then((content) => {
+        // 'stacks categories'
         const fetchedCategories: object = JSON.parse(`${content}`)
         resolve(fetchedCategories)
       })
-      .catch(error => reject())
+      .catch(() => {
+        localforage.getItem('categories')
+        .then((value: unknown) => {
+          if (!value) {
+            reject(new Error('no stored categories using defaultCategories'))
+          }
+          resolve(value)
+        })
+      })
     })
   }
 
@@ -51,12 +43,8 @@ export function useCategories () {
     fetcher , 
     {
       suspense: true,
-      fallbackData: fallback
-      // shouldRetryOnError: true,
-      // errorRetryInterval: 6000,
-      // dedupingInterval: 6000,
-      // focusThrottleInterval: 6000,
-      // errorRetryCount: 3
+      fallbackData: defaultCategories,
+      shouldRetryOnError: false
     }
   )
 
@@ -64,39 +52,37 @@ export function useCategories () {
 
   const publishCategories = useCallback((newCategories: unknown) => {
     setInFlight(true)
-    const newCategoriesClone = JSON.parse(JSON.stringify(newCategories as object))
-    const options = { optimisticData: newCategoriesClone, rollbackOnError: true }
+    const newCategoriesClone = structuredClone(newCategories as object)
     const updateFn = (newCategories: object) => {
-      const newCategoriesClone = JSON.parse(JSON.stringify(newCategories))
+      const newCategoriesClone = structuredClone(newCategories)
       return new Promise((resolve) => {
         if( !stacksSession.isUserSignedIn() ) {
           localforage.setItem('categories', newCategoriesClone)
-          setInFlight(false)
-          resolve(newCategoriesClone)
+          .then(() => {
+            setInFlight(false)
+            resolve(newCategoriesClone)
+          })
           return
         }
+        
         stacksStorage.putFile(`categories`, JSON.stringify(newCategoriesClone))
         .catch((error) => console.log(error))
         .finally(() => {
           localforage.setItem('categories', newCategoriesClone)
           setInFlight(false)
           resolve(newCategoriesClone)
-          return 
         })
       })
     }
-    mutate(updateFn(newCategoriesClone), options);
+    mutate(updateFn(newCategoriesClone));
   }, [ mutate, stacksSession, stacksStorage])
 
   const factoryReset = () => {
-    const newCategoriesClone = JSON.parse(JSON.stringify(defaultCategories))
-    localforage.setItem('categories', newCategoriesClone)
-    publishCategories(newCategoriesClone)
+    publishCategories(defaultCategories)
   }
 
   return {
     categories: data,
-    setCategories, 
     factoryReset, 
     publishCategories, 
     inFlight
