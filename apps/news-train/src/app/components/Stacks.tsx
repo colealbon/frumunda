@@ -2,7 +2,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import StacksSignIn from './StacksSignIn'
 import StacksSignOut from './StacksSignOut'
 import StacksProfileDisplay from './StacksProfileDisplay'
-import StacksFilenames from './StacksFilenames'
+import StacksFilenamesDisplay from './StacksFilenamesDisplay'
 import {useStacks} from '../react-hooks/useStacks';
 
 const Stacks: FunctionComponent = () => {
@@ -19,7 +19,7 @@ const Stacks: FunctionComponent = () => {
         .filter(signedIn => !!signedIn)
         .map(() => {
           return (
-            <StacksFilenames key='stacksFilenames'/>
+            <StacksFilenamesDisplay key='stacksFilenames'/>
           );
         })
       }

@@ -1,0 +1,352 @@
+{
+  "https://www.sail-world.com/rss/": {
+    "feedLabel": "Sail World",
+    "title": "Sail-World.com latest news : Worldwide",
+    "description": "Racing sailing, cruising, and leisure marine industry news updated every hour",
+    "link": "https://www.sail-world.com/",
+    "image": "",
+    "category": [],
+    "items": [
+      {
+        "title": "Time Travellers rejoice in  St Malo",
+        "description": "Organised by the Royal Ocean Racing Club in association with UNCL, Yacht Club de Dinard, Société Nautique de la Baie de St. Malo and the Royal Yacht Squadron.",
+        "link": "https://www.sail-world.com/news/251343/?source=rss",
+        "author": "Louay Habib / RORC",
+        "published": 1657457463000,
+        "created": 1657457463000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/irc2022/350/yysw369257.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "Images from Doyle Sails Winter Series",
+        "description": "A brave fleet had a wild ride down the Waitemata Harbour on Saturday for Race 5 of the Doyle Sails Winter Series. Winds topped 30kts in gusts. Sail-World captured these images as the fleet passed Devonport Wharf.",
+        "link": "https://www.sail-world.com/news/251344/?source=rss",
+        "author": "Richard Gladwell/Sail-World NZ",
+        "published": 1657455480000,
+        "created": 1657455480000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/irc2022/350/yysw369232.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "Mick Hole Winter Keelboat Regatta day 1",
+        "description": "In a variable westerly, the first day of the Mick Hole Winter Keelboat Regatta got under way today on Pittwater with three sprint races sailed from the Royal Prince Alfred Yacht Club.",
+        "link": "https://www.sail-world.com/news/251341/?source=rss",
+        "author": "Nic Douglass",
+        "published": 1657453320000,
+        "created": 1657453320000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/etchells/350/yysw369243.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "Project Speed: Waiting to for the lake to dry",
+        "description": "It would come as no surprise that a lake would normally have water in it. But what is surprising is that Lake Gairdner, the usually bone dry salt lake in South Australia, currently has a somewhat inconvenient amount of water in it.",
+        "link": "https://www.sail-world.com/news/251340/?source=rss",
+        "author": "Emirates Team New Zealand",
+        "published": 1657450620000,
+        "created": 1657450620000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/americascup/350/yysw369244.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "Genoa Int'l Boat Show tickets now available",
+        "description": "Tickets are now available online for the 62nd Genoa International Boat Show, held by the Italian Marine Industry Association - Confindustria Nautica - in Genoa from 22nd to 27th September this year.",
+        "link": "https://www.sail-world.com/news/251339/?source=rss",
+        "author": "Confindustria Nautica",
+        "published": 1657441080000,
+        "created": 1657441080000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/powerboat/350/yysw369227.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "Nautilus Marine Insurance partnership with HIRW",
+        "description": "Nautilus Marine Insurance is proud to announce a new, multi-year partnership with the internationally acclaimed Hamilton Island Race Week.",
+        "link": "https://www.sail-world.com/news/251336/?source=rss",
+        "author": "Nautilus Marine Insurance",
+        "published": 1657435500000,
+        "created": 1657435500000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/classic/350/yysw305237.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "18ft Skiffs: Fisher &amp; Paykel",
+        "description": "Over the years, the Australian 18 Footers League has had a number of wonderful relationships with many of its sponsorship supporting companies and their individual owners and representatives, and the recent 2021-22 season produced the latest situation",
+        "link": "https://www.sail-world.com/news/251334/?source=rss",
+        "author": "Frank Quealey",
+        "published": 1657432920000,
+        "created": 1657432920000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/skiff/350/yysw369183.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "2022 Supernova Nationals at Plas Heli, Pwllheli",
+        "description": "The forecast looked big, the venue one of the best that the country has to offer, the entry was over 100 boats: the Supernova Nationals had all the ingredients to be an all-time classic.",
+        "link": "https://www.sail-world.com/news/251333/?source=rss",
+        "author": "Supernova Class Association",
+        "published": 1657432504000,
+        "created": 1657432504000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/supernova/350/yysw369178.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "ILCA 6 Masters Nationals at Stokes Bay",
+        "description": "The 2022 Masters National Championships attracted 114 ILCAs, split fairly evenly between the of ICLA6s and ILCA7s, two 50 plus boat fleets and a forecast of big breeze and sunshine would provide some of the most challenging racing many have seen in years.",
+        "link": "https://www.sail-world.com/news/251331/?source=rss",
+        "author": "Ross Harvey",
+        "published": 1657430820000,
+        "created": 1657430820000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/laserradial/350/yysw369164.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "2022 49er, 49erFX and Nacra 17 Europeans Day 5",
+        "description": "Limited racing was only possible in the Nacra 17, 49er Gold and Silver fleets in the 2022 European Championships at Aarhus, Denmark. However the images were spectacular in the torrid conditions.",
+        "link": "https://www.sail-world.com/news/251332/?source=rss",
+        "author": "Richard Gladwell/Sail-World.com/nz",
+        "published": 1657424040000,
+        "created": 1657424040000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/nacra17/350/yysw369199.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "Swan One Design Worlds in Valencia overall",
+        "description": "An enthralling final day on the water saw the Swan One Design Worlds, hosted by the Real Club Náutico de Valencia, draw to a conclusion, though not without elements of excitement.",
+        "link": "https://www.sail-world.com/news/251328/?source=rss",
+        "author": "Nautor's Swan",
+        "published": 1657421400000,
+        "created": 1657421400000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/swan42/350/yysw369148.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "Aussies on the cusp at 2022 Europeans",
+        "description": "Three Australian crews are on the cusp of making the Medal Races after Day 5 of the 49er, 49erFX and Nacra 17 European Championships in Aarhus, Denmark, but the day's racing was cut short as winds built and gusts continued to exceed 25 knots.",
+        "link": "https://www.sail-world.com/news/251327/?source=rss",
+        "author": "Australian Sailing",
+        "published": 1657419720000,
+        "created": 1657419720000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/nacra17/350/yysw369141.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "AEGEAN 600 fleet ready to race tomorrow",
+        "description": "After many days of preparation at the Olympic Marine facility, and well-attended safety training and social events, the teams entered from 14 nations will be ready at 1400 local time to start the second edition of the AEGEAN 600.",
+        "link": "https://www.sail-world.com/news/251326/?source=rss",
+        "author": "Offshore Racing Congress",
+        "published": 1657400940000,
+        "created": 1657400940000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/orc/350/yysw369139.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "Leyton secures 2nd place in the Pro Sailing Tour",
+        "description": "Just one point shy of Arkema prior to the start of the final episode of the Pro Sailing Tour 2022 between Cowes on the Isle of Wight and Roscoff in northern Brittany, the men on Leyton gave their absolute all to catch up with Quentin Vlamynck's men.",
+        "link": "https://www.sail-world.com/news/251335/?source=rss",
+        "author": "Leyton Sailing Team",
+        "published": 1657398300000,
+        "created": 1657398300000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/multi50/350/yysw369221.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "Arkema confirms 2022 Pro Sailing Tour victory",
+        "description": "The final standings in the 2022 Pro Sailing Tour remained in the balance until the closing moments of the 'Final Rush', when Quentin Vlamynck on Arkema crossed the finish line off Roscoff to take a hard earned and well-deserved victory.",
+        "link": "https://www.sail-world.com/news/251320/?source=rss",
+        "author": "Pro Sailing Tour",
+        "published": 1657386596000,
+        "created": 1657386596000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/multi50/350/yysw369120.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "EFPT Engadinwind and EFPT Turkey cancellations",
+        "description": "The Freestyle Pro Tour regrets to inform the windsurfing community that two of our nearest events are cancelled for this season.",
+        "link": "https://www.sail-world.com/news/251321/?source=rss",
+        "author": "EFPT",
+        "published": 1657384260000,
+        "created": 1657384260000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/windsurfing/350/yysw369125.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "GWA Wingfoil World Cup Lanzarote day 3",
+        "description": "The official competition has finished here at the GWA Wingfoil World Cup in Lanzarote. The crew pushed through men and women surf-freestyle on the event's first two days.",
+        "link": "https://www.sail-world.com/news/251319/?source=rss",
+        "author": "Liam Dredge",
+        "published": 1657383480000,
+        "created": 1657383480000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/wingfoil/350/yysw369108.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "The 7 - we make a very fine yacht even better",
+        "description": "Since we launched our Y7 in 2019 we are happy by her success. The model is very popular with owners who want to sail a fast mega yacht with a small crew or even alone.",
+        "link": "https://www.sail-world.com/news/251318/?source=rss",
+        "author": "YYachts",
+        "published": 1657382820000,
+        "created": 1657382820000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/cruisingyacht/350/yysw369105.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "What do you have to do when crossing the equator?",
+        "description": "Crossing the equator per se is not a difficult task, stable trade winds make the moment joyful. Tradition has it that an alcoholic drink is offered to Neptune to secure a safe journey ahead.",
+        "link": "https://www.sail-world.com/news/251256/?source=rss",
+        "author": "Global Solo Challenge",
+        "published": 1657370760000,
+        "created": 1657370760000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/open60/350/yysw368754.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      },
+      {
+        "title": "RS Elite Late Summer Plans",
+        "description": "The RS Elite fleet enjoyed its largest ever and most competitive regatta, and biggest ever party, at the recent Brewin Dolphin RS Elite International Grand Prix (incorporating the UK National Championship).",
+        "link": "https://www.sail-world.com/news/251274/?source=rss",
+        "author": "Alasdair McLeod",
+        "published": 1657370520000,
+        "created": 1657370520000,
+        "category": [],
+        "enclosures": [
+          {
+            "url": "http://yandy.co.uk/photos/rselite/350/yysw368815.jpg",
+            "length": "500000",
+            "type": "image/jpeg"
+          }
+        ],
+        "media": {}
+      }
+    ]
+  }
+}

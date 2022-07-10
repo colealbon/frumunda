@@ -1,8 +1,8 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { createContext, FunctionComponent, ReactNode } from 'react';
 import useSWR from 'swr';
 import { AppConfig, UserSession } from '@stacks/connect';
 
-export const StacksSessionContext = React.createContext({});
+export const StacksSessionContext = createContext({});
 
 type Props = {children: ReactNode}
 

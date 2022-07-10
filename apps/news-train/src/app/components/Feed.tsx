@@ -49,7 +49,6 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
         })
         .find(() => true);
     })
-    //.map((feedEntry) => feedEntry[0])
 
     const checkedCorsProxies = Object.entries(corsProxies)
     .filter(corsProxyEntry => Object.assign(corsProxyEntry[1] as object).checked === true)

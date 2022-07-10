@@ -1,9 +1,13 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode, createContext} from 'react';
 import useSWR from 'swr';
 import {useStacks} from '../react-hooks/useStacks';
-import StacksFileDelete from './StacksFileDelete';
 
-const StacksFilenames: FunctionComponent = () => {
+export const StacksFilenamesContext = createContext({});
+
+type Props = {children: ReactNode}
+
+const StacksFilenames: FunctionComponent<Props> = ({children}: Props) => {
+
   const { stacksStorage }  = useStacks()
 
   const fetcher = () => {
@@ -28,20 +32,13 @@ const StacksFilenames: FunctionComponent = () => {
     revalidateOnFocus: false
   });
 
-  const stacksFilenames = structuredClone(data)
+  const stacksFilenames: string[] = data as string[]
+  
+
   return (
-  <>
-    {
-      stacksFilenames.map((filename: string) => {
-        return (
-          <div key={filename}>
-            <StacksFileDelete text={filename}/>
-            {filename}
-          </div>
-        )
-      })
-    }
-  </>
+  <StacksFilenamesContext.Provider value={stacksFilenames}>
+    {children}
+  </StacksFilenamesContext.Provider>
   )
 }
 

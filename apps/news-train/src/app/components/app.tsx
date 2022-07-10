@@ -1,11 +1,14 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Navigator from './Navigator';
 import MainPage from './MainPage'
+import StacksFilenames from './StacksFilenames'
 
 export function App() {
   return (
       <Navigator>
-        <MainPage />
+        <StacksFilenames>
+          <MainPage />
+        </StacksFilenames> 
       </Navigator>  
   )
 }
