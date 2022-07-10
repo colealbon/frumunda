@@ -1,17 +1,31 @@
 import { useState, useCallback} from 'react';
-import useSWR  from 'swr';
 import localforage from 'localforage'
+import useSWR  from 'swr';
+import { useStacks } from '../react-hooks/useStacks'
 import defaultProcessedPosts from './defaultProcessedPosts.json'
 
 export function useProcessedPosts () {
+  const { stacksSession }  = useStacks()
 
-  const fetcher = () => localforage.getItem('processedPosts')
+  const fetcher = () => {
+    return new Promise((resolve, reject) => {
+      localforage.getItem('processedPosts')
+      .then((value: unknown) => {
+        if (!value) {
+          reject(new Error('no stored processedPosts using defaultProcessedPosts'))
+        }
+        resolve(value)
+      })
+    })
+  }
 
   const { data, mutate } = useSWR(
     'processedPosts',
     fetcher , 
     {
-      suspense: true
+      suspense: true,
+      fallbackData: defaultProcessedPosts,
+      shouldRetryOnError: false
     }
   )
 

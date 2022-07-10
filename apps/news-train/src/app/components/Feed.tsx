@@ -152,8 +152,6 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
           Object.entries(fetchedContent as object)
           .filter((parsedFeedContent) => !!parsedFeedContent[1])
           .map((parsedFeedContent: [string, unknown]) => {
-
-
             const feedTitleText = `${Object.assign({...parsedFeedContent[1] as object}).feedLabel} `.concat(`${Object.entries(Object.assign({...parsedFeedContent[1] as object} || {title: ''}).title)
             .filter(titleEntry => {
               return titleEntry[0] === "$text"

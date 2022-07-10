@@ -5,6 +5,7 @@ import React, {
   // createContext,
   useContext,
 } from 'react';
+import {useProcessedPosts} from '../react-hooks/useProcessedPosts'
 // import {useProcessedPosts} from '../react-hooks/useProcessedPosts'
 import useSWR from 'swr';
 // import { BlockstackStorageContext } from './BlockstackSessionProvider';
@@ -17,24 +18,13 @@ import { shortUrl } from '../utils.js'
 type Props = {children: ReactNode}
 
 const ProcessedPosts: FunctionComponent<Props> = ({children}: Props ) => {
+  const {processedPosts} = useProcessedPosts()
 //   const blockstackStorageContext = useContext(BlockstackStorageContext);
 //   const blockstackStorage = Object.assign(blockstackStorageContext);
   const parsedFeedContentContext = useContext(ParsedFeedContentContext)
   const parsedFeedContent = structuredClone(parsedFeedContentContext as object)
-  const filenameForFeed = shortUrl(Object.keys(parsedFeedContent)[0])
+  const keyForFeed = Object.keys(parsedFeedContent)[0]
 
-  // const processedPostsForFeed = Object.entries(processedPosts as object)
-  //   .filter(processedPostsEntry => {
-  //       console.log(processedPostsEntry[0])
-  //       return processedPostsEntry[0] === shortUrl(filenameForFeed)
-  //   })
-  //   .map(processedPostsEntry => processedPostsEntry[1])
-  //   .find(() => true)
-
-  
-  // const feedContext = useContext(FeedContext)
-  // const feed = Object.assign(feedContext)[0]
-  // const filenameForFeed = `${shortUrl(feed)}`
 
   // const fetcher = (fileName: string, blockstackStorage: any) => {
   //   return new Promise(resolve => {
@@ -62,11 +52,23 @@ const ProcessedPosts: FunctionComponent<Props> = ({children}: Props ) => {
 
   const fetcher = () => {
     return new Promise(resolve => {
-      resolve(filenameForFeed)
+
+
+      const processedPostsForFeed = Object.entries(processedPosts as object)
+        .filter(processedPostsEntry => {
+            console.log(processedPostsEntry[0])
+            return processedPostsEntry[0] === keyForFeed
+        })
+        .map(processedPostsEntry => processedPostsEntry[1])
+        .find(() => true)
+    
+      console.log(processedPostsForFeed)
+
+      resolve(processedPostsForFeed)
     })
   }
 
-  const { data } = useSWR(`${filenameForFeed}`, fetcher, {
+  const { data } = useSWR(`processed_${shortUrl(keyForFeed)}`, fetcher, {
     suspense: true,
     shouldRetryOnError: false,
     //dedupingInterval: 600 * 1000,

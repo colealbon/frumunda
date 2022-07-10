@@ -28,8 +28,6 @@ export function useFeeds () {
     }
   )
 
- 
-
   const persistFeeds = useCallback((newFeeds: unknown) => {
     setInFlight(true)
     const newFeedsClone = structuredClone(newFeeds as object)
