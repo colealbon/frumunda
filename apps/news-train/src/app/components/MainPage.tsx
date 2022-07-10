@@ -1,17 +1,6 @@
 import React, {Suspense} from 'react';
-// import AppBar from '@mui/material/AppBar';
-// import Box from '@mui/material/Box';
-// import CssBaseline from '@mui/material/CssBaseline';
-// import Drawer from '@mui/material/Drawer';
-// import IconButton from '@mui/material/IconButton';
-// import MenuIcon from '@mui/icons-material/Menu';
-import {Divider, Toolbar} from '@mui/material';
-// import Typography from '@mui/material/Typography';
-// import PageChooser from './PageChooser';
 import Category from './Category'
-// import CategoryChooser from './CategoryChooser'
 import Contribute from './Contribute'
-import StacksFilenames from './StacksFilenames'
 import Classifiers from './Classifiers'
 import Feed from './Feed'
 import Posts from './Posts'
@@ -24,17 +13,10 @@ import CorsProxies from './CorsProxies'
 import ProcessedPosts from './ProcessedPosts'
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
-// import { labelOrEcho } from '../utils'
-// const drawerWidth = 240;
 
 export function MainPage() {
-//   const [mobileOpen, setMobileOpen] = React.useState(false);
   const { selectedPageIndex } = useSelectedPageIndex();
   const { selectedCategoryIndex } = useSelectedCategoryIndex();
-
-//   const handleDrawerToggle = () => {
-//     setMobileOpen(!mobileOpen);
-//   };
 
   const fetchAndRenderPosts = () => {
     return (

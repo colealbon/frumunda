@@ -1,6 +1,7 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 import useSWR from 'swr';
 import {useStacks} from '../react-hooks/useStacks';
+import StacksFileDelete from './StacksFileDelete';
 
 const StacksFilenames: FunctionComponent = () => {
   const { stacksStorage }  = useStacks()
@@ -28,7 +29,20 @@ const StacksFilenames: FunctionComponent = () => {
   });
 
   const stacksFilenames = structuredClone(data)
-  return (<pre>{JSON.stringify(stacksFilenames, null, 2)}</pre>)
-};
+  return (
+  <>
+    {
+      stacksFilenames.map((filename: string) => {
+        return (
+          <div key={filename}>
+            <StacksFileDelete text={filename}/>
+            {filename}
+          </div>
+        )
+      })
+    }
+  </>
+  )
+}
 
 export default StacksFilenames;

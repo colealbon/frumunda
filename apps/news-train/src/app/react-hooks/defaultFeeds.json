@@ -6,25 +6,25 @@
     ]
   },
   "https://cryptobriefing.com/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "bitcoin"
     ]
   },
   "https://www.sail-world.com/rss/": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "maritime"
     ]
   },
   "https://www.counterpunch.org/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "politics"
     ]
   },
   "https://www.aljazeera.com/xml/rss/all.xml": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "world"
     ]
@@ -36,7 +36,7 @@
     ]
   },
   "https://pompcryptojobs.com/rss/": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "work"
     ]
@@ -48,7 +48,7 @@
     ]
   },
   "http://feeds.feedburner.com/funcheapsf_recent_added_events": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "local"
     ]
@@ -60,7 +60,7 @@
     ]
   },
   "https://gcaptain.com/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "maritime"
     ]
@@ -72,7 +72,7 @@
     ]
   },
   "https://bitcoinops.org/feed.xml": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "bitcoin"
     ]
@@ -124,7 +124,7 @@
     ]
   },
   "https://scheerpost.com/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "politics"
     ]
@@ -136,13 +136,13 @@
     ]
   },
   "https://cointelegraph.com/rss": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "bitcoin"
     ]
   },
   "https://www.coindesk.com/arc/outboundfeeds/rss/?outputType=xml": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "bitcoin"
     ]
@@ -160,7 +160,7 @@
     ]
   },
   "https://www.themoscowtimes.com/rss/news": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "world"
     ]
@@ -178,7 +178,7 @@
     "checked": false
   },
   "https://www.statnews.com/feed": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "technology"
     ]
@@ -202,19 +202,19 @@
     ]
   },
   "https://rt.com/rss": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "world"
     ]
   },
   "https://ft.com/?format=rss": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "business"
     ]
   },
   "https://www.scmp.com/rss/91/feed": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "world"
     ]
@@ -226,7 +226,7 @@
     ]
   },
   "https://oilprice.com/rss/main": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "world"
     ]

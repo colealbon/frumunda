@@ -13,7 +13,7 @@ export function useCategories () {
         localforage.getItem('categories')
         .then((value: unknown) => {
           if (!value) {
-            reject(new Error('no stored feeds using defaultFeeds'))
+            reject(new Error('no stored categories using defaultCategories'))
           }
           resolve(value)
         })

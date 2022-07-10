@@ -9,7 +9,7 @@ import React, {
 import useSWR from 'swr';
 // import { BlockstackStorageContext } from './BlockstackSessionProvider';
 import { ParsedFeedContentContext } from './Feed'
-// import { shortUrl } from '../utils.js'
+import { shortUrl } from '../utils.js'
 // , unique, removePunctuation, removeTrackingGarbage} 
 
 // export const ProcessedPostsContext = createContext({});
@@ -21,7 +21,7 @@ const ProcessedPosts: FunctionComponent<Props> = ({children}: Props ) => {
 //   const blockstackStorage = Object.assign(blockstackStorageContext);
   const parsedFeedContentContext = useContext(ParsedFeedContentContext)
   const parsedFeedContent = structuredClone(parsedFeedContentContext as object)
-  const filenameForFeed = Object.keys(parsedFeedContent)[0]
+  const filenameForFeed = shortUrl(Object.keys(parsedFeedContent)[0])
 
   // const processedPostsForFeed = Object.entries(processedPosts as object)
   //   .filter(processedPostsEntry => {
