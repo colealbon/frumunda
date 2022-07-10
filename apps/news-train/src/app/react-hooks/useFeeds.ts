@@ -5,12 +5,14 @@ import defaultFeeds from './defaultFeeds.json'
 
 export function useFeeds () {
 
+  const [inFlight, setInFlight] = useState(false)
+
   const fetcher = () => {
     return new Promise((resolve, reject) => {
       localforage.getItem('feeds')
       .then((value: unknown) => {
         if (!value) {
-          reject(new Error('no stored feeds using defaultFeeds'))
+          resolve(defaultFeeds)
         }
         resolve(value)
       })
@@ -22,12 +24,11 @@ export function useFeeds () {
     fetcher , 
     {
       suspense: true,
-      fallbackData: defaultFeeds,
       shouldRetryOnError: false
     }
   )
 
-  const [inFlight, setInFlight] = useState(false)
+ 
 
   const persistFeeds = useCallback((newFeeds: unknown) => {
     setInFlight(true)
