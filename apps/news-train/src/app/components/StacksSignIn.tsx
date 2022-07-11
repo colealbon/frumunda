@@ -4,6 +4,7 @@ import {useStacks} from '../react-hooks/useStacks';
 import { showConnect } from '@stacks/connect';
 
 const StacksSignin: FunctionComponent = () => {
+  
   const { stacksSession }  = useStacks()
 
   const authenticate = () => {

@@ -1,7 +1,10 @@
 import React, {
-  FunctionComponent
+  FunctionComponent,
+  useState,
+  useEffect,
+  useCallback
 } from 'react';
-import { IconButton } from '@mui/material';
+import { IconButton, Typography} from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
 import { useStacks } from '../react-hooks/useStacks';
 
@@ -9,18 +12,33 @@ const StacksFileDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
 
-  const { stacksStorage }  = useStacks()
+  const { stacksStorage } = useStacks()
+  const [deleted, setDeleted] = useState(false)
+
+  const setDeletedCallback = useCallback(() => {
+    setDeleted(true)
+  }, [setDeleted])
+
+  useEffect(() => {
+    //reload
+  }, [deleted])
 
   const deleteStacksFile = () => {
     stacksStorage.deleteFile(`${props.text}`)
-    .then(() => window.location.reload())
+    .then(() => setDeletedCallback())
+  }
+
+  if (deleted) {
+    return <span></span>
   }
 
   return (
-    <IconButton aria-label="Delete StacksFile" onClick={deleteStacksFile}>
-      <DeleteOutlined />
-    </IconButton>
-
+    <Typography>
+      <IconButton aria-label="Delete StacksFile" onClick={deleteStacksFile}>
+        <DeleteOutlined />
+      </IconButton>
+      {`${props.text}`}
+    </Typography>
   );
 };
 

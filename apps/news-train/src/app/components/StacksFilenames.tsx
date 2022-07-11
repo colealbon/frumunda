@@ -8,11 +8,14 @@ type Props = {children: ReactNode}
 
 const StacksFilenames: FunctionComponent<Props> = ({children}: Props) => {
 
-  const { stacksStorage }  = useStacks()
+  const { stacksStorage, stacksSession }  = useStacks()
 
   const fetcher = () => {
     return new Promise((resolve, reject) => {
       const fetchedFilenames: string[] = []
+      if (!stacksSession.isUserSignedIn()) {
+        resolve([])
+      }
       stacksStorage.listFiles((filename: string) => {
         fetchedFilenames.push(filename)
         return true
@@ -34,7 +37,6 @@ const StacksFilenames: FunctionComponent<Props> = ({children}: Props) => {
 
   const stacksFilenames: string[] = data as string[]
   
-
   return (
   <StacksFilenamesContext.Provider value={stacksFilenames}>
     {children}

@@ -7,7 +7,6 @@ import {useStacks} from '../react-hooks/useStacks';
 
 const Stacks: FunctionComponent = () => {
   const {stacksSession} = useStacks()
-
   return (
     <div>
       {stacksSession.isUserSignedIn() && <StacksProfileDisplay/>}
@@ -15,15 +14,7 @@ const Stacks: FunctionComponent = () => {
         <StacksSignIn />
         <StacksSignOut />
       </div>
-      {[stacksSession.isUserSignedIn()]
-        .filter(signedIn => !!signedIn)
-        .map(() => {
-          return (
-            <StacksFilenamesDisplay key='stacksFilenames'/>
-          );
-        })
-      }
-      
+      <StacksFilenamesDisplay /> 
     </div>
   );
 };

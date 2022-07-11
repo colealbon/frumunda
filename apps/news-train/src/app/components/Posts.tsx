@@ -9,6 +9,7 @@ import {
   Divider, 
   Typography
 } from '@mui/material';
+import {cleanTags} from '../utils'
 
 export const PostContext = createContext({});
 
@@ -21,13 +22,13 @@ const Posts: FunctionComponent = () => {
       {
         Object.entries(parsedFeedContent).map((feedContentEntry) => {
           const feedLink: string = feedContentEntry[0]
-          const feedTitleText: string = structuredClone({...feedContentEntry[1] as object}).feedLabel || structuredClone({...feedContentEntry[1] as object}).title["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).title}`
-          const feedDescription = htmlToText(structuredClone({...feedContentEntry[1] as object}).description["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).description}`,     {
+          const feedTitleText: string = cleanTags(structuredClone({...feedContentEntry[1] as object}).feedLabel || structuredClone({...feedContentEntry[1] as object}).title["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).title}`)
+          const feedDescription = cleanTags(htmlToText(structuredClone({...feedContentEntry[1] as object}).description["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).description}`,     {
             ignoreHref:
               true,
             ignoreImage:
               true,
-          })
+          }))
           const postItems = structuredClone({...feedContentEntry[1] as object}).items
           
           return (

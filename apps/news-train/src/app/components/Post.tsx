@@ -16,7 +16,7 @@ import {
 } from './Posts';
 import {CategoryContext} from './Category'
 import {convert} from 'html-to-text';
-import {removeTrackingGarbage} from '../utils'
+import {removeTrackingGarbage, removePunctuation, cleanTags} from '../utils'
 
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
@@ -39,20 +39,12 @@ const Post: FunctionComponent = () => {
 //   const feed = Object.assign(feedContext)[0]
 
 
-const postTitle: string = convert(
+
+const postTitle: string = removePunctuation(convert(
     postItem.title
-  )
-  console.log(postItem)
-  const postDescription = removeTrackingGarbage(postItem.description
-    .replace(/&amp;ldquo;/g, '"')
-    .replace(/&amp;rdquo;/g, '"')
-    .replace(/&amp;rsquo;/g, "'")
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&#8217;/g, "'")
-    .replace(/&amp;nbsp;/g, " ")
-  )    
+  ))
+
+  const postDescription = removeTrackingGarbage(cleanTags(convert(postItem.description)))
 
   console.log(postDescription)
 

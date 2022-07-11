@@ -17,7 +17,7 @@ const CorsProxiesEdit: FunctionComponent = () => {
           <div />
           <CorsProxiesReset />
           <div />
-          {Object.keys(corsProxies as object).map(corsProxy => {
+          {Object.keys({...corsProxies} as object).map(corsProxy => {
             return (
               <div key={`corsProxy-edit-${corsProxy}`}>
                 <CorsProxyDelete text={corsProxy} />
