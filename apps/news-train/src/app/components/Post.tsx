@@ -15,7 +15,8 @@ import {
   //, FeedContext 
 } from './Posts';
 import {CategoryContext} from './Category'
-import {htmlToText} from 'html-to-text';
+import {convert} from 'html-to-text';
+import {removeTrackingGarbage} from '../utils'
 
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
@@ -38,25 +39,22 @@ const Post: FunctionComponent = () => {
 //   const feed = Object.assign(feedContext)[0]
 
 
-const postTitle: string = htmlToText(
-    postItem.title,
-    {
-      ignoreHref:
-        true,
-      ignoreImage:
-        true,
-    }
+const postTitle: string = convert(
+    postItem.title
   )
+  console.log(postItem)
+  const postDescription = removeTrackingGarbage(postItem.description
+    .replace(/&amp;ldquo;/g, '"')
+    .replace(/&amp;rdquo;/g, '"')
+    .replace(/&amp;rsquo;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&#8217;/g, "'")
+    .replace(/&amp;nbsp;/g, " ")
+  )    
 
-  const postDescription = htmlToText(
-    postItem.description,
-    {
-      ignoreHref:
-        true,
-      ignoreImage:
-        true,
-    }
-  )
+  console.log(postDescription)
 
   return (
     <Card variant="outlined" key={`item-${category}-${
@@ -75,13 +73,6 @@ const postTitle: string = htmlToText(
 
                 href={new URL(
                   `${postItem.link}`
-                  //,
-                  // new URL(
-                  //   `${postItem.link}`,
-                  //   new URL(
-                  //     feed
-                  //   )
-                  // )
                 ).toString()}
                 target="news-train"
               >

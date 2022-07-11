@@ -23,15 +23,6 @@ const SurpressProcessedPosts: FunctionComponent<Props> = ({children}: Props) => 
   //   return (<>{children}</>)
   // }
 
-
-  // const feedLink = Object.entries(Object.assign({...parsedFeedContent as object} || {link: ''}).link)
-  //   .filter(linkEntry => {
-  //     return linkEntry[0] === "$text"
-  //   })
-  //   .map(linkEntry => linkEntry[1])
-  //   .concat(Object.assign({...parsedFeedContent as object}).link)
-  //   .find(() => true)
-
     const theTitle = `${post.title}`
     const theDescription = `${post.description}`
     const descriptionText = htmlToText(theDescription, {
@@ -41,8 +32,8 @@ const SurpressProcessedPosts: FunctionComponent<Props> = ({children}: Props) => 
 
   const mlText = removeTrackingGarbage(removePunctuation(`${theTitle} ${descriptionText}`))
 
-  console.log(processedPosts)
-  console.log(parsedFeedContent)
+  // console.log(processedPosts)
+  // console.log(parsedFeedContent)
 
   const processedPostsForFeed = [Object.entries(processedPosts)
     .filter((feedEntry) => feedEntry[0] === 'feedLink')
@@ -50,9 +41,6 @@ const SurpressProcessedPosts: FunctionComponent<Props> = ({children}: Props) => 
     .flat(Infinity)
     .map(postEntry => removePunctuation(removeTrackingGarbage(postEntry)))
   
-  console.log(processedPostsForFeed)
-
-
   if (mlText === '') {
     return (<span></span>)
   }

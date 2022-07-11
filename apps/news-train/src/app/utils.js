@@ -9,6 +9,8 @@ return text.replace(/read full article at rtcom.*$/g,"")
 .replace(/appeared first on.*$/g,"")
 .replace(/\[httpstheinterceptcom.*$/g,"")
 .replace(/\[httpselectrekcowebstories.*$/g,"")
+.replace(/-- read more on .*/g,"")
+.replace(/-- Read more on .*/g,"")
 .replace(/\n/g," ").replace(/\s{2,}/g," ")
 .toLowerCase()
 }
