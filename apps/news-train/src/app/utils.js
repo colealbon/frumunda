@@ -1,39 +1,47 @@
 import {hash} from 'tweetnacl';
+import {convert} from 'html-to-text';
 
 export const removePunctuation = (text) => {
     return text.replace(/[/?–…".,#!$%^&*;:{}=\-_`~()'’‘“”—]/g,"")
-    .replace(/\n/g," ")
-    .replace(/\s{2,}/g," ")
+
   }
 
+  export const removeTrackingGarbage = (text) => {
+    return text.replace(/read full article at rtcom.*$/g,"")
+    .replace(/appeared first on.*$/g,"")
+    .replace(/\[httpstheinterceptcom.*$/g,"")
+    .replace(/\[httpselectrekcowebstories.*$/g,"")
+    .replace(/-- read more on .*/g,"")
+    .replace(/-- Read more on .*/g,"")
+    .replace(/\n/g," ").replace(/\s{2,}/g," ")
+    }
+
 export const cleanTags = (text) => {
-  return text.replace(/\n/g," ")
-  .replace(/\s{2,}/g," ")
+  return convert(text, {ignoreHref:
+    true,
+  ignoreImage:
+    true,
+  }).replace(/&rsquo;/g,"'")
+  .replace(/&nbsp;/g," ")
+  .replace(/\n/g," ")
+  .replace(/&amp;rsquo;/g,"'")
+  .replace(/&amp;lsquo;/g,"'")
   .replace(/&amp;ldquo;/g, '"')
   .replace(/&amp;rdquo;/g, '"')
   .replace(/&amp;rsquo;/g, "'")
+  .replace(/&rsquo;/g, "'")
+  .replace(/&rdquo;/g, "'")
   .replace(/&lt;/g, '<')
   .replace(/&gt;/g, '>')
   .replace(/<[^>]+>/g, '')
   .replace(/&\#8217;/g, "'")
   .replace(/&\#8211;/g, "-")
-  .replace(/&#039;/g, "'")    
+  .replace(/&\#039;/g, "'")    
   .replace(/&amp;nbsp;/g, " ")
   .replace(/&#039;/g, '"')
   .replace(/&#38;/g, '-')
-  .replace(/\n/g," ")
   .replace(/\s{2,}/g," ")
-}
-  
-export const removeTrackingGarbage = (text) => {
-return text.replace(/read full article at rtcom.*$/g,"")
-.replace(/appeared first on.*$/g,"")
-.replace(/\[httpstheinterceptcom.*$/g,"")
-.replace(/\[httpselectrekcowebstories.*$/g,"")
-.replace(/-- read more on .*/g,"")
-.replace(/-- Read more on .*/g,"")
-.replace(/\n/g," ").replace(/\s{2,}/g," ")
-.toLowerCase()
+  .replace(/&ldquo;/g, '"')
 }
 
 export const hashStr = (text) => {

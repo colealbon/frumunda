@@ -15,8 +15,6 @@ import {
   //, FeedContext 
 } from './Posts';
 import {CategoryContext} from './Category'
-import {convert} from 'html-to-text';
-import {removeTrackingGarbage, removePunctuation, cleanTags} from '../utils'
 
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
@@ -40,13 +38,11 @@ const Post: FunctionComponent = () => {
 
 
 
-const postTitle: string = removePunctuation(convert(
-    postItem.title
-  ))
+// const postTitle: string = removePunctuation(convert(
+//     postItem.title
+//   ))
 
-  const postDescription = removeTrackingGarbage(cleanTags(convert(postItem.description)))
-
-  console.log(postDescription)
+//   const postDescription = removeTrackingGarbage(cleanTags(convert(postItem.description)))
 
   return (
     <Card variant="outlined" key={`item-${category}-${
@@ -69,11 +65,11 @@ const postTitle: string = removePunctuation(convert(
                 target="news-train"
               >
                   <Typography>
-                    {postTitle}
+                    {postItem.title}
                   </Typography>
               </Link>
             }
-            secondary={postDescription}
+            secondary={postItem.description}
           />
           <Divider />
         </ListItem>

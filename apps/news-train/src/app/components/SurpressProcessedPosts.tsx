@@ -9,7 +9,6 @@ import stringSimilarity from 'string-similarity'
 
 type Props = {children: ReactNode}
 const SurpressProcessedPosts: FunctionComponent<Props> = ({children}: Props) => {
-  console.log('surpressProcessedPosts')
   // const {settings} = useSettings()
   // const {hideProcessedPosts} = JSON.parse(JSON.stringify(settings))
   const postContext = useContext(PostContext)
