@@ -16,6 +16,7 @@ export const ProcessedPostsFromStacksContext = createContext({});
 type Props = {children: ReactNode}
 
 const ProcessedPostsFromStacks: FunctionComponent<Props> = ({children}: Props ) => {
+  const { stacksStorage }  = useStacks()
   const stacksFilenamesContext = useContext(StacksFilenamesContext)
   const stacksFilenames = [...stacksFilenamesContext as string[]] 
   const {processedPosts, persistProcessedPosts} = useProcessedPosts()
@@ -24,19 +25,19 @@ const ProcessedPostsFromStacks: FunctionComponent<Props> = ({children}: Props ) 
   const keyForFeed = Object.keys(parsedFeedContent)[0]
   const filenameForFeed = `processed_${shortUrl(keyForFeed)}`
 
+
   const fetcher = (fileName: string, blockstackStorage: any) => {
     return new Promise(resolve => {
       const fetchQueue: unknown[] = []
       stacksFilenames
       .filter((filename: string) => `${filename.toString()}` === filenameForFeed)
+      .filter(noEmpties => !!noEmpties)
       .forEach((filename: string) => fetchQueue.push(
-        blockstackStorage.getFile(`${filename.toString()}`, {decrypt: true})
-        .then((fetchedContent: string) => {
-          const processedPostsForFeed: string[] = Array.from(new Set(JSON.parse(fetchedContent)))
-          const newProcessedPosts = structuredClone(processedPosts)
-          newProcessedPosts[`${keyForFeed}`] = processedPostsForFeed.flat(Infinity).slice()
+        stacksStorage.getFile(`${filename.toString()}`, {decrypt: true})
+        .then((fetchedContent) => {
+          const processedPostsFromStacks = JSON.parse(`${fetchedContent}`)
+          const newProcessedPosts = structuredClone({...processedPosts as object, ...processedPostsFromStacks})
           persistProcessedPosts(newProcessedPosts)
-          console.log(newProcessedPosts)
           resolve(newProcessedPosts)
         })
       ))

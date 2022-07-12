@@ -46,7 +46,17 @@ const Posts: FunctionComponent = () => {
             })
 
           if (unprocessedCleanPostItems.length === 0) {
-            return <span key='empty'></span>
+            return (
+              <span key={feedLink}>
+                <Typography variant="h3">
+                  <Link href={`${feedLink}`} component="button">
+                    {`${feedTitleText}`}
+                  </Link>
+                </Typography>
+                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} posts remaining)`}</Typography>
+                <Divider />
+              </span>
+            )
           }
 
           return (
@@ -64,7 +74,7 @@ const Posts: FunctionComponent = () => {
               <Typography variant="caption">
                 {` ${feedDescription}`}
               </Typography>
-              <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} remaining)`}</Typography>
+              <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} posts remaining)`}</Typography>
               <Divider />
               {
                 unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {

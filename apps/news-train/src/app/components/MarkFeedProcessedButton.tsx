@@ -1,25 +1,52 @@
-import React, { useContext, useCallback, FunctionComponent} from 'react';
+import {
+  useContext, 
+  useCallback, 
+  FunctionComponent,
+  useState,
+  useEffect
+} from 'react';
 import { IconButton, Typography} from '@mui/material';
 import { RemoveDone } from '@mui/icons-material';
 import {cleanTags, cleanPostItem, removePunctuation, shortUrl} from '../utils'
 import {cleanPostItemType} from './Posts'
 import { ParsedFeedContentContext } from './Feed'
 import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
+import { useStacks } from '../react-hooks/useStacks'
 
 
 const MarkFeedProcessedButton: FunctionComponent = () => {
+  const [inFlight, setInFlight] = useState(false)
+  const { stacksStorage, stacksSession }  = useStacks()
+
   const {processedPosts, persistProcessedPosts} = useProcessedPosts();
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
+  const keyForFeed = Object.keys(parsedFeedContent)[0]
+  const filenameForFeed = `processed_${shortUrl(keyForFeed)}`
 
   const setProcessedPostsCallback = useCallback((newPosts: object) => {
     persistProcessedPosts(newPosts)
-  }, [persistProcessedPosts])
+    setInFlight(true)
+
+
+  }, [persistProcessedPosts, setInFlight])
+
+  useEffect(() => {
+    // reload
+  }, [inFlight])
 
   const markFeedComplete = (feedLink: string, newProcessedPostsForFeed: string[]) => {
     const newProcessedPosts = structuredClone(processedPosts)
     newProcessedPosts[`${feedLink}`] = newProcessedPostsForFeed.flat(Infinity).slice()
     setProcessedPostsCallback(newProcessedPosts)
+    if( !stacksSession.isUserSignedIn() ) {
+      return
+    }
+    stacksStorage.putFile(`${filenameForFeed}`, JSON.stringify(newProcessedPosts))
+    .catch((error: Error) => console.log(error))
+    .finally(() => {
+      setInFlight(false)
+    })
   }
 
   return (

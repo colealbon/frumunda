@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react';
+import {Suspense} from 'react';
 import Category from './Category'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
@@ -21,7 +21,7 @@ export function MainPage() {
   const fetchAndRenderPosts = () => {
     return (
       <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
-        <Suspense fallback={`loading processed posts...`}>
+        <Suspense fallback={`loading and processing posts (we take time so you don't have to...)`}>
             <CorsProxies>
               <Category>
                 <Feed>

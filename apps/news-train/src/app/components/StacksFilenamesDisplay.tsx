@@ -32,7 +32,11 @@ const StacksFilenamesDisplay: FunctionComponent = () => {
           }
         </Box>
       </Box>
-      <Typography variant="caption">delete files from stacks/gaia storage (cannot be undone)</Typography>
+      {
+        [...stacksFilenames]
+        .map(() => <Typography key='caption' variant="caption">delete files from stacks/gaia storage (cannot be undone)</Typography>)
+        .find(() => true)
+      }
     </div>
   )
 }
