@@ -23,7 +23,6 @@ const Posts: FunctionComponent = () => {
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
   const {processedPosts} = useProcessedPosts()
 
-
   return (
     <>
       {
@@ -41,13 +40,13 @@ const Posts: FunctionComponent = () => {
             const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
             return !processedPostsForFeed.find((postItem: string) => {
               const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
-              return similarity > .85
+              return similarity > .82
             })
 
           })
 
           if (freshCleanPostItems.length === 0) {
-            return <span></span>
+            return <span key='empty'></span>
           }
 
           return (
