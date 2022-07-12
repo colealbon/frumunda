@@ -64,6 +64,7 @@ const Posts: FunctionComponent = () => {
               <Typography variant="caption">
                 {` ${feedDescription}`}
               </Typography>
+              <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} remaining)`}</Typography>
               <Divider />
               {
                 unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {

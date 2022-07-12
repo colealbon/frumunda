@@ -1,48 +1,25 @@
-import React, { useContext, useState, useCallback, FunctionComponent} from 'react';
+import React, { useContext, useCallback, FunctionComponent} from 'react';
 import { IconButton, Typography} from '@mui/material';
 import { RemoveDone } from '@mui/icons-material';
 import {cleanTags, cleanPostItem, removePunctuation, shortUrl} from '../utils'
 import {cleanPostItemType} from './Posts'
 import { ParsedFeedContentContext } from './Feed'
 import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
-// import { removePunctuation, removeTrackingGarbage, shortUrl } from '../index.js'
-// import { useDebouncedCallback } from 'use-debounce';
 
 
 const MarkFeedProcessedButton: FunctionComponent = () => {
   const {processedPosts, persistProcessedPosts} = useProcessedPosts();
-  const [buttonDisabled, setButtonDisabled] = useState(false)
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
-
-//   const setButtonDisabledCallback = useCallback((newState) => setButtonDisabled(newState), [])
-//   const blockstackSessionContext = useContext(BlockstackSessionContext);
-//   const blockstackSession = Object.assign(blockstackSessionContext);
-//   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
-//   const parsedFeedContent = Object.assign(parsedFeedContentContext)
-//   const feedContext = useContext(FeedContext)
-//   const feed = Object.assign(feedContext)[0]
-
 
   const setProcessedPostsCallback = useCallback((newPosts: object) => {
     persistProcessedPosts(newPosts)
   }, [persistProcessedPosts])
 
-  // const publishProcessedPosts = useDebouncedCallback((newProcessedPosts: string) => {
-  //   const contentToUpload = `${newProcessedPosts}`
-  //   const uploadFilename = `${shortUrl(feed)}`
-  //   blockstackStorage.putFile(`${uploadFilename}`, `${contentToUpload}`, {
-  //     encrypt: true
-  //   })
-  //   .then((successMessage: string) => {})
-  //   .catch((error: any) => console.log(error))
-  // }, 5000, { leading: true })
-
   const markFeedComplete = (feedLink: string, newProcessedPostsForFeed: string[]) => {
     const newProcessedPosts = structuredClone(processedPosts)
     newProcessedPosts[`${feedLink}`] = newProcessedPostsForFeed.flat(Infinity).slice()
     setProcessedPostsCallback(newProcessedPosts)
-//     blockstackSession.isUserSignedIn() && publishProcessedPosts(JSON.stringify(newProcessedPostsForFeed))
   }
 
   return (
@@ -60,12 +37,11 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
               <IconButton 
                 title="mark articles completed"
                 aria-label="mark articles completed" 
-                onClick={() => markFeedComplete(feedLink, newProcessedPosts)} 
-                disabled={buttonDisabled}
+                onClick={() => markFeedComplete(feedLink, newProcessedPosts)}
               >
                 <RemoveDone />
               </IconButton>
-              <Typography variant='caption'>{` mark all ${newProcessedPosts.length} "${feedTitleText}" posts as processed`}</Typography>
+              <Typography variant='caption'>{` mark all ${newProcessedPosts.length} "${feedTitleText}" posts as processed `}</Typography>
             </Typography>
           )
         })

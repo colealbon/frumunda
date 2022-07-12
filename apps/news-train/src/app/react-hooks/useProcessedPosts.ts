@@ -1,4 +1,4 @@
-import { useState, useCallback} from 'react';
+import { useCallback} from 'react';
 import localforage from 'localforage'
 import useSWR  from 'swr';
 import defaultProcessedPosts from './defaultProcessedPosts.json'
@@ -26,16 +26,12 @@ export function useProcessedPosts () {
     }
   )
 
-  const [inFlight, setInFlight] = useState(false)
-
   const persistProcessedPosts = useCallback((newProcessedPosts: unknown) => {
-    setInFlight(true)
     const newProcessedPostsClone = structuredClone(newProcessedPosts)
     const updateFn = (newProcessedPosts: object) => {
       const newProcessedPostsClone = structuredClone(newProcessedPosts)
       return new Promise((resolve) => {
         localforage.setItem('processedPosts', newProcessedPostsClone)
-        setInFlight(false)
         resolve(newProcessedPostsClone)
       })
     }
@@ -49,7 +45,6 @@ export function useProcessedPosts () {
   return {
     processedPosts: data,
     factoryReset, 
-    persistProcessedPosts, 
-    inFlight
+    persistProcessedPosts
   }
 }

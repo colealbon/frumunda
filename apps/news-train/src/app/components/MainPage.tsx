@@ -10,7 +10,7 @@ import CorsProxiesEdit from './CorsProxiesEdit'
 import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
 import CorsProxies from './CorsProxies'
-import ProcessedPosts from './ProcessedPosts'
+import ProcessedPostsFromStacks from './ProcessedPostsFromStacks'
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
@@ -25,7 +25,9 @@ export function MainPage() {
             <CorsProxies>
               <Category>
                 <Feed>
-                  <Posts />
+                  <ProcessedPostsFromStacks>
+                    <Posts />
+                  </ProcessedPostsFromStacks>
                 </Feed>
               </Category>
             </CorsProxies>
