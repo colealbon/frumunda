@@ -1,20 +1,20 @@
-import React, { useContext, useState, useCallback } from 'react';
-// import { FeedContext } from './Posts'
-import { IconButton } from '@mui/material';
+import React, { useContext, useState, useCallback, FunctionComponent} from 'react';
+import { IconButton, Typography} from '@mui/material';
 import { RemoveDone } from '@mui/icons-material';
-// import htmlToText from 'html-to-text';
-// import { useProcessedPosts } from '../custom-hooks/useProcessedPosts'
-// import { ParsedFeedContentContext } from './FeedContentParse';
+import {cleanTags, cleanPostItem, removePunctuation, shortUrl} from '../utils'
+import {cleanPostItemType} from './Posts'
+import { ParsedFeedContentContext } from './Feed'
+import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
 // import { removePunctuation, removeTrackingGarbage, shortUrl } from '../index.js'
 // import { useDebouncedCallback } from 'use-debounce';
-// import { BlockstackStorageContext, BlockstackSessionContext } from './BlockstackSessionProvider';
 
-// var entries = require('object.entries')
 
-const MarkFeedProcessedButton = () => {
-const [buttonDisabled, setButtonDisabled] = useState(false)
-//   const blockstackStorageContext = useContext(BlockstackStorageContext);
-//   const blockstackStorage = Object.assign(blockstackStorageContext);
+const MarkFeedProcessedButton: FunctionComponent = () => {
+  const {processedPosts, persistProcessedPosts} = useProcessedPosts();
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const parsedFeedContentContext = useContext(ParsedFeedContentContext);
+  const parsedFeedContent = structuredClone(parsedFeedContentContext);
+
 //   const setButtonDisabledCallback = useCallback((newState) => setButtonDisabled(newState), [])
 //   const blockstackSessionContext = useContext(BlockstackSessionContext);
 //   const blockstackSession = Object.assign(blockstackSessionContext);
@@ -22,71 +22,55 @@ const [buttonDisabled, setButtonDisabled] = useState(false)
 //   const parsedFeedContent = Object.assign(parsedFeedContentContext)
 //   const feedContext = useContext(FeedContext)
 //   const feed = Object.assign(feedContext)[0]
-//   const {processedPosts, setProcessedPosts} = useProcessedPosts();
 
-//   const setProcessedPostsCallback = useCallback((newPosts) => {
-//     setProcessedPosts(newPosts)
-//   }, [setProcessedPosts])
 
-//   const publishProcessedPosts = useDebouncedCallback((newProcessedPosts: string) => {
-//     const contentToUpload = `${newProcessedPosts}`
-//     const uploadFilename = `${shortUrl(feed)}`
-//     blockstackStorage.putFile(`${uploadFilename}`, `${contentToUpload}`, {
-//       encrypt: true
-//     })
-//     .then((successMessage: string) => {})
-//     .catch((error: any) => console.log(error))
-//   }, 5000, { leading: true })
+  const setProcessedPostsCallback = useCallback((newPosts: object) => {
+    persistProcessedPosts(newPosts)
+  }, [persistProcessedPosts])
 
-  const markFeedComplete = () => {
-    alert('you are a tiger!')
-    alert('le tigre')
+  // const publishProcessedPosts = useDebouncedCallback((newProcessedPosts: string) => {
+  //   const contentToUpload = `${newProcessedPosts}`
+  //   const uploadFilename = `${shortUrl(feed)}`
+  //   blockstackStorage.putFile(`${uploadFilename}`, `${contentToUpload}`, {
+  //     encrypt: true
+  //   })
+  //   .then((successMessage: string) => {})
+  //   .catch((error: any) => console.log(error))
+  // }, 5000, { leading: true })
 
-//     const postsForFeed = entries(parsedFeedContent as object)
-//     .filter((feedContentEntry: [string, object]) => {
-//       return feedContentEntry[0] === feed
-//     })
-//     .filter((parsedFeedEntry: [string, object]) => {
-//       return parsedFeedEntry[1];
-//     })
-//     .map((parsedFeedEntry:[string, any]) => {
-//       return parsedFeedEntry[1][0];
-//     })
-//     .map((parsedFeedEntryContent: any) => {
-//       return parsedFeedEntryContent.map(
-//       (postItem: { title?: string , link?:string, description?:string}) => {
-//         const theDescription = `${postItem.description}`
-//         const descriptionText = htmlToText.fromString(theDescription, {
-//           ignoreHref: true,
-//           ignoreImage: true,
-//         });
-//         const theTitle = `${postItem.title}`
-//         const mlText = removePunctuation(removeTrackingGarbage(`${theTitle} ${descriptionText}`))
-//         return mlText
-//       })
-//     }).flat(Infinity)
-
-//     const processedPostsForFeed = [entries(processedPosts)
-//       .filter((feedEntry: [string, string[]]) => feedEntry[0] === feed)
-//       .map((feedEntry: [string, string[]]) => feedEntry[1])]
-//       .flat(Infinity)
-//       .map((postEntry: string) => removePunctuation(removeTrackingGarbage(postEntry)))
-
-//     const newProcessedPostsForFeed = Array.from(new Set([...processedPostsForFeed, ...postsForFeed]))
-
-//     const newProcessedPosts = Object.assign({...processedPosts as object})
-//     newProcessedPosts[`${feed}`] = [...newProcessedPostsForFeed]
-
-//     setProcessedPostsCallback(newProcessedPosts)
+  const markFeedComplete = (feedLink: string, newProcessedPostsForFeed: string[]) => {
+    const newProcessedPosts = structuredClone(processedPosts)
+    newProcessedPosts[`${feedLink}`] = newProcessedPostsForFeed.flat(Infinity).slice()
+    setProcessedPostsCallback(newProcessedPosts)
 //     blockstackSession.isUserSignedIn() && publishProcessedPosts(JSON.stringify(newProcessedPostsForFeed))
-//     setButtonDisabledCallback(true)
-
   }
 
   return (
-    <IconButton title="mark articles completed"  aria-label="mark articles completed" onClick={markFeedComplete} disabled={buttonDisabled}>
-      <RemoveDone style={{ fontSize: 60 }} />
-    </IconButton>
+    <>
+      {
+        Object.entries(parsedFeedContent).map((feedContentEntry) => {
+          const feedLink: string = feedContentEntry[0]
+          const feedTitleText: string = cleanTags(structuredClone({...feedContentEntry[1] as object}).feedLabel || structuredClone({...feedContentEntry[1] as object}).title["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).title}`)
+          const newProcessedPosts = structuredClone({...feedContentEntry[1] as object}).items
+            .map((postItem: cleanPostItemType) => cleanPostItem(postItem))
+            .map((postItem: cleanPostItemType) => removePunctuation(`${postItem.title} ${postItem.description}`))
+          
+          return (
+            <Typography key={feedLink}>
+              <IconButton 
+                title="mark articles completed"
+                aria-label="mark articles completed" 
+                onClick={() => markFeedComplete(feedLink, newProcessedPosts)} 
+                disabled={buttonDisabled}
+              >
+                <RemoveDone />
+              </IconButton>
+              <Typography variant='caption'>{` mark all ${newProcessedPosts.length} "${feedTitleText}" posts as processed`}</Typography>
+            </Typography>
+          )
+        })
+      }
+    </>
   )
 };
 

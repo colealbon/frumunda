@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import {cleanTags, cleanPostItem, removePunctuation} from '../utils'
 import stringSimilarity from 'string-similarity'
+import MarkFeedProcessedButton from './MarkFeedProcessedButton'
 
 export type cleanPostItemType = {
   title: string,
@@ -35,17 +36,16 @@ const Posts: FunctionComponent = () => {
             .map(feedEntry => feedEntry[1])]
             .flat(Infinity)
 
-          const freshCleanPostItems = structuredClone({...feedContentEntry[1] as object}).items.map((postItem: cleanPostItemType) => cleanPostItem(postItem))
-          .filter((postItem: cleanPostItemType) => {
-            const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
-            return !processedPostsForFeed.find((postItem: string) => {
-              const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
-              return similarity > .82
+          const unprocessedCleanPostItems = structuredClone({...feedContentEntry[1] as object}).items.map((postItem: cleanPostItemType) => cleanPostItem(postItem))
+            .filter((postItem: cleanPostItemType) => {
+              const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
+              return !processedPostsForFeed.find((postItem: string) => {
+                const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
+                return similarity > .82
+              })
             })
 
-          })
-
-          if (freshCleanPostItems.length === 0) {
+          if (unprocessedCleanPostItems.length === 0) {
             return <span key='empty'></span>
           }
 
@@ -66,7 +66,7 @@ const Posts: FunctionComponent = () => {
               </Typography>
               <Divider />
               {
-                freshCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
+                unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
                   return (
                     <PostContext.Provider
                       value={cleanPostItem}
@@ -77,6 +77,7 @@ const Posts: FunctionComponent = () => {
                   )
                 })
               }
+              <MarkFeedProcessedButton />
             </div>
           )
         })

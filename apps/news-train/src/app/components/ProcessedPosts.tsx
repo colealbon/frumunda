@@ -1,4 +1,3 @@
-import { resolve } from 'node:path/win32';
 import React, {
   FunctionComponent,
   ReactNode,
@@ -8,10 +7,8 @@ import React, {
 import {useProcessedPosts} from '../react-hooks/useProcessedPosts'
 // import {useProcessedPosts} from '../react-hooks/useProcessedPosts'
 import useSWR from 'swr';
-// import { BlockstackStorageContext } from './BlockstackSessionProvider';
 import { ParsedFeedContentContext } from './Feed'
 import { shortUrl } from '../utils.js'
-// , unique, removePunctuation, removeTrackingGarbage} 
 
 export const ProcessedPostsContext = createContext({});
 
@@ -24,7 +21,6 @@ const ProcessedPosts: FunctionComponent<Props> = ({children}: Props ) => {
   const parsedFeedContentContext = useContext(ParsedFeedContentContext)
   const parsedFeedContent = structuredClone(parsedFeedContentContext as object)
   const keyForFeed = Object.keys(parsedFeedContent)[0]
-
 
   // const fetcher = (fileName: string, blockstackStorage: any) => {
   //   return new Promise(resolve => {
@@ -77,7 +73,8 @@ const ProcessedPosts: FunctionComponent<Props> = ({children}: Props ) => {
     )
   }
 
-const processedPostsForFeed = structuredClone(data)
+  const processedPostsForFeed = structuredClone(data)
+
   return (
     <ProcessedPostsContext.Provider value={processedPostsForFeed}>
       {children}
