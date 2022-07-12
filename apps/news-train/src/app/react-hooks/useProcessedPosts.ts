@@ -9,10 +9,11 @@ export function useProcessedPosts () {
 
   const fetcher = () => {
     return new Promise((resolve, reject) => {
+      resolve(defaultProcessedPosts)
       localforage.getItem('processedPosts')
       .then((value: unknown) => {
         if (!value) {
-          reject(new Error('no stored processedPosts using defaultProcessedPosts'))
+          resolve(defaultProcessedPosts)
         }
         resolve(value)
       })

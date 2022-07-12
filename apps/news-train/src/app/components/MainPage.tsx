@@ -25,9 +25,9 @@ export function MainPage() {
             <CorsProxies>
               <Category>
                 <Feed>
-                  <ProcessedPosts>
+
                     <Posts />
-                  </ProcessedPosts>
+
                 </Feed>
               </Category>
             </CorsProxies>

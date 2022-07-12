@@ -173,6 +173,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
             .find(() => true)}`)
 
             const parsedFeedContentObj = Object.fromEntries([parsedFeedContent])
+            
             return (
               <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContentObj as object}>
                   {children}

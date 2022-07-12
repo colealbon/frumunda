@@ -1,21 +1,29 @@
 import React, { FunctionComponent, useContext, createContext } from 'react';
 import { ParsedFeedContentContext } from './Feed'
 import Post from './Post'
-//import SurpressProcessedPosts from './SurpressProcessedPosts';
-import SurpressProcessedPosts from './SurpressProcessedPosts'
+import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
 import {
   Link, 
   Divider, 
   Typography
 } from '@mui/material';
-import {cleanTags, removeTrackingGarbage} from '../utils'
+import {cleanTags, cleanPostItem, removePunctuation} from '../utils'
+import stringSimilarity from 'string-similarity'
+
+export type cleanPostItemType = {
+  title: string,
+  link: string,
+  description: string
+}
 
 export const PostContext = createContext({});
-
 
 const Posts: FunctionComponent = () => {
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
+  const {processedPosts} = useProcessedPosts()
+
+
   return (
     <>
       {
@@ -23,8 +31,25 @@ const Posts: FunctionComponent = () => {
           const feedLink: string = feedContentEntry[0]
           const feedTitleText: string = cleanTags(structuredClone({...feedContentEntry[1] as object}).feedLabel || structuredClone({...feedContentEntry[1] as object}).title["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).title}`)
           const feedDescription = cleanTags(structuredClone({...feedContentEntry[1] as object}).description["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).description}`)
-          const postItems = structuredClone({...feedContentEntry[1] as object}).items
-          
+          const processedPostsForFeed = [Object.entries(processedPosts as object)
+            .filter((feedEntry) => feedEntry[0] === feedLink)
+            .map(feedEntry => feedEntry[1])]
+            .flat(Infinity)
+
+          const freshCleanPostItems = structuredClone({...feedContentEntry[1] as object}).items.map((postItem: cleanPostItemType) => cleanPostItem(postItem))
+          .filter((postItem: cleanPostItemType) => {
+            const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
+            return !processedPostsForFeed.find((postItem: string) => {
+              const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
+              return similarity > .85
+            })
+
+          })
+
+          if (freshCleanPostItems.length === 0) {
+            return <span></span>
+          }
+
           return (
             <div
               key={feedLink}
@@ -42,33 +67,18 @@ const Posts: FunctionComponent = () => {
               </Typography>
               <Divider />
               {
-                postItems.map((postItem: {
-                  title: string,
-                  link: string,
-                  description: string
-                }) => {
-
-                  const cleanPostItem = {
-                    title: cleanTags(structuredClone({...postItem as object}).title["$text"]  || `${structuredClone({...postItem as object}).title}`),
-                    description: removeTrackingGarbage(cleanTags(structuredClone({...postItem as object}).description["$text"]  || `${structuredClone({...postItem as object}).description}`)),
-                    link: structuredClone({...postItem as object}).link["$text"]  || `${structuredClone({...postItem as object}).link}`
-
-                  }
-
+                freshCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
                   return (
                     <PostContext.Provider
                       value={cleanPostItem}
                       key={JSON.stringify(cleanPostItem)}
                     >
-                      <SurpressProcessedPosts>
-                        <Post />
-                      </SurpressProcessedPosts>
+                      <Post />
                     </PostContext.Provider>
                   )
                 })
               }
             </div>
-            
           )
         })
       }

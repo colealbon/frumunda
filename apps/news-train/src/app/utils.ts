@@ -1,22 +1,22 @@
 import {hash} from 'tweetnacl';
 import {convert} from 'html-to-text';
 
-export const removePunctuation = (text) => {
-    return text.replace(/[/?–…".,#!$%^&*;:{}=\-_`~()'’‘“”—]/g,"")
+export const removePunctuation = (text: string) => {
+  return text.replace(/[/?–…".,#!$%^&*;:{}=\-_`~()'’‘“”—]/g,"")
+    .replace(/\s{2,}/g," ")
+}
 
-  }
+export const removeTrackingGarbage = (text: string) => {
+  return text.replace(/read full article at rtcom.*$/g,"")
+  .replace(/appeared first on.*$/g,"")
+  .replace(/\[httpstheinterceptcom.*$/g,"")
+  .replace(/\[httpselectrekcowebstories.*$/g,"")
+  .replace(/-- read more on .*/g,"")
+  .replace(/-- Read more on .*/g,"")
+  .replace(/\n/g," ").replace(/\s{2,}/g," ")
+}
 
-  export const removeTrackingGarbage = (text) => {
-    return text.replace(/read full article at rtcom.*$/g,"")
-    .replace(/appeared first on.*$/g,"")
-    .replace(/\[httpstheinterceptcom.*$/g,"")
-    .replace(/\[httpselectrekcowebstories.*$/g,"")
-    .replace(/-- read more on .*/g,"")
-    .replace(/-- Read more on .*/g,"")
-    .replace(/\n/g," ").replace(/\s{2,}/g," ")
-    }
-
-export const cleanTags = (text) => {
+export const cleanTags = (text: string) => {
   return convert(text, {ignoreHref:
     true,
   ignoreImage:
@@ -44,17 +44,17 @@ export const cleanTags = (text) => {
   .replace(/&ldquo;/g, '"')
 }
 
-export const hashStr = (text) => {
+export const hashStr = (text: string) => {
 return removePunctuation(encodeURIComponent(hash(new Buffer(text)).toString()))
 }
 
-export const shortUrl = (text) => {
+export const shortUrl = (text: string) => {
 const theUrl = new URL(text)
 const newPath = removePunctuation(`${theUrl.hostname}${theUrl.pathname}`)
 return newPath
 }
 
-export const labelOrEcho = (index) => {
+export const labelOrEcho = (index: string) => {
   return `${Object.entries({
     classifiers: 'classifiers',
     contribute: 'contribute',
@@ -70,4 +70,16 @@ export const labelOrEcho = (index) => {
   .map((labelsEntry) => labelsEntry[1])
   .concat(`${index}`)
   .find(() => true)}`
+}
+
+export const cleanPostItem = (postItem: {
+  title: string,
+  link: string,
+  description: string
+}) => {
+  return {
+    title: cleanTags(structuredClone({...postItem as object}).title["$text"]  || `${structuredClone({...postItem as object}).title}`),
+    description: removeTrackingGarbage(cleanTags(structuredClone({...postItem as object}).description && structuredClone({...postItem as object}).description["$text"]  || `${structuredClone({...postItem as object}).description}`)),
+    link: structuredClone({...postItem as object}).link["$text"]  || `${structuredClone({...postItem as object}).link}`
+  }
 }
