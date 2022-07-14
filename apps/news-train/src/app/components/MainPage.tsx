@@ -21,7 +21,7 @@ export function MainPage() {
   const fetchAndRenderPosts = () => {
     return (
       <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
-        <Suspense fallback={`loading and processing posts (we take time so you don't have to...)`}>
+        <Suspense fallback={`loading and processing posts (be patient...)`}>
             <CorsProxies>
               <Category>
                 <Feed>

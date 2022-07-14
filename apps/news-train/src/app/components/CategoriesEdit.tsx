@@ -1,4 +1,4 @@
-import React, { FunctionComponent, Suspense } from 'react';
+import React, { FunctionComponent } from 'react';
 import { useCategories } from '../react-hooks/useCategories'
 
 import CategoriesAdd from './CategoriesAdd';

@@ -140,49 +140,42 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
   
   const fetchedContent: unknown = Object.assign(data as object)
   return (
-    <Box 
-      style={{ 
-        width: "95%",
-        minHeight: "95vh"
-      }}
-    >
-      <Grid>
-        {
-          Object.entries(fetchedContent as object)
-          .filter((parsedFeedContent) => !!parsedFeedContent[1])
-          .map((parsedFeedContent: [string, unknown]) => {
-            const feedTitleText = `${Object.assign({...parsedFeedContent[1] as object}).feedLabel} `.concat(`${Object.entries(Object.assign({...parsedFeedContent[1] as object} || {title: ''}).title)
-            .filter(titleEntry => {
-              return titleEntry[0] === "$text"
-            })
-            .map(titleEntry => htmlToText(
-                `${titleEntry[1]}`,
-                {
-                  ignoreHref:
-                    true,
-                  ignoreImage:
-                    true,
-                }
-              )
-              .replace(
-                '&mdash;',
-                ''
-              ))
-
-            .concat(Object.assign({...parsedFeedContent[1] as object}).title)
-            .find(() => true)}`)
-
-            const parsedFeedContentObj = Object.fromEntries([parsedFeedContent])
-            
-            return (
-              <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContentObj as object}>
-                  {children}
-              </ParsedFeedContentContext.Provider>
-            )
+    <Grid>
+      {
+        Object.entries(fetchedContent as object)
+        .filter((parsedFeedContent) => !!parsedFeedContent[1])
+        .map((parsedFeedContent: [string, unknown]) => {
+          const feedTitleText = `${Object.assign({...parsedFeedContent[1] as object}).feedLabel} `.concat(`${Object.entries(Object.assign({...parsedFeedContent[1] as object} || {title: ''}).title)
+          .filter(titleEntry => {
+            return titleEntry[0] === "$text"
           })
-        }
-      </Grid>
-    </Box>
+          .map(titleEntry => htmlToText(
+              `${titleEntry[1]}`,
+              {
+                ignoreHref:
+                  true,
+                ignoreImage:
+                  true,
+              }
+            )
+            .replace(
+              '&mdash;',
+              ''
+            ))
+
+          .concat(Object.assign({...parsedFeedContent[1] as object}).title)
+          .find(() => true)}`)
+
+          const parsedFeedContentObj = Object.fromEntries([parsedFeedContent])
+          
+          return (
+            <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContentObj as object}>
+                {children}
+            </ParsedFeedContentContext.Provider>
+          )
+        })
+      }
+    </Grid>
   )
 };
 

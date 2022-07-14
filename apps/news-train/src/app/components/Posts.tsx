@@ -1,12 +1,17 @@
-import React, { FunctionComponent, useContext, createContext } from 'react';
+import { FunctionComponent, useContext, createContext, useState} from 'react';
 import { ParsedFeedContentContext } from './Feed'
 import Post from './Post'
 import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
 import {
-  Link, 
-  Divider, 
-  Typography
+  Link,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Box,
+  List
 } from '@mui/material';
+import {ExpandMore} from '@mui/icons-material';
 import {cleanTags, cleanPostItem, removePunctuation} from '../utils'
 import stringSimilarity from 'string-similarity'
 import MarkFeedProcessedButton from './MarkFeedProcessedButton'
@@ -23,74 +28,109 @@ const Posts: FunctionComponent = () => {
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
   const {processedPosts} = useProcessedPosts()
+  const [expanded, setExpanded] = useState<string | false>(false);
+
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
 
   return (
     <>
       {
-        Object.entries(parsedFeedContent).map((feedContentEntry) => {
-          const feedLink: string = feedContentEntry[0]
-          const feedTitleText: string = cleanTags(structuredClone({...feedContentEntry[1] as object}).feedLabel || structuredClone({...feedContentEntry[1] as object}).title["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).title}`)
-          const feedDescription = cleanTags(structuredClone({...feedContentEntry[1] as object}).description["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).description}`)
-          const processedPostsForFeed = [Object.entries(processedPosts as object)
-            .filter((feedEntry) => feedEntry[0] === feedLink)
-            .map(feedEntry => feedEntry[1])]
-            .flat(Infinity)
+      Object.entries(parsedFeedContent).map((feedContentEntry) => {
+      const feedLink: string = feedContentEntry[0]
+      const feedTitleText: string = cleanTags(structuredClone({...feedContentEntry[1] as object}).feedLabel || structuredClone({...feedContentEntry[1] as object}).title["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).title}`)
+      const feedDescription = cleanTags(structuredClone({...feedContentEntry[1] as object}).description["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).description}`)
+      const processedPostsForFeed = [Object.entries(processedPosts as object)
+        .filter((feedEntry) => feedEntry[0] === feedLink)
+        .map(feedEntry => feedEntry[1])]
+        .flat(Infinity)
 
-          const unprocessedCleanPostItems = structuredClone({...feedContentEntry[1] as object}).items.map((postItem: cleanPostItemType) => cleanPostItem(postItem))
-            .filter((postItem: cleanPostItemType) => {
-              const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
-              return !processedPostsForFeed.find((postItem: string) => {
-                const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
-                return similarity > .82
-              })
-            })
+      const postsForFeed = structuredClone({...feedContentEntry[1] as object}).items
 
-          if (unprocessedCleanPostItems.length === 0) {
-            return (
-              <span key={feedLink}>
-                <Typography variant="h3">
-                  <Link href={`${feedLink}`} component="button">
-                    {`${feedTitleText}`}
-                  </Link>
-                </Typography>
-                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} posts remaining)`}</Typography>
-                <Divider />
-              </span>
-            )
-          }
+      const unprocessedCleanPostItems = postsForFeed.map((postItem: cleanPostItemType) => cleanPostItem(postItem))
+        .filter((postItem: cleanPostItemType) => {
+          const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
+          return !processedPostsForFeed.find((postItem: string) => {
+            const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
+            return similarity > .82
+          })
+        })
 
+        if (unprocessedCleanPostItems.length === 0) {
           return (
-            <div
-              key={feedLink}
-              style={{ 
-                width: "90%"
-              }}
-            > 
-              <Typography variant="h3">
-                <Link href={`${feedLink}`} component="button">
-                  {`${feedTitleText}`}
-                </Link>
-              </Typography>
-              <Typography variant="caption">
-                {` ${feedDescription}`}
-              </Typography>
-              <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} posts remaining)`}</Typography>
-              <Divider />
-              {
-                unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
-                  return (
-                    <PostContext.Provider
-                      value={cleanPostItem}
-                      key={JSON.stringify(cleanPostItem)}
-                    >
-                      <Post />
-                    </PostContext.Provider>
-                  )
-                })
-              }
-              <MarkFeedProcessedButton />
-            </div>
+            <Accordion expanded={false}>
+              <AccordionSummary
+                aria-controls={`${feedLink}-content`}
+                id={`${feedLink}-header`}
+              >
+                <Box   
+                  display="flex"
+                  alignItems="flex-start"
+                  flexDirection="column"
+                >
+                  <Typography variant='h3'>
+                    <Link href={`${feedLink}`} component="button">
+                      {`${feedTitleText}`}
+                    </Link>
+                  </Typography>
+                  <Typography variant="caption">
+                    {` ${feedDescription}`}
+                  </Typography>
+                  <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} posts remaining)`}</Typography>
+                </Box>
+              </AccordionSummary>
+            </Accordion>
+
           )
+        }
+        return (
+          <Accordion 
+            expanded={expanded === `panel-${feedLink}`} 
+            onChange={handleChange(`panel-${feedLink}`)}
+            key={`accordion-${feedLink}`}
+          >
+            <AccordionSummary
+                expandIcon={<ExpandMore />}
+                aria-controls={`${feedLink}-content`}
+                id={`${feedLink}-header`}
+              >
+                <Box   
+                  display="flex"
+                  alignItems="flex-start"
+                  flexDirection="column"
+                >
+                  <Typography variant='h3'>
+                    <Link href={`${feedLink}`} component="button">
+                      {`${feedTitleText}`}
+                    </Link>
+                  </Typography>
+                  <Typography variant="caption">
+                    {` ${feedDescription}`}
+                  </Typography>
+                  <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${postsForFeed.length} posts remaining)`}</Typography>
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                <List>
+                  {
+                    unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
+                      return (
+                        <PostContext.Provider
+                          value={cleanPostItem}
+                          key={JSON.stringify(cleanPostItem)}
+                        >
+                          <Post />
+                        </PostContext.Provider>
+                      )
+                    })
+                  }
+                  <MarkFeedProcessedButton />
+                </List>
+              </AccordionDetails>
+          </Accordion>
+        )
         })
       }
     </>
@@ -98,4 +138,3 @@ const Posts: FunctionComponent = () => {
 }
 
 export default Posts;
-

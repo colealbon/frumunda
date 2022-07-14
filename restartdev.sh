@@ -6,7 +6,7 @@
 #  nx build news-train --watch --verbose --configuration=development
 # open screen 2
 #  cd ~/cafe-society
-#  fswatch -o ./dist/apps/news-train | xargs -n1 -I{} ./restartdev.ss
+#  fswatch -o ./dist/apps/news-train | xargs -n1 -I{} ./restartdev.sh
  
 echo restart
 # killall node
