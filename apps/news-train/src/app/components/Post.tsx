@@ -15,7 +15,7 @@ const Post: FunctionComponent = () => {
   const postItem = Object.assign(postContext)
 
   return (
-    <ListItem>
+    <ListItem key={`postitem-${postItem.link}`}>
       <ListItemText
         primary={
           <Link

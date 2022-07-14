@@ -60,15 +60,17 @@ const Posts: FunctionComponent = () => {
 
         if (unprocessedCleanPostItems.length === 0) {
           return (
-            <Accordion expanded={false}>
+            <Accordion expanded={false} key={`accordion-${feedLink}`}>
               <AccordionSummary
                 aria-controls={`${feedLink}-content`}
                 id={`${feedLink}-header`}
+                key={`accordion-${feedLink}`}
               >
                 <Box   
                   display="flex"
                   alignItems="flex-start"
                   flexDirection="column"
+                  key={`box-${feedLink}`}
                 >
                   <Typography variant='h3'>
                     <Link href={`${feedLink}`} component="button">
@@ -95,6 +97,7 @@ const Posts: FunctionComponent = () => {
                 expandIcon={<ExpandMore />}
                 aria-controls={`${feedLink}-content`}
                 id={`${feedLink}-header`}
+                key={`${feedLink}-header`}
               >
                 <Box   
                   display="flex"
@@ -117,12 +120,14 @@ const Posts: FunctionComponent = () => {
                   {
                     unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
                       return (
-                        <PostContext.Provider
-                          value={cleanPostItem}
-                          key={JSON.stringify(cleanPostItem)}
-                        >
-                          <Post />
-                        </PostContext.Provider>
+                        <div key={cleanPostItem.link}>
+                          <PostContext.Provider
+                            value={cleanPostItem}
+                            
+                          >
+                            <Post key={JSON.stringify(cleanPostItem)} />
+                          </PostContext.Provider>
+                        </div>
                       )
                     })
                   }

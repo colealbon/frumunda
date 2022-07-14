@@ -1,4 +1,4 @@
-import React, {Suspense, FunctionComponent, ReactNode} from 'react';
+import React, {Suspense, FunctionComponent, ReactNode, useCallback} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -22,9 +22,9 @@ const Navigator: FunctionComponent<Props> = ({children}: Props) => {
   const { selectedPageIndex } = useSelectedPageIndex();
   const { selectedCategoryIndex } = useSelectedCategoryIndex();
 
-  const handleDrawerToggle = () => {
+  const handleDrawerToggle = useCallback(() => {
     setMobileOpen(!mobileOpen);
-  };
+  }, [mobileOpen, setMobileOpen]);
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -69,7 +69,8 @@ const Navigator: FunctionComponent<Props> = ({children}: Props) => {
             <Drawer
               variant="temporary"
               open={mobileOpen}
-              onClose={handleDrawerToggle}
+              onClose={() => handleDrawerToggle()}
+              onBlur={() => handleDrawerToggle()}
               ModalProps={{
                 keepMounted: true, // Better open performance on mobile.
               }}
