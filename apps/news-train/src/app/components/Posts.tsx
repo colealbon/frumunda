@@ -120,21 +120,15 @@ const Posts: FunctionComponent = () => {
               </Box>
             </AccordionSummary>
             <AccordionDetails>
-              <SwipeableList
-                fullSwipe={true}
-                threshold={.1}
-                type={ListType.IOS}
-              >
-                {
-                  unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
-                    return (
-                      <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${cleanPostItem.link}`}>
-                        <Post key={JSON.stringify(cleanPostItem)} />
-                      </PostContext.Provider>
-                    )
-                  })
-                }
-              </SwipeableList>
+              {
+                unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
+                  return (
+                    <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${cleanPostItem.link}`}>
+                      <Post key={JSON.stringify(cleanPostItem)} />
+                    </PostContext.Provider>
+                  )
+                })
+              }
               <MarkFeedProcessedButton />
             </AccordionDetails>
           </Accordion>
