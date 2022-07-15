@@ -27,6 +27,7 @@
     "react": "18.1.0",
     "react-delay": "^0.1.0",
     "react-dom": "18.1.0",
+    "react-swipeable-list": "^1.5.1",
     "react-visibility-sensor": "^5.1.1",
     "regenerator-runtime": "0.13.7",
     "rss-to-json": "^2.0.2",

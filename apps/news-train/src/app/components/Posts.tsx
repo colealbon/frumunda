@@ -8,9 +8,17 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Box,
-  List
+  Box
 } from '@mui/material';
+import {
+  LeadingActions,
+  SwipeableList,
+  SwipeableListItem,
+  SwipeAction,
+  TrailingActions,
+  Type as ListType,
+} from 'react-swipeable-list';
+import 'react-swipeable-list/dist/styles.css';
 import {ExpandMore} from '@mui/icons-material';
 import {cleanTags, cleanPostItem, removePunctuation} from '../utils'
 import stringSimilarity from 'string-similarity'
@@ -94,46 +102,47 @@ const Posts: FunctionComponent = () => {
             key={`accordion-${feedLink}`}
           >
             <AccordionSummary
-                expandIcon={<ExpandMore />}
-                aria-controls={`${feedLink}-content`}
-                id={`${feedLink}-header`}
-                key={`${feedLink}-header`}
+              expandIcon={<ExpandMore />}
+              aria-controls={`${feedLink}-content`}
+              id={`${feedLink}-header`}
+              key={`${feedLink}-header`}
+            >
+              <Box   
+                display="flex"
+                alignItems="flex-start"
+                flexDirection="column"
               >
-                <Box   
-                  display="flex"
-                  alignItems="flex-start"
-                  flexDirection="column"
-                >
-                  <Typography variant='h3'>
-                    <Link href={`${feedLink}`} component="button">
-                      {`${feedTitleText}`}
-                    </Link>
-                  </Typography>
-                  <Typography variant="caption">
-                    {` ${feedDescription}`}
-                  </Typography>
-                  <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${postsForFeed.length} posts remaining)`}</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <List>
-                  {
-                    unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
-                      return (
-                        <div key={cleanPostItem.link}>
-                          <PostContext.Provider
-                            value={cleanPostItem}
-                            
-                          >
-                            <Post key={JSON.stringify(cleanPostItem)} />
-                          </PostContext.Provider>
-                        </div>
-                      )
-                    })
-                  }
-                  <MarkFeedProcessedButton />
-                </List>
-              </AccordionDetails>
+                <Typography variant='h3'>
+                  <Link href={`${feedLink}`} component="button">
+                    {`${feedTitleText}`}
+                  </Link>
+                </Typography>
+                <Typography variant="caption">
+                  {` ${feedDescription}`}
+                </Typography>
+                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${postsForFeed.length} posts remaining)`}</Typography>
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <SwipeableList
+                // fullSwipe={fullSwipe}
+                // style={{ backgroundColor: '#555878' }}
+                // threshold={threshold}
+                type={ListType.IOS}
+              >
+                {
+                  unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
+                    return (
+
+                        <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${cleanPostItem.link}`}>
+                          <Post key={JSON.stringify(cleanPostItem)} />
+                        </PostContext.Provider>
+                    )
+                  })
+                }
+              </SwipeableList>
+              <MarkFeedProcessedButton />
+            </AccordionDetails>
           </Accordion>
         )
         })
@@ -143,3 +152,132 @@ const Posts: FunctionComponent = () => {
 }
 
 export default Posts;
+
+// import React from 'react';
+
+
+// import {
+//   ActionContent,
+//   Avatar,
+//   ItemColumn,
+//   ItemColumnCentered,
+//   ItemContent,
+//   ItemInfoLine,
+//   ItemNameLine,
+//   ItemRow,
+// } from '../styledComponents';
+// import { colors } from '../data.js';
+// import { DeleteIcon } from '../../images/icons';
+
+// import './WithOneAction.css';
+
+// const WithOneAction = ({
+//   people,
+//   fullSwipe,
+//   setStatus,
+//   setPeople,
+//   threshold,
+//   setThreshold,
+//   setSwipeAction,
+//   setSwipeProgress,
+//   setTriggeredItemAction,
+// }) => {
+//   React.useEffect(() => {
+//     setThreshold(0.5);
+//   }, [setThreshold]);
+
+//   const handleSwipeStart = () => {
+//     setSwipeAction('Swipe started');
+//     setTriggeredItemAction('None');
+//   };
+
+//   const handleSwipeEnd = () => {
+//     setSwipeAction('Swipe ended');
+//     setSwipeProgress();
+//   };
+
+//   const handleAccept = id => () => {
+//     console.log('[Handle ACCEPT]', id);
+//     setTriggeredItemAction(`[Handle ACCEPT] - ${id}`);
+//     setStatus(id, 'accepted');
+//   };
+
+//   const handleDelete = id => () => {
+//     console.log('[Handle DELETE]', id);
+//     setTriggeredItemAction(`[Handle DELETE] - ${id}`);
+//     setPeople(people.filter(person => person.id !== id));
+//   };
+
+//   const handleOnClick = id => () => {
+//     console.log('[handle on click]', id);
+//   };
+
+//   const leadingActions = ({ id }) => (
+//     <LeadingActions>
+//       <SwipeAction onClick={handleAccept(id)}>
+//         <ActionContent style={{ backgroundColor: colors.accepted }}>
+//           Accept
+//         </ActionContent>
+//       </SwipeAction>
+//     </LeadingActions>
+//   );
+
+//   const trailingActions = ({ id }) => (
+//     <TrailingActions>
+//       <SwipeAction destructive={true} onClick={handleDelete(id)}>
+//         <ActionContent style={{ backgroundColor: colors.deleted }}>
+//           <ItemColumnCentered>
+//             <span className="icon">
+//               <DeleteIcon />
+//             </span>
+//             Delete
+//           </ItemColumnCentered>
+//         </ActionContent>
+//       </SwipeAction>
+//     </TrailingActions>
+//   );
+
+//   return (
+//     <div className="basic-swipeable-list__container">
+//       <SwipeableList
+//         fullSwipe={fullSwipe}
+//         style={{ backgroundColor: '#555878' }}
+//         threshold={threshold}
+//         type={ListType.IOS}
+//       >
+//         {people.map(({ avatar, id, name, info, status }) => (
+//           <SwipeableListItem
+//             key={id}
+//             leadingActions={leadingActions({ id })}
+//             trailingActions={trailingActions({ id })}
+//             onSwipeEnd={handleSwipeEnd}
+//             onSwipeProgress={setSwipeProgress}
+//             onSwipeStart={handleSwipeStart}
+//             onClick={handleOnClick(id)}
+//           >
+//             <ItemContent>
+//               <ItemRow>
+//                 <Avatar alt="avatar" src={avatar} />
+//                 <ItemColumn>
+//                   <ItemNameLine>{name}</ItemNameLine>
+//                   <ItemInfoLine>
+//                     {info}{' '}
+//                     <span
+//                       style={{
+//                         backgroundColor: colors[status] || 'transparent',
+//                       }}
+//                     >
+//                       ({status})
+//                     </span>
+//                   </ItemInfoLine>
+//                 </ItemColumn>
+//               </ItemRow>
+//             </ItemContent>
+//           </SwipeableListItem>
+//         ))}
+//       </SwipeableList>
+//     </div>
+//   );
+// };
+
+// export default WithOneAction;
