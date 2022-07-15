@@ -90,30 +90,29 @@ const Post: FunctionComponent = () => {
         <div className="basic-swipeable-list__container">
           <SwipeableList
             fullSwipe={true}
-            style={{ backgroundColor: '#555878' }}
             threshold={threshold}
             type={ListType.IOS}
           >
-              <SwipeableListItem
-                key={id}
-                leadingActions={leadingActions()}
-                trailingActions={trailingActions()}
-                onSwipeEnd={handleSwipeEnd}
-                onSwipeProgress={setSwipeProgress}
-                onSwipeStart={handleSwipeStart}
-                onClick={handleOnClick()}
-              >
-                <ItemContent>
-                  <ItemRow>
-                    <ItemColumn>
-                      <ItemNameLine>{postItem.title}</ItemNameLine>
-                      <ItemInfoLine>
-                        {postItem.description}
-                      </ItemInfoLine>
-                    </ItemColumn>
-                  </ItemRow>
-                </ItemContent>
-              </SwipeableListItem>
+            <SwipeableListItem
+              key={id}
+              leadingActions={leadingActions()}
+              trailingActions={trailingActions()}
+              onSwipeEnd={handleSwipeEnd}
+              onSwipeProgress={setSwipeProgress}
+              onSwipeStart={handleSwipeStart}
+              onClick={handleOnClick()}
+            >
+              <ItemContent>
+                <ItemRow>
+                  <ItemColumn>
+                    <ListItemText
+                      primary={<Link href={`$postItem.link}`}>{postItem.title}</Link>}
+                      secondary={`${postItem.description}`}
+                    />
+                  </ItemColumn>
+                </ItemRow>
+              </ItemContent>
+            </SwipeableListItem>
           </SwipeableList>
         </div>
       </ListItem>
@@ -130,13 +129,6 @@ display: flex;
 align-items: center;
 justify-content: center;
 width: 100%;
-background-color: #555878;
-border-style: solid;
-border-color: #393a52;
-border-width: 12px;
-border-top-width: 6px;
-border-bottom-width: 6px;
-color: #eee;
 user-select: none;
 `;
 
@@ -148,18 +140,9 @@ padding: 8px;
 font-size: 12px;
 font-weight: 500;
 box-sizing: border-box;
-color: #eee;
 user-select: none;
 `;
 
-const Avatar = styled.img`
-width: 44px;
-height: 44px;
-border-radius: 50%;
-margin-right: 8px;
-user-drag: none;
-user-select: none;
-`;
 
 const ItemRow = styled.div`
 width: 100%;
@@ -179,13 +162,6 @@ flex-direction: column;
 align-items: flex-start;
 `;
 
-const ItemNameLine = styled.span`
-font-weight: 500;
-`;
-
-const ItemInfoLine = styled.span`
-font-size: 14px;
-`;
 
 
 // import {
