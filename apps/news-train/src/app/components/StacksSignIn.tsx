@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import { FunctionComponent } from 'react';
 import {Button, Typography} from '@mui/material';
 import {useStacks} from '../react-hooks/useStacks';
 import { showConnect } from '@stacks/connect';

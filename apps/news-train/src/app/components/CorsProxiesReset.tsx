@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import { FunctionComponent } from 'react';
 import Button from '@mui/material/Button';
 import { useCorsProxies } from '../react-hooks/useCorsProxies';
 

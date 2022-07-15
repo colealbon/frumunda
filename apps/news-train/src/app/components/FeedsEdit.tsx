@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { useFeeds } from '../react-hooks/useFeeds'
 import { Card, CardContent } from '@mui/material';
 

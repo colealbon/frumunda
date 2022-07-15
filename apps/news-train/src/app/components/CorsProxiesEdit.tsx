@@ -1,4 +1,4 @@
-import React, { FunctionComponent, Suspense } from 'react';
+import { FunctionComponent, Suspense } from 'react';
 import { useCorsProxies } from '../react-hooks/useCorsProxies'
 
 import CorsProxiesAdd from './CorsProxiesAdd';

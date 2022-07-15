@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useContext } from 'react';
+import { FunctionComponent, useContext } from 'react';
 import StacksFileDelete from './StacksFileDelete';
 import {StacksFilenamesContext} from './StacksFilenames'
 import {Box, Typography} from '@mui/material'

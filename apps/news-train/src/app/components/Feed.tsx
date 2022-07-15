@@ -8,7 +8,6 @@ import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxies'
 import { CategoryContext } from './Category';
 import { htmlToText } from 'html-to-text';
-import MarkFeedProcessedButton from './MarkFeedProcessedButton'
 
 // import VisibilitySensor from 'react-visibility-sensor';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -132,9 +131,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
     fetcher, 
     {
       suspense: true
-      ,dedupingInterval: 10 * 1000, 
-      // shouldRetryOnError: false,
-      // revalidateOnFocus: false
+      ,dedupingInterval: 10 * 1000
     }
   )
   
@@ -180,9 +177,3 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
 };
 
 export default Feed;
-
-// {[0, 1, 2].map((item) => (
-//   <ListItem key={`item-${sectionId}-${item}`}>
-//     <ListItemText primary={} />
-//   </ListItem>
-// ))}

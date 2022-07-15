@@ -9,7 +9,7 @@ const CorsProxies: FunctionComponent<Props> = ({children}: Props) => {
 
   const fetcher = () => {
     const defaultCorsProxies = {
-      '/.netlify/functions/main?url=': { checked: true },
+      'https://cafe-society.news/.netlify/functions/main?url=': { checked: true },
       'http://localhost:8888/.netlify/functions/main?url=': { checked: false }
     }
     return new Promise((resolve, reject) => {
@@ -28,7 +28,6 @@ const CorsProxies: FunctionComponent<Props> = ({children}: Props) => {
 
   const corsProxies = structuredClone(data)
 
-  // return (<pre>{JSON.stringify(corsProxies, null, 2)}</pre>)
   return (
     <CorsProxiesContext.Provider value={corsProxies}>
       {children}

@@ -1,4 +1,4 @@
-import React, { createContext, FunctionComponent, ReactNode } from 'react';
+import { createContext, FunctionComponent, ReactNode } from 'react';
 import useSWR from 'swr';
 import { AppConfig, UserSession } from '@stacks/connect';
 

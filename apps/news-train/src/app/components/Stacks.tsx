@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import { FunctionComponent } from 'react';
 import StacksSignIn from './StacksSignIn'
 import StacksSignOut from './StacksSignOut'
 import StacksProfileDisplay from './StacksProfileDisplay'

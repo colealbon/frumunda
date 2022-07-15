@@ -1,4 +1,4 @@
-import React, {Suspense, FunctionComponent, ReactNode, useCallback} from 'react';
+import {Suspense, FunctionComponent, ReactNode, useCallback, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,7 +18,7 @@ const drawerWidth = 240;
 type Props = {children: ReactNode}
 
 const Navigator: FunctionComponent<Props> = ({children}: Props) => {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const { selectedPageIndex } = useSelectedPageIndex();
   const { selectedCategoryIndex } = useSelectedCategoryIndex();
 

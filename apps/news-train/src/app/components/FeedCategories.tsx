@@ -1,4 +1,4 @@
-import React, { useCallback, FunctionComponent, Fragment } from 'react';
+import { useCallback, FunctionComponent, Fragment } from 'react';
 import { Chip } from '@mui/material';
 import { useFeeds } from '../react-hooks/useFeeds';
 import { useCategories } from '../react-hooks/useCategories';

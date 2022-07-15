@@ -1,4 +1,4 @@
-import React, { FunctionComponent, createContext, useContext, ReactNode } from 'react';
+import React, { FunctionComponent, ReactNode } from 'react';
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 import { useCategories } from '../react-hooks/useCategories'
 export const CategoryContext = React.createContext('');

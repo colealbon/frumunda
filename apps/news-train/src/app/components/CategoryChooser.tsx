@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent } from 'react';
 import {
   List,
   ListItem,
@@ -13,25 +13,18 @@ import { useCategories } from '../react-hooks/useCategories'
 const CategoryChooserCategories: FunctionComponent = () => {
   const { categories } = useCategories()
   const [open, setOpen] = React.useState(true);
-  const {selectedPageIndex, persistSelectedPageIndex, mutate: mutateSelectedPageIndex } = useSelectedPageIndex()
+  const { persistSelectedPageIndex, mutate: mutateSelectedPageIndex } = useSelectedPageIndex()
   const {selectedCategoryIndex, persistSelectedCategoryIndex, mutate: mutateSelectedCategoryIndex } = useSelectedCategoryIndex()
 
   const handleClick = () => {
     setOpen(!open);
   };
 
-  // useEffect(() => {
-  //   //reload
-  //   console.log('categoryChooser')
-  // }, [selectedPageIndex, selectedCategoryIndex])
-
-
   return (
     
       <List>
         <ListItem key={'category_chooser_allcategories'} disablePadding>
           <ListItemButton 
-            // sx={{ pl: 4 }} 
             key={'category_chooser_button_allcategories'}
             onClick={() => {
               handleClick()

@@ -11,11 +11,7 @@ import {
   Box
 } from '@mui/material';
 import {
-  LeadingActions,
   SwipeableList,
-  SwipeableListItem,
-  SwipeAction,
-  TrailingActions,
   Type as ListType,
 } from 'react-swipeable-list';
 import 'react-swipeable-list/dist/styles.css';
@@ -125,18 +121,16 @@ const Posts: FunctionComponent = () => {
             </AccordionSummary>
             <AccordionDetails>
               <SwipeableList
-                // fullSwipe={fullSwipe}
-                // style={{ backgroundColor: '#555878' }}
-                // threshold={threshold}
+                fullSwipe={true}
+                threshold={.1}
                 type={ListType.IOS}
               >
                 {
                   unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
                     return (
-
-                        <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${cleanPostItem.link}`}>
-                          <Post key={JSON.stringify(cleanPostItem)} />
-                        </PostContext.Provider>
+                      <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${cleanPostItem.link}`}>
+                        <Post key={JSON.stringify(cleanPostItem)} />
+                      </PostContext.Provider>
                     )
                   })
                 }

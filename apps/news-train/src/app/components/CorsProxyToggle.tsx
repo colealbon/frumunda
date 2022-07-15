@@ -1,4 +1,4 @@
-import React, { useCallback, FunctionComponent, Fragment } from 'react';
+import { useCallback, FunctionComponent, Fragment } from 'react';
 import { Switch, FormControlLabel,Typography} from '@mui/material';
 import { useCorsProxies } from '../react-hooks/useCorsProxies';
 
