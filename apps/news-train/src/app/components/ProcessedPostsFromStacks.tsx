@@ -25,7 +25,6 @@ const ProcessedPostsFromStacks: FunctionComponent<Props> = ({children}: Props ) 
   const keyForFeed = Object.keys(parsedFeedContent)[0]
   const filenameForFeed = `processed_${shortUrl(keyForFeed)}`
 
-
   const fetcher = (fileName: string, blockstackStorage: any) => {
     return new Promise(resolve => {
       const fetchQueue: unknown[] = []
@@ -54,8 +53,6 @@ const ProcessedPostsFromStacks: FunctionComponent<Props> = ({children}: Props ) 
   const { data } = useSWR(`processed_${shortUrl(keyForFeed)}`, fetcher, {
     suspense: true,
     shouldRetryOnError: false,
-    //dedupingInterval: 600 * 1000,
-    //revalidateOnFocus: false
   });
 
   const processedPostsForFeed = structuredClone(data)

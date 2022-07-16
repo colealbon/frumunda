@@ -1,8 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
+import { useClassifiers } from '../react-hooks/useClassifiers'
 
 const Classifiers: FunctionComponent = () => {
+  const {classifiers} = useClassifiers()
   return (
-    <>Classifiers</>
+    <pre>{JSON.stringify(classifiers, null, 2)}</pre>
   );
 };
 

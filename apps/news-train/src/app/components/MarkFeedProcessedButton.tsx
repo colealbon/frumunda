@@ -5,10 +5,18 @@ import {
   useState,
   useEffect
 } from 'react';
-import { IconButton, Typography} from '@mui/material';
+import {
+  IconButton,
+  Typography
+} from '@mui/material';
 import { RemoveDone } from '@mui/icons-material';
-import {cleanTags, cleanPostItem, removePunctuation, shortUrl} from '../utils'
-import {cleanPostItemType} from './Posts'
+import {
+  cleanTags, 
+  cleanPostItem, 
+  removePunctuation, 
+  shortUrl
+} from '../utils'
+import { cleanPostItemType } from './Posts'
 import { ParsedFeedContentContext } from './Feed'
 import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
 import { useStacks } from '../react-hooks/useStacks'
