@@ -1,21 +1,18 @@
 import { FunctionComponent, useContext } from 'react';
 import styled from 'styled-components';
-import {cleanTags, cleanPostItem, removePunctuation} from '../utils'
+import { removePunctuation } from '../utils'
 import { ClassifierContext } from './Classifier'
-const bayes = require('classificator');
-
+import { PostContext } from './Posts';
+import { CategoryContext } from './Category'
 import {
   ThumbDown,
   ThumbUp
 } from '@mui/icons-material'
-
-import 'react-swipeable-list/dist/styles.css';
 import {
     Link,
     ListItem,
     ListItemText
-  } from '@mui/material';
-
+} from '@mui/material';
 import {
   LeadingActions,
   SwipeableList,
@@ -24,14 +21,8 @@ import {
   TrailingActions,
   Type as ListType,
 } from 'react-swipeable-list';
-  
-import { 
-  PostContext
-} from './Posts';
-
-import {
-  CategoryContext
-} from './Category'
+import 'react-swipeable-list/dist/styles.css';
+const bayes = require('classificator');
 
 const Post: FunctionComponent = () => {
   const classifierContext = useContext(ClassifierContext);
