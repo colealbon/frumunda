@@ -2,7 +2,7 @@ import {hash} from 'tweetnacl';
 import {convert} from 'html-to-text';
 
 export const removePunctuation = (text: string) => {
-  return text.replace(/[/?–…".,#!$%^&*;:{}=\-_`~()'’‘“”—]/g,"")
+  return text.replace(/[/?…".,#!$%^&*;:{}=_`~()'’‘“”]/g,"")
     .replace(/\s{2,}/g," ")
 }
 

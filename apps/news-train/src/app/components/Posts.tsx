@@ -1,5 +1,6 @@
 import { FunctionComponent, useContext, createContext, useState} from 'react';
 import { ParsedFeedContentContext } from './Feed'
+import { ClassifierContext } from './Classifier'
 import Post from './Post'
 import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
 import {
@@ -10,11 +11,14 @@ import {
   AccordionDetails,
   Box
 } from '@mui/material';
+import { useSettings } from '../react-hooks/useSettings'
 
 import {ExpandMore} from '@mui/icons-material';
 import {cleanTags, cleanPostItem, removePunctuation} from '../utils'
 import stringSimilarity from 'string-similarity'
 import MarkFeedProcessedButton from './MarkFeedProcessedButton'
+
+const bayes = require('classificator');
 
 export type cleanPostItemType = {
   title: string,
@@ -27,8 +31,12 @@ export const PostContext = createContext({});
 const Posts: FunctionComponent = () => {
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
+  const classifierContext = useContext(ClassifierContext);
+  const classifier = structuredClone(classifierContext);
   const {processedPosts} = useProcessedPosts()
   const [expanded, setExpanded] = useState<string | false>(false);
+  const {settings} = useSettings()
+  const {mlThresholdConfidence} = structuredClone(settings)
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -49,6 +57,16 @@ const Posts: FunctionComponent = () => {
 
       const postsForFeed = structuredClone({...feedContentEntry[1] as object}).items
 
+      let classifierForCategory = bayes()
+
+      try {
+        if (classifier !== {}) {
+          classifierForCategory = structuredClone(classifier) ? bayes.fromJson(JSON.stringify(classifier)) : bayes()
+        }
+      } catch (err) {
+        // console.log(err)
+      }
+
       const unprocessedCleanPostItems = postsForFeed.map((postItem: cleanPostItemType) => cleanPostItem(postItem))
         .filter((postItem: cleanPostItemType) => {
           const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
@@ -56,6 +74,19 @@ const Posts: FunctionComponent = () => {
             const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
             return similarity > .82
           })
+        })
+        .filter((postItem: cleanPostItemType) => {
+          const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
+          try {
+            const prediction = classifierForCategory.categorize(`${mlText}`);
+            const surpress = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
+              (likelihood: any) => likelihood && likelihood.category === 'notgood'
+            )?.proba || 0.0) > mlThresholdConfidence.value
+            return !surpress
+          } catch (error) {
+            return true
+          }
+          return true
         })
 
         if (unprocessedCleanPostItems.length === 0) {

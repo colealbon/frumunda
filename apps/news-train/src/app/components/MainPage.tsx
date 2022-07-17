@@ -3,6 +3,7 @@ import Category from './Category'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
 import ClassifiersFromStacks from './ClassifiersFromStacks'
+import Classifier from './Classifier'
 import Feed from './Feed'
 import Posts from './Posts'
 import Stacks from './Stacks'
@@ -26,11 +27,13 @@ export function MainPage() {
             <CorsProxies>
               <Category>
                 <ClassifiersFromStacks>
-                  <Feed>
-                    <ProcessedPostsFromStacks>
-                      <Posts />
-                    </ProcessedPostsFromStacks>
-                  </Feed>
+                  <Classifier>
+                    <Feed>
+                      <ProcessedPostsFromStacks>
+                        <Posts />
+                      </ProcessedPostsFromStacks>
+                    </Feed>
+                  </Classifier>
                 </ClassifiersFromStacks>
               </Category>
             </CorsProxies>
