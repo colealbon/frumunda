@@ -1,8 +1,7 @@
 import React, { FunctionComponent, createContext, useContext, ReactNode } from 'react';
 import useSWR  from 'swr';
 import {
-  Grid,
-  Box, 
+  Grid
 } from '@mui/material';
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxies'

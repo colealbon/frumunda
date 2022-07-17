@@ -104,7 +104,7 @@ const Posts: FunctionComponent = () => {
                   key={`box-${feedLink}`}
                 >
                   <Typography variant='h3'>
-                    <Link href={`${feedLink}`} component="button">
+                    <Link href={feedLink} component="button">
                       {`${feedTitleText}`}
                     </Link>
                   </Typography>

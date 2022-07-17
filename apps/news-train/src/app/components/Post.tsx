@@ -1,5 +1,9 @@
 import { FunctionComponent, useContext } from 'react';
 import styled from 'styled-components';
+import {cleanTags, cleanPostItem, removePunctuation} from '../utils'
+import { ClassifierContext } from './Classifier'
+const bayes = require('classificator');
+
 import {
   ThumbDown,
   ThumbUp
@@ -30,6 +34,8 @@ import {
 } from './Category'
 
 const Post: FunctionComponent = () => {
+  const classifierContext = useContext(ClassifierContext);
+  const classifier = structuredClone(classifierContext);
   const postContext = useContext(PostContext)
   const postItem = Object.assign(postContext)
   const categoryContext = useContext(CategoryContext)
@@ -48,15 +54,46 @@ const Post: FunctionComponent = () => {
     console.log('[handle on click]', id);
   };
 
+  const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
+
+  let classifierForCategory = bayes()
+
+  try {
+    if (classifier !== {}) {
+      classifierForCategory = structuredClone(classifier) ? bayes.fromJson(JSON.stringify(classifier)) : bayes()
+    }
+  } catch (err) {
+    // console.log(err)
+  }
+
+  let predictionNotGood = -.001
+  let predictionGood = -.001
+
+  try {
+    if (classifier !== undefined) {
+      const prediction = classifierForCategory.categorize(`${mlText}`);
+      predictionNotGood = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
+        (likelihood: any) => likelihood && likelihood.category === 'notgood'
+      )?.proba || 0.0)
+  
+      predictionGood = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
+        (likelihood: any) => likelihood && likelihood.category === 'good'
+      )?.proba || 0.0)
+    }
+  } catch(err) {
+    // console.log(err)
+  }
+
   const leadingActions = () => (
     <LeadingActions>
       <SwipeAction onClick={handleAccept()} destructive={true}>
         <ActionContent>
           <ItemColumnCentered>
+          {`${category}`}
             <span className="icon">
               <ThumbUp />
             </span>
-            {`${category}`}
+            {`${Math.round(predictionGood * 100)}%`}
           </ItemColumnCentered>
         </ActionContent>
       </SwipeAction>
@@ -68,10 +105,11 @@ const Post: FunctionComponent = () => {
       <SwipeAction destructive={true} onClick={handleDelete()}>
         <ActionContent>
           <ItemColumnCentered>
+            {`${category}`}
             <span className="icon">
               <ThumbDown />
             </span>
-            {`${category}`}
+            {`${Math.round(predictionNotGood * 100)}%`}
           </ItemColumnCentered>
         </ActionContent>
       </SwipeAction>
@@ -97,7 +135,7 @@ const Post: FunctionComponent = () => {
                 <ItemRow>
                   <ItemColumn>
                     <ListItemText
-                      primary={<Link href={`$postItem.link}`}>{postItem.title}</Link>}
+                      primary={<Link href={`${postItem.link}`}>{postItem.title}</Link>}
                       secondary={`${postItem.description}`}
                     />
                   </ItemColumn>
