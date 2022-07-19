@@ -18,6 +18,7 @@ import {cleanTags, cleanPostItem, removePunctuation} from '../utils'
 import stringSimilarity from 'string-similarity'
 import MarkFeedProcessedButton from './MarkFeedProcessedButton'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const bayes = require('classificator');
 
 export type cleanPostItemType = {
@@ -29,6 +30,7 @@ export type cleanPostItemType = {
 export const PostContext = createContext({});
 
 const Posts: FunctionComponent = () => {
+
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
   const classifierContext = useContext(ClassifierContext);
@@ -38,49 +40,54 @@ const Posts: FunctionComponent = () => {
   const {settings} = useSettings()
   const {mlThresholdConfidence} = structuredClone(settings)
 
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
-    };
+  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+  console.log(parsedFeedContent)
 
   return (
     <>
       {
       Object.entries(parsedFeedContent).map((feedContentEntry) => {
-      const feedLink: string = feedContentEntry[0]
-      const feedTitleText: string = cleanTags(structuredClone({...feedContentEntry[1] as object}).feedLabel || structuredClone({...feedContentEntry[1] as object}).title["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).title}`)
-      const feedDescription = cleanTags(structuredClone({...feedContentEntry[1] as object}).description["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).description}`)
-      const processedPostsForFeed = [Object.entries(processedPosts as object)
-        .filter((feedEntry) => feedEntry[0] === feedLink)
-        .map(feedEntry => feedEntry[1])]
-        .flat(Infinity)
+        const feedLink: string = feedContentEntry[0]
+        //const feedTitleText: string = cleanTags(`${structuredClone({...feedContentEntry[1] as object}).title}`)
+        //const feedDescription = cleanTags(`${structuredClone({...feedContentEntry[1] as object}).description}`)
+        const processedPostsForFeed = [Object.entries(processedPosts as object)
+          .filter((feedEntry) => feedEntry[0] === feedLink)
+          .map(feedEntry => feedEntry[1])]
+          .flat(Infinity)
 
-      const postsForFeed = structuredClone({...feedContentEntry[1] as object}).items
+        const postsForFeed: cleanPostItemType[] = structuredClone(feedContentEntry[1]).items
 
-      let classifierForCategory = bayes()
+        let classifierForCategory = bayes()
 
-      try {
-        if (classifier !== {}) {
-          classifierForCategory = structuredClone(classifier) ? bayes.fromJson(JSON.stringify(classifier)) : bayes()
-        }
-      } catch (err) {
+        try {
+          if (classifier !== {}) {
+            classifierForCategory = structuredClone(classifier) ? bayes.fromJson(JSON.stringify(classifier)) : bayes()
+          }
+        } catch (err) {
         // console.log(err)
-      }
-
-      const unprocessedCleanPostItems = postsForFeed.map((postItem: cleanPostItemType) => cleanPostItem(postItem))
-        .filter((postItem: cleanPostItemType) => {
-          const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
+        }
+        const unprocessedCleanPostItems = [...postsForFeed]
+          .filter((noEmpties) => !!noEmpties)
+          .filter((noEmpties) => `${structuredClone(noEmpties as object).link}` !== ``)
+          .map((postItem) => cleanPostItem(postItem))
+        .map((postItem: {description: string, summary?: string}) => {
+          return {...postItem, description: postItem.summary || postItem.description}
+        })
+        .filter((postItem: object) => {
+          const mlText = removePunctuation(`${structuredClone(postItem).title} ${structuredClone(postItem).description}`)
           return !processedPostsForFeed.find((postItem: string) => {
             const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
             return similarity > .82
           })
         })
-        .filter((postItem: cleanPostItemType) => {
-          const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
+        .filter((postItem: object) => {
+          const mlText = removePunctuation(`${structuredClone(postItem).title} ${structuredClone(postItem).description}`)
           try {
             const prediction = classifierForCategory.categorize(`${mlText}`);
             const surpress = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
-              (likelihood: any) => likelihood && likelihood.category === 'notgood'
+              (likelihood: object) => likelihood && structuredClone(likelihood).category === 'notgood'
             )?.proba || 0.0) > mlThresholdConfidence.value
             return !surpress
           } catch (error) {
@@ -105,17 +112,13 @@ const Posts: FunctionComponent = () => {
                 >
                   <Typography variant='h3'>
                     <Link href={feedLink} component="button">
-                      {`${feedTitleText}`}
+                      {`${feedLink}`}
                     </Link>
-                  </Typography>
-                  <Typography variant="caption">
-                    {` ${feedDescription}`}
                   </Typography>
                   <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} posts remaining)`}</Typography>
                 </Box>
               </AccordionSummary>
             </Accordion>
-
           )
         }
         return (
@@ -137,20 +140,17 @@ const Posts: FunctionComponent = () => {
               >
                 <Typography variant='h3'>
                   <Link href={`${feedLink}`} component="button">
-                    {`${feedTitleText}`}
+                    {`${feedLink}`}
                   </Link>
                 </Typography>
-                <Typography variant="caption">
-                  {` ${feedDescription}`}
-                </Typography>
-                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${postsForFeed.length} posts remaining)`}</Typography>
+                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${[...postsForFeed as object[]].length} posts remaining)`}</Typography>
               </Box>
             </AccordionSummary>
             <AccordionDetails>
               {
-                unprocessedCleanPostItems.map((cleanPostItem: cleanPostItemType) => {
+                unprocessedCleanPostItems.map((cleanPostItem: object) => {
                   return (
-                    <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${cleanPostItem.link}`}>
+                    <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${structuredClone(cleanPostItem).link}`}>
                       <Post key={JSON.stringify(cleanPostItem)} />
                     </PostContext.Provider>
                   )

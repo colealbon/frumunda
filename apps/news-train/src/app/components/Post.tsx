@@ -1,9 +1,14 @@
 import { FunctionComponent, useContext } from 'react';
 import styled from 'styled-components';
-import { removePunctuation } from '../utils'
+import { removePunctuation, shortUrl } from '../utils'
 import { ClassifierContext } from './Classifier'
 import { PostContext } from './Posts';
 import { CategoryContext } from './Category'
+import { ParsedFeedContentContext } from './Feed'
+import { useClassifiers } from '../react-hooks/useClassifiers'
+import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
+import { useStacks } from '../react-hooks/useStacks'
+
 import {
   ThumbDown,
   ThumbUp
@@ -22,47 +27,70 @@ import {
   Type as ListType,
 } from 'react-swipeable-list';
 import 'react-swipeable-list/dist/styles.css';
-const bayes = require('classificator');
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const bayes = require('classificator')
 
 const Post: FunctionComponent = () => {
-  const classifierContext = useContext(ClassifierContext);
-  const classifier = structuredClone(classifierContext);
+
+  const { classifiers, publishClassifiers } = useClassifiers()
+  // const classifierContext = useContext(ClassifierContext);
+  // const classifier = structuredClone(classifierContext);
   const postContext = useContext(PostContext)
   const postItem = Object.assign(postContext)
   const categoryContext = useContext(CategoryContext)
   const category = `${categoryContext}`
   const id = `${postItem.link}`
 
-  const handleAccept = () => () => {
-    console.log('[Handle ACCEPT]');
+  const parsedFeedContentContext = useContext(ParsedFeedContentContext);
+  const parsedFeedContent = structuredClone(parsedFeedContentContext);
+  const keyForFeed = Object.keys(parsedFeedContent)[0]
+  const processedFilenameForFeed = `processed_${shortUrl(keyForFeed)}`
+
+  const mlText = removePunctuation(`${postItem.title} ${postItem.description} ${postItem.summary}`)
+  
+  const classifierForCategory = {...Object.entries(classifiers as object)
+    .filter((classifierEntry: [string, object]) => (classifierEntry[0] === category))
+    .map((classifierEntry: [string, object]) => classifierEntry[1])
+    .find(() => true)}
+
+  console.log(category)
+  console.log(classifierForCategory)
+
+  let classifier = bayes()
+  try {
+    classifier = bayes.fromJson(JSON.stringify(classifierForCategory))
+  } catch (error) {
+    console.log(error)
+  }
+
+
+  const handleTrainGood = () => () => {
+    classifier.learn(`${mlText}`, 'good');
+    const newClassifiers = structuredClone(classifiers)
+    newClassifiers[`${category}`] = JSON.parse(bayes.toString(classifier))
+    console.log(newClassifiers)
+    publishClassifiers(newClassifiers)
   };
 
-  const handleDelete = () => () => {
-    console.log('[Handle DELETE]');
+  const handleTrainNotGood = () => () => {
+    classifier.learn(`${mlText}`, 'notGood');
+    const newClassifiers = structuredClone(classifiers)
+    newClassifiers[`${category}`] = JSON.parse(bayes.Json(classifier))
+    console.log(newClassifiers)
+    publishClassifiers(newClassifiers)
   };
 
   const handleOnClick = () => () => {
     console.log('[handle on click]', id);
   };
 
-  const mlText = removePunctuation(`${postItem.title} ${postItem.description}`)
-
-  let classifierForCategory = bayes()
-
-  try {
-    if (classifier !== {}) {
-      classifierForCategory = structuredClone(classifier) ? bayes.fromJson(JSON.stringify(classifier)) : bayes()
-    }
-  } catch (err) {
-    // console.log(err)
-  }
-
   let predictionNotGood = -.001
   let predictionGood = -.001
 
   try {
-    if (classifier !== undefined) {
-      const prediction = classifierForCategory.categorize(`${mlText}`);
+    if (classifierForCategory !== undefined) {
+      const prediction = classifier.categorize(`${mlText}`);
       predictionNotGood = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
         (likelihood: any) => likelihood && likelihood.category === 'notgood'
       )?.proba || 0.0)
@@ -77,7 +105,7 @@ const Post: FunctionComponent = () => {
 
   const leadingActions = () => (
     <LeadingActions>
-      <SwipeAction onClick={handleAccept()} destructive={true}>
+      <SwipeAction onClick={handleTrainGood()} destructive={true}>
         <ActionContent>
           <ItemColumnCentered>
           {`${category}`}
@@ -93,7 +121,7 @@ const Post: FunctionComponent = () => {
 
   const trailingActions = () => (
     <TrailingActions>
-      <SwipeAction destructive={true} onClick={handleDelete()}>
+      <SwipeAction destructive={true} onClick={handleTrainNotGood()}>
         <ActionContent>
           <ItemColumnCentered>
             {`${category}`}
@@ -109,33 +137,33 @@ const Post: FunctionComponent = () => {
 
 
   return (
-      <ListItem key={postItem.link}>
-        <div className="basic-swipeable-list__container">
-          <SwipeableList
-            fullSwipe={true}
-            threshold={.5}
-            type={ListType.IOS}
+    <ListItem key={postItem.link}>
+      <div className="basic-swipeable-list__container">
+        <SwipeableList
+          fullSwipe={true}
+          threshold={.5}
+          type={ListType.IOS}
+        >
+          <SwipeableListItem
+            key={id}
+            leadingActions={leadingActions()}
+            trailingActions={trailingActions()}
+            onClick={handleOnClick()}
           >
-            <SwipeableListItem
-              key={id}
-              leadingActions={leadingActions()}
-              trailingActions={trailingActions()}
-              onClick={handleOnClick()}
-            >
-              <ItemContent>
-                <ItemRow>
-                  <ItemColumn>
-                    <ListItemText
-                      primary={<Link href={`${postItem.link}`}>{postItem.title}</Link>}
-                      secondary={`${postItem.description}`}
-                    />
-                  </ItemColumn>
-                </ItemRow>
-              </ItemContent>
-            </SwipeableListItem>
-          </SwipeableList>
-        </div>
-      </ListItem>
+            <ItemContent>
+              <ItemRow>
+                <ItemColumn>
+                  <ListItemText
+                    primary={<Link href={`${postItem.link}`}>{postItem.title}</Link>}
+                    secondary={`${postItem.summary} ${postItem.description}`}
+                  />
+                </ItemColumn>
+              </ItemRow>
+            </ItemContent>
+          </SwipeableListItem>
+        </SwipeableList>
+      </div>
+    </ListItem>
   );
 };
 

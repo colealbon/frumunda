@@ -7,10 +7,12 @@ import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxies'
 import { CategoryContext } from './Category';
 import { htmlToText } from 'html-to-text';
+import xml2js from 'xml2js';
+import axios from 'axios';
 
 // import VisibilitySensor from 'react-visibility-sensor';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { parse } = require('rss-to-json');
+// const { parse } = require('rss-to-json');
 
 export const ParsedFeedContentContext = createContext({});
 
@@ -48,10 +50,10 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
         .find(() => true);
     })
 
-    const checkedCorsProxies = Object.entries(corsProxies)
-    .filter(corsProxyEntry => Object.assign(corsProxyEntry[1] as object).checked === true)
-    .map((corsProxyEntry: [string, unknown]) => corsProxyEntry[0])
-    .filter(noblanks => !!noblanks);
+  const checkedCorsProxies = Object.entries(corsProxies)
+  .filter(corsProxyEntry => Object.assign(corsProxyEntry[1] as object).checked === true)
+  .map((corsProxyEntry: [string, unknown]) => corsProxyEntry[0])
+  .filter(noblanks => !!noblanks);
 
   const fetchFeedContent = (feedUrl: string, corsProxies: string[]): Promise<object> => {
     return new Promise((resolve, reject) => {
@@ -62,21 +64,18 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
           return !!corsProxyItem;
         })
         .forEach(corsProxyItem => {
-          parse(`${corsProxyItem}${feedUrl}`)
-          .then((response: object) => {
-            if (!response) {
-              throw(new Error('fetchparse failed'))
-            }
-            resolve(response);
-            return;
-          })
-          .catch(() => {
-            console.log(`badurl ${corsProxyItem}${feedUrl}`)
-            if (rest.length === 0) {
-              reject();
-            }
-            fetchFeedContent(feedUrl, rest);
-          });
+          axios
+            .get(`${corsProxyItem}${feedUrl}`)
+            .then(response => {
+              resolve(response);
+              return;
+            })
+            .catch(() => {
+              if (rest.length === 0) {
+                reject();
+              }
+              fetchFeedContent(feedUrl, rest);
+            });
         });
     });
   };
@@ -115,12 +114,96 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
       .catch(() => resolve({}))
     });
   };
+
+  const parseFeedContentMulti = (fetchedContent: object) => {
+    return new Promise((resolve, reject) => {
+      const parseFeedQueue: object[] = [];
+      [Object.entries(fetchedContent)]
+        .flat()
+        .filter(fetchedContentEntry => fetchedContentEntry[1] !== undefined)
+        .forEach((fetchedContentEntry: [string, object]) => {
+
+          parseFeedQueue.push(
+            new Promise((resolve, reject) => {
+              const parser = new xml2js.Parser();
+              parser.parseString(
+                
+                Object.assign({ ...fetchedContentEntry[1] } as object).data,
+                function (
+                  error: Error | null, 
+                  result: {rss?: {channel?: {item: object[], title?: string, description?: string}[]}, feed?: {entry?: object, title: string[] }}) {
+                  if (error) {
+                    return;
+                  }
+                  const feedTitle = `${result?.feed?.title[0]}`
+                  const channelObj = [result.rss?.channel]
+                  .flat()
+                  .find(() => true)
+
+                  const channelTitle = `${channelObj?.title}`
+                  const channelDescription = `${channelObj?.description}`
+                  const channelContentItem = [result.rss?.channel]
+                    .flat()
+                    .filter(channel => !!channel?.item)
+                    .map(channel => {
+                      return channel?.item
+                      .filter((item: object) => item !== {})
+                      .map((item: {title?: string , link?: string , description?: string }) => {
+                        return {
+                          title: htmlToText(`${[item.title].flat().find(() => true)}`),
+                          link: [item.link].flat().find(() => true),
+                          description: htmlToText(`${[item.description].flat().find(() => true)}`),
+                        }
+                      })
+                    })
+  
+                  // atom feeds have entry instead of item
+
+                  const channelContentEntry = [result.feed]
+                  .flat()
+                  .filter(feed => !!feed?.entry)
+                  .map(feed => [feed?.entry].flat().map((feedEntry?: object) => {
+                      const rawLink: object = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'link')].flat().slice(-1).find(() => true)
+                      const linkVal: object = [Object.values(rawLink)].flat().find(() => true)
+                      const linkObj: object = [Object.values(linkVal)].flat().find(() => true)
+                      const hrefEntry: [string, object][] =  Object.entries(linkObj).filter((attribute: [string, unknown]) => attribute[0] === 'href')
+                      const hrefVal: unknown = Object.values(Object.fromEntries(hrefEntry)).find(() => true)
+                      const rawTitle : object = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'title')].flat().slice(-1).find(() => true)
+                      const rawDescription: object = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'summary')].flat().slice(-1).find(() => true)
+                      return {
+                        title: htmlToText(`${rawTitle}`),
+                        link: `${hrefVal}`,
+                        description: htmlToText(`${rawDescription}`),
+                      }
+                    })
+                  )
+
+                  const feedItemEntry = [
+                    fetchedContentEntry[0],
+                    {
+                      title: `${feedTitle}${channelTitle}`.replace(/undefined/g, ''),
+                      description: `${channelDescription}`.replace(/undefined/g, ''),
+                      items: [...channelContentItem,
+                      ...channelContentEntry].flat(Infinity)
+                    }
+                  ]
+                  resolve(feedItemEntry);
+                }
+              );
+            })
+          );
+        });
+      Promise.all(parseFeedQueue).then((parsedContent: object) => {
+        resolve(Object.fromEntries(parsedContent as [string, object][]))
+      });
+    });
+  };
+
   const fetcher = () => {
     return new Promise((resolve, reject) => {
       fetchFeedContentMulti(checkedFeedsForCategory, checkedCorsProxies)
-      .then(parsedContent => {
-        resolve(parsedContent)
-      })
+      .then(fetchedContent => parseFeedContentMulti(fetchedContent))
+      .then(parsedContent => resolve(parsedContent))
       .catch(error => reject(error))
     })
   }
@@ -134,38 +217,42 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
     }
   )
   
-  const fetchedContent: unknown = Object.assign(data as object)
+  const parsedContent: unknown = Object.assign(data as object)
+
   return (
     <Grid>
       {
-        Object.entries(fetchedContent as object)
-        .filter((parsedFeedContent) => !!parsedFeedContent[1])
-        .map((parsedFeedContent: [string, unknown]) => {
-          const feedTitleText = `${Object.assign({...parsedFeedContent[1] as object}).feedLabel} `.concat(`${Object.entries(Object.assign({...parsedFeedContent[1] as object} || {title: ''}).title)
-          .filter(titleEntry => {
-            return titleEntry[0] === "$text"
-          })
-          .map(titleEntry => htmlToText(
-              `${titleEntry[1]}`,
-              {
-                ignoreHref:
-                  true,
-                ignoreImage:
-                  true,
-              }
-            )
-            .replace(
-              '&mdash;',
-              ''
-            ))
+        Object.entries(parsedContent as object)
+        .filter((parsedFeedContent) => {
+          return !!parsedFeedContent[1]
+        })
+        .map((parsedFeedContent: [string, object]) => {
+        //   console.log(parsedFeedContent)
+        //   const feedTitleText = [`${structuredClone(parsedContent[1] || {feedLabel: ''} as object).feedLabel}]
+        //   .filter(titleEntry => {
+        //     return titleEntry[0] === "$text"
+        //   })
+        //   .map(titleEntry => htmlToText(
+        //       `${titleEntry[1]}`,
+        //       {
+        //         ignoreHref:
+        //           true,
+        //         ignoreImage:
+        //           true,
+        //       }
+        //     )
+        //     .replace(
+        //       '&mdash;',
+        //       ''
+        //     ))
 
-          .concat(Object.assign({...parsedFeedContent[1] as object}).title)
-          .find(() => true)}`)
+        //   .concat(Object.assign({...parsedFeedContent[1] as object || {title: ''}}).title)
+        //   .find(() => true)}`)
 
           const parsedFeedContentObj = Object.fromEntries([parsedFeedContent])
           
           return (
-            <ParsedFeedContentContext.Provider key={`${feedTitleText}`} value={parsedFeedContentObj as object}>
+            <ParsedFeedContentContext.Provider key={JSON.stringify(parsedFeedContentObj)} value={parsedFeedContentObj}>
                 {children}
             </ParsedFeedContentContext.Provider>
           )

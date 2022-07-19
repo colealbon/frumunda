@@ -63,7 +63,7 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
         Object.entries(parsedFeedContent).map((feedContentEntry) => {
           const feedLink: string = feedContentEntry[0]
           const feedTitleText: string = cleanTags(structuredClone({...feedContentEntry[1] as object}).feedLabel || structuredClone({...feedContentEntry[1] as object}).title["$text"]  || `${structuredClone({...feedContentEntry[1] as object}).title}`)
-          const newProcessedPosts = structuredClone({...feedContentEntry[1] as object}).items
+          const processedPosts = structuredClone({...feedContentEntry[1] as object}).items
             .map((postItem: cleanPostItemType) => cleanPostItem(postItem))
             .map((postItem: cleanPostItemType) => removePunctuation(`${postItem.title} ${postItem.description}`))
           
@@ -72,11 +72,11 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
               <IconButton 
                 title="mark articles completed"
                 aria-label="mark articles completed" 
-                onClick={() => markFeedComplete(feedLink, newProcessedPosts)}
+                onClick={() => markFeedComplete(feedLink, processedPosts)}
               >
                 <RemoveDone />
               </IconButton>
-              <Typography variant='caption'>{` mark all ${newProcessedPosts.length} "${feedTitleText}" posts as processed `}</Typography>
+              <Typography variant='caption'>{` mark all ${processedPosts.length} "${feedTitleText}" posts as processed `}</Typography>
             </Typography>
           )
         })
