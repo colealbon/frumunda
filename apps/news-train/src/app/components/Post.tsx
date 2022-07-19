@@ -33,7 +33,7 @@ const bayes = require('classificator')
 
 const Post: FunctionComponent = () => {
 
-  const { classifiers, publishClassifiers } = useClassifiers()
+  const { classifiers, persistClassifiers } = useClassifiers()
   // const classifierContext = useContext(ClassifierContext);
   // const classifier = structuredClone(classifierContext);
   const postContext = useContext(PostContext)
@@ -54,9 +54,6 @@ const Post: FunctionComponent = () => {
     .map((classifierEntry: [string, object]) => classifierEntry[1])
     .find(() => true)}
 
-  console.log(category)
-  console.log(classifierForCategory)
-
   let classifier = bayes()
   try {
     classifier = bayes.fromJson(JSON.stringify(classifierForCategory))
@@ -68,17 +65,17 @@ const Post: FunctionComponent = () => {
   const handleTrainGood = () => () => {
     classifier.learn(`${mlText}`, 'good');
     const newClassifiers = structuredClone(classifiers)
-    newClassifiers[`${category}`] = JSON.parse(bayes.toString(classifier))
+    newClassifiers[`${category}`] = JSON.parse(classifier.toJson())
     console.log(newClassifiers)
-    publishClassifiers(newClassifiers)
+    persistClassifiers(newClassifiers)
   };
 
   const handleTrainNotGood = () => () => {
-    classifier.learn(`${mlText}`, 'notGood');
+    classifier.learn(`${mlText}`, 'notgood');
     const newClassifiers = structuredClone(classifiers)
-    newClassifiers[`${category}`] = JSON.parse(bayes.Json(classifier))
+    newClassifiers[`${category}`] = JSON.parse(classifier.toJson())
     console.log(newClassifiers)
-    publishClassifiers(newClassifiers)
+    persistClassifiers(newClassifiers)
   };
 
   const handleOnClick = () => () => {
@@ -155,7 +152,7 @@ const Post: FunctionComponent = () => {
                 <ItemColumn>
                   <ListItemText
                     primary={<Link href={`${postItem.link}`}>{postItem.title}</Link>}
-                    secondary={`${postItem.summary} ${postItem.description}`}
+                    secondary={`${postItem.description}`}
                   />
                 </ItemColumn>
               </ItemRow>

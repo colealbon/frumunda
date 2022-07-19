@@ -6,7 +6,7 @@ import {
 import { useFeeds } from '../react-hooks/useFeeds'
 import { CorsProxiesContext } from './CorsProxies'
 import { CategoryContext } from './Category';
-import { htmlToText } from 'html-to-text';
+import { cleanTags } from '../utils'
 import xml2js from 'xml2js';
 import axios from 'axios';
 
@@ -150,9 +150,9 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
                       .filter((item: object) => item !== {})
                       .map((item: {title?: string , link?: string , description?: string }) => {
                         return {
-                          title: htmlToText(`${[item.title].flat().find(() => true)}`),
+                          title: cleanTags(`${[item.title].flat().find(() => true)}`),
                           link: [item.link].flat().find(() => true),
-                          description: htmlToText(`${[item.description].flat().find(() => true)}`),
+                          description: cleanTags(`${[item.description].flat().find(() => true)}`),
                         }
                       })
                     })
@@ -171,9 +171,9 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
                       const rawTitle : object = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'title')].flat().slice(-1).find(() => true)
                       const rawDescription: object = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'summary')].flat().slice(-1).find(() => true)
                       return {
-                        title: htmlToText(`${rawTitle}`),
+                        title: cleanTags(`${rawTitle}`),
                         link: `${hrefVal}`,
-                        description: htmlToText(`${rawDescription}`),
+                        description: cleanTags(`${rawDescription}`),
                       }
                     })
                   )
@@ -227,30 +227,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
           return !!parsedFeedContent[1]
         })
         .map((parsedFeedContent: [string, object]) => {
-        //   console.log(parsedFeedContent)
-        //   const feedTitleText = [`${structuredClone(parsedContent[1] || {feedLabel: ''} as object).feedLabel}]
-        //   .filter(titleEntry => {
-        //     return titleEntry[0] === "$text"
-        //   })
-        //   .map(titleEntry => htmlToText(
-        //       `${titleEntry[1]}`,
-        //       {
-        //         ignoreHref:
-        //           true,
-        //         ignoreImage:
-        //           true,
-        //       }
-        //     )
-        //     .replace(
-        //       '&mdash;',
-        //       ''
-        //     ))
-
-        //   .concat(Object.assign({...parsedFeedContent[1] as object || {title: ''}}).title)
-        //   .find(() => true)}`)
-
-          const parsedFeedContentObj = Object.fromEntries([parsedFeedContent])
-          
+          const parsedFeedContentObj = Object.fromEntries([parsedFeedContent])         
           return (
             <ParsedFeedContentContext.Provider key={JSON.stringify(parsedFeedContentObj)} value={parsedFeedContentObj}>
                 {children}

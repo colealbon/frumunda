@@ -14,7 +14,7 @@ import {
 import { useSettings } from '../react-hooks/useSettings'
 
 import {ExpandMore} from '@mui/icons-material';
-import {cleanTags, cleanPostItem, removePunctuation} from '../utils'
+import {cleanPostItem, removePunctuation} from '../utils'
 import stringSimilarity from 'string-similarity'
 import MarkFeedProcessedButton from './MarkFeedProcessedButton'
 
@@ -28,7 +28,6 @@ export type cleanPostItemType = {
 }
 
 export const PostContext = createContext({});
-
 const Posts: FunctionComponent = () => {
 
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
@@ -38,20 +37,18 @@ const Posts: FunctionComponent = () => {
   const {processedPosts} = useProcessedPosts()
   const [expanded, setExpanded] = useState<string | false>(false);
   const {settings} = useSettings()
-  const {mlThresholdConfidence} = structuredClone(settings)
+  const {hideProcessedPosts, disableMachineLearning, mlThresholdDocuments, mlThresholdConfidence} = structuredClone(settings)
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
-  console.log(parsedFeedContent)
 
   return (
     <>
       {
       Object.entries(parsedFeedContent).map((feedContentEntry) => {
         const feedLink: string = feedContentEntry[0]
-        //const feedTitleText: string = cleanTags(`${structuredClone({...feedContentEntry[1] as object}).title}`)
-        //const feedDescription = cleanTags(`${structuredClone({...feedContentEntry[1] as object}).description}`)
+
         const processedPostsForFeed = [Object.entries(processedPosts as object)
           .filter((feedEntry) => feedEntry[0] === feedLink)
           .map(feedEntry => feedEntry[1])]
@@ -68,33 +65,41 @@ const Posts: FunctionComponent = () => {
         } catch (err) {
         // console.log(err)
         }
+
         const unprocessedCleanPostItems = [...postsForFeed]
           .filter((noEmpties) => !!noEmpties)
           .filter((noEmpties) => `${structuredClone(noEmpties as object).link}` !== ``)
           .map((postItem) => cleanPostItem(postItem))
-        .map((postItem: {description: string, summary?: string}) => {
-          return {...postItem, description: postItem.summary || postItem.description}
-        })
-        .filter((postItem: object) => {
-          const mlText = removePunctuation(`${structuredClone(postItem).title} ${structuredClone(postItem).description}`)
-          return !processedPostsForFeed.find((postItem: string) => {
-            const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
-            return similarity > .82
+          .filter((postItem: object) => {
+            if (!hideProcessedPosts) {
+              return true
+            }
+            // surpress previously processed posts
+            const mlText = removePunctuation(`${structuredClone(postItem).title} ${structuredClone(postItem).description}`)
+            return !processedPostsForFeed.find((postItem: string) => {
+              const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
+              return similarity > .8
+            })
           })
-        })
-        .filter((postItem: object) => {
-          const mlText = removePunctuation(`${structuredClone(postItem).title} ${structuredClone(postItem).description}`)
-          try {
-            const prediction = classifierForCategory.categorize(`${mlText}`);
-            const surpress = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
-              (likelihood: object) => likelihood && structuredClone(likelihood).category === 'notgood'
-            )?.proba || 0.0) > mlThresholdConfidence.value
-            return !surpress
-          } catch (error) {
-            return true
-          }
-          return true
-        })
+          .filter((postItem: object) => {
+            // surpress bayes thumbs down predictions
+            const mlText = removePunctuation(`${structuredClone(postItem).title} ${structuredClone(postItem).description}`)
+            if (disableMachineLearning) {
+              return true
+            }
+            if (parseFloat(classifierForCategory.totalDocuments) < parseFloat(mlThresholdDocuments)) {
+              return true
+            }
+            try {
+              const prediction = classifierForCategory.categorize(`${mlText}`);
+              const surpress = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
+                (likelihood: object) => likelihood && structuredClone(likelihood).category === 'notgood'
+              )?.proba || 0.0) > mlThresholdConfidence.value
+              return !surpress
+            } catch (error) {
+              return true
+            }
+          })
 
         if (unprocessedCleanPostItems.length === 0) {
           return (
