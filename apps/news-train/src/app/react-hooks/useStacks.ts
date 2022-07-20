@@ -6,67 +6,67 @@ import { useSWRConfig } from 'swr'
 export function useStacks () {
   const appConfig = new AppConfig(['store_write', 'publish_data']);
   const userSession: UserSession = new UserSession({ appConfig });
+
   const storageOptions: StorageOptions = { userSession };
   const storage = new Storage(storageOptions);
   const { mutate } = useSWRConfig()
+  
   const fetchStacksFilenames = () => {
-    return new Promise((resolve, reject) => {
-      const fetchedFilenames: string[] = []
-      if (!userSession.isUserSignedIn()) {
-        resolve([])
-      }
-      storage.listFiles((filename: string) => {
-        fetchedFilenames.push(filename)
-        return true
+    const updateFn = (filename: string) => {
+      return new Promise((resolve, reject) => {
+        const fetchedFilenames: string[] = []
+        if (!userSession.isUserSignedIn()) {
+          resolve([])
+        }
+        storage.listFiles((filename: string) => {
+          fetchedFilenames.push(filename)
+          return true
+        })
+        .then(() => {
+          resolve(fetchedFilenames)
+        })
+        .catch((error: Error) => {
+          reject(new Error('stacks listFiles error -> is user signed in?'))
+        })
       })
-      .then(() => {
-        resolve(fetchedFilenames)
-      })
-      .catch((error: Error) => {
-        reject(new Error('stacks listFiles error -> is user signed in?'))
-      })
-    })
+    }
+    mutate('stacksFilenames', updateFn);
   };
 
-  const deleteFile = (filename: string) => () => {
-    if( !userSession.isUserSignedIn() ) {
-      return
-    }
-    storage.deleteFile(filename)
-    mutate('stacksFilenames', fetchStacksFilenames);
-  }
-
-
   const fetchFile = (filename: string) => () => {
-    return new Promise((resolve, reject) => {
-      if( !userSession.isUserSignedIn() ) {
-        localforage.getItem(filename)
-        .then((value: unknown) => {
-          if (!value) {
-            reject(new Error(`no stored ${filename}`))
-          }
-          resolve(value)
+      return new Promise((resolve, reject) => {
+        if( !userSession.isUserSignedIn() ) {
+          localforage.getItem(filename)
+          .then((value: unknown) => {
+            if (!value) {
+              reject(new Error(`no stored ${filename}`))
+            }
+            resolve(value)
+          })
+        }
+        storage.getFile(filename, {
+          decrypt: true
         })
-      }
-      storage.getFile(filename, {
-        decrypt: true
-      })
-      .then((content) => {
-        resolve(JSON.parse(`${content}`))
-      })
-      .catch(() => {
-        localforage.getItem(filename)
-        .then((value: unknown) => {
-          if (!value) {
-            reject(new Error(`no stored ${filename}`))
-          }
-          resolve(value)
+        .then((content) => {
+          resolve(JSON.parse(`${content}`))
+        })
+        .catch(() => {
+          localforage.getItem(filename)
+          .then((value: unknown) => {
+            if (!value) {
+              reject(new Error(`no stored ${filename}`))
+            }
+            resolve(value)
+          })
         })
       })
-    })
+  }
+  const deleteFile = (filename: string) => () => {
+    storage.deleteFile(filename)
+    .then(() => fetchStacksFilenames())
   }
 
-  const persist = (filename: string, content: object) => () => {
+  const persistFile = (filename: string, content: object) => () => {
     const updateFn = (filename: string, content: object) => {
       return new Promise((resolve) => {
         if( !userSession.isUserSignedIn() ) {
@@ -76,7 +76,6 @@ export function useStacks () {
           })
           return
         }
-        
         storage.putFile(filename, JSON.stringify(content))
         .catch((error) => console.log(error))
         .finally(() => {
@@ -88,11 +87,24 @@ export function useStacks () {
     mutate(filename, updateFn(filename, content));
   }
 
+  const loadUserData = () => () => {
+    const updateFn = () => {
+      return new Promise((resolve, reject) => {
+        if (!userSession.isUserSignedIn()) {
+          reject(new Error('called loadUserData while not signed into stacks'))
+        }
+        resolve(userSession.loadUserData())
+      })
+    }
+    mutate('stacksUserData', updateFn())
+  }
+
   return {
-    userSession,
     fetchStacksFilenames,
-    fetchFile,
     deleteFile,
-    persist
+    fetchFile,
+    persistFile,
+    loadUserData,
+    userSession: userSession
   }
 }

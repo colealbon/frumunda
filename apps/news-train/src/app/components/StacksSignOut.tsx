@@ -5,6 +5,10 @@ import {useStacks} from '../react-hooks/useStacks';
 const BlockstackSignOut: FunctionComponent = () => {
   const { userSession }  = useStacks()
 
+  if (!userSession.isUserSignedIn()) {
+    return <span></span>
+  }
+
   return (
     <Fragment key='stackssignout'>
       {[userSession.isUserSignedIn()]

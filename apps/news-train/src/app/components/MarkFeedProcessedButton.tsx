@@ -24,7 +24,7 @@ import { useStacks } from '../react-hooks/useStacks'
 
 const MarkFeedProcessedButton: FunctionComponent = () => {
   const [inFlight, setInFlight] = useState(false)
-  const { persist }  = useStacks()
+  const { persistFile }  = useStacks()
 
   const {processedPosts, persistProcessedPosts} = useProcessedPosts();
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
@@ -47,7 +47,7 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
     const newProcessedPosts = structuredClone(processedPosts)
     newProcessedPosts[`${feedLink}`] = newProcessedPostsForFeed.flat(Infinity).slice()
     setProcessedPostsCallback(newProcessedPosts)
-    persist(`${filenameForFeed}`, newProcessedPosts)
+    persistFile(`${filenameForFeed}`, newProcessedPosts)
     setInFlight(false)
   }
 

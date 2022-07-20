@@ -4,7 +4,8 @@ import { useStacks } from '../react-hooks/useStacks'
 import defaultCategories from './defaultCategories.json'
 
 export function useCategories () {
-  const { fetchFile, persist }  = useStacks()
+  const { fetchFile, persistFile }  = useStacks()
+  
   const { data: categories } = useSWR(
     'categories',
     fetchFile('categories') , 
@@ -18,9 +19,9 @@ export function useCategories () {
   const publishCategories = useCallback((newCategories: unknown) => {
     setInFlight(true)
     const newCategoriesClone = structuredClone(newCategories as object)
-    persist(`categories`, newCategoriesClone)
+    persistFile(`categories`, newCategoriesClone)
     setInFlight(false)
-  }, [persist])
+  }, [persistFile])
 
   const factoryReset = () => {
     publishCategories(defaultCategories)

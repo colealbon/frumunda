@@ -11,10 +11,13 @@ export function App() {
   }
   const {
     fetchStacksFilenames,
-    fetchFile
+    fetchFile,
+    loadUserData
   } = useStacks()
 
-  mutate('stacksFilenames', fetchStacksFilenames);
+  loadUserData()
+  fetchStacksFilenames()
+
   mutate('categories', fetchFile('categories'));
 
   return (

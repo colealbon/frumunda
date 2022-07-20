@@ -32,7 +32,7 @@ import 'react-swipeable-list/dist/styles.css';
 const bayes = require('classificator')
 
 const Post: FunctionComponent = () => {
-  const { persist } = useStacks()
+  const { persistFile } = useStacks()
 
   const { processedPosts, persistProcessedPosts } = useProcessedPosts()
   const { classifiers, persistClassifiers } = useClassifiers()
@@ -79,10 +79,10 @@ const Post: FunctionComponent = () => {
     const newProcessedPostsForFeed = Array.from(new Set([...processedPostsForFeed].concat(mlText)))
     console.log(newProcessedPostsForFeed)
     newProcessedPosts[keyForFeed] = newProcessedPostsForFeed
-    persist(`classifier_${category}`, JSON.parse(classifier.toJson()))
-    persist(processedFilenameForFeed, newProcessedPostsForFeed)
+    persistFile(`classifier_${category}`, JSON.parse(classifier.toJson()))
+    persistFile(processedFilenameForFeed, newProcessedPostsForFeed)
 
-  }, [category, classifier, classifiers, keyForFeed, mlText, persist, persistClassifiers, processedFilenameForFeed, processedPosts]);
+  }, [category, classifier, classifiers, keyForFeed, mlText, persistFile, persistClassifiers, processedFilenameForFeed, processedPosts]);
 
   const handleTrainNotGood = useCallback(() => {
     classifier.learn(`${mlText}`, 'notgood');
@@ -100,9 +100,9 @@ const Post: FunctionComponent = () => {
     console.log(newProcessedPostsForFeed)
 
     newProcessedPosts[keyForFeed] = newProcessedPostsForFeed
-    persist(`classifier_${category}`, JSON.parse(classifier.toJson()))
-    persist(processedFilenameForFeed, newProcessedPostsForFeed)
-  }, [category, classifier, classifiers, keyForFeed, mlText, persist, processedFilenameForFeed, processedPosts])
+    persistFile(`classifier_${category}`, JSON.parse(classifier.toJson()))
+    persistFile(processedFilenameForFeed, newProcessedPostsForFeed)
+  }, [category, classifier, classifiers, keyForFeed, mlText, persistFile, processedFilenameForFeed, processedPosts])
 
   const handleOnClick = () => () => {
     console.log('[handle on click]', id);

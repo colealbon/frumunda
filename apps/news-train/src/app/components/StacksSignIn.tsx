@@ -1,7 +1,11 @@
+
+// import { AppConfig, UserSession } from '@stacks/connect';
 import { FunctionComponent } from 'react';
 import {Button, Typography} from '@mui/material';
 import {useStacks} from '../react-hooks/useStacks';
 import { showConnect } from '@stacks/connect';
+// const appConfig = new AppConfig(['store_write', 'publish_data']);
+// const userSession: UserSession = new UserSession({ appConfig });
 
 const StacksSignin: FunctionComponent = () => {
   
