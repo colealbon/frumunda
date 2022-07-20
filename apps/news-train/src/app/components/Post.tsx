@@ -1,7 +1,7 @@
-import { FunctionComponent, useContext } from 'react';
+import { FunctionComponent, useContext, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { removePunctuation, shortUrl } from '../utils'
-import { ClassifierContext } from './Classifier'
+// import { ClassifierContext } from './Classifier'
 import { PostContext } from './Posts';
 import { CategoryContext } from './Category'
 import { ParsedFeedContentContext } from './Feed'
@@ -32,10 +32,9 @@ import 'react-swipeable-list/dist/styles.css';
 const bayes = require('classificator')
 
 const Post: FunctionComponent = () => {
-
+  const { processedPosts, persistProcessedPosts } = useProcessedPosts()
   const { classifiers, persistClassifiers } = useClassifiers()
-  // const classifierContext = useContext(ClassifierContext);
-  // const classifier = structuredClone(classifierContext);
+  const { stacksSession, stacksStorage }  = useStacks()
   const postContext = useContext(PostContext)
   const postItem = Object.assign(postContext)
   const categoryContext = useContext(CategoryContext)
@@ -48,7 +47,7 @@ const Post: FunctionComponent = () => {
   const processedFilenameForFeed = `processed_${shortUrl(keyForFeed)}`
 
   const mlText = removePunctuation(`${postItem.title} ${postItem.description} ${postItem.summary}`)
-  
+
   const classifierForCategory = {...Object.entries(classifiers as object)
     .filter((classifierEntry: [string, object]) => (classifierEntry[0] === category))
     .map((classifierEntry: [string, object]) => classifierEntry[1])
@@ -61,22 +60,55 @@ const Post: FunctionComponent = () => {
     console.log(error)
   }
 
+  useEffect(() => {
+    //console.log(processedPosts)
+  }, [processedPosts])
 
-  const handleTrainGood = () => () => {
+  const handleTrainGood = useCallback( () => {
     classifier.learn(`${mlText}`, 'good');
     const newClassifiers = structuredClone(classifiers)
     newClassifiers[`${category}`] = JSON.parse(classifier.toJson())
-    console.log(newClassifiers)
     persistClassifiers(newClassifiers)
-  };
+    const newProcessedPosts = structuredClone(processedPosts)
+    const processedPostsForFeed = Object.entries(processedPosts as object).filter(feedEntry => {
+      return feedEntry[0] === keyForFeed
+    }).map(feedEntry => feedEntry[1])
+    .flat(Infinity)
+    console.log(processedPostsForFeed)
+    const newProcessedPostsForFeed = Array.from(new Set([...processedPostsForFeed].concat(mlText)))
+    console.log(newProcessedPostsForFeed)
+    newProcessedPosts[keyForFeed] = newProcessedPostsForFeed
+    persistProcessedPosts(newProcessedPosts)
+    if( !stacksSession.isUserSignedIn() ) {
+      return
+    }
+    stacksStorage.putFile(`classifier_${category}`, classifier.toJson())
+    .then(() => stacksStorage.putFile(processedFilenameForFeed, JSON.stringify(newProcessedPostsForFeed)))
+  }, [category, classifier, classifiers, keyForFeed, mlText, persistClassifiers, persistProcessedPosts, processedFilenameForFeed, processedPosts, stacksSession, stacksStorage]);
 
-  const handleTrainNotGood = () => () => {
+  const handleTrainNotGood = useCallback(() => {
     classifier.learn(`${mlText}`, 'notgood');
     const newClassifiers = structuredClone(classifiers)
     newClassifiers[`${category}`] = JSON.parse(classifier.toJson())
-    console.log(newClassifiers)
-    persistClassifiers(newClassifiers)
-  };
+
+    const newProcessedPosts = structuredClone(processedPosts)
+    const processedPostsForFeed = Object.entries(processedPosts as object).filter(feedEntry => {
+      return feedEntry[0] === keyForFeed
+    }).map(feedEntry => feedEntry[1])
+    .flat(Infinity)
+
+    console.log(processedPostsForFeed)
+    const newProcessedPostsForFeed = Array.from(new Set([...processedPostsForFeed].concat(mlText)))
+    console.log(newProcessedPostsForFeed)
+
+    newProcessedPosts[keyForFeed] = newProcessedPostsForFeed
+    persistProcessedPosts(newProcessedPosts)
+    if( !stacksSession.isUserSignedIn() ) {
+      return
+    }
+    stacksStorage.putFile(`classifier_${category}`, classifier.toJson())
+    .then(() => stacksStorage.putFile(processedFilenameForFeed, JSON.stringify(newProcessedPostsForFeed)))
+  }, [category, classifier, classifiers, keyForFeed, mlText, persistProcessedPosts, processedFilenameForFeed, processedPosts, stacksSession, stacksStorage])
 
   const handleOnClick = () => () => {
     console.log('[handle on click]', id);
@@ -102,7 +134,7 @@ const Post: FunctionComponent = () => {
 
   const leadingActions = () => (
     <LeadingActions>
-      <SwipeAction onClick={handleTrainGood()} destructive={true}>
+      <SwipeAction onClick={() => handleTrainGood()} destructive={true}>
         <ActionContent>
           <ItemColumnCentered>
           {`${category}`}
@@ -118,7 +150,7 @@ const Post: FunctionComponent = () => {
 
   const trailingActions = () => (
     <TrailingActions>
-      <SwipeAction destructive={true} onClick={handleTrainNotGood()}>
+      <SwipeAction destructive={true} onClick={() => handleTrainNotGood()}>
         <ActionContent>
           <ItemColumnCentered>
             {`${category}`}
@@ -151,7 +183,7 @@ const Post: FunctionComponent = () => {
               <ItemRow>
                 <ItemColumn>
                   <ListItemText
-                    primary={<Link href={`${postItem.link}`}>{postItem.title}</Link>}
+                    primary={<Link href={`${postItem.link} target='cafe-society`}>{postItem.title}</Link>}
                     secondary={`${postItem.description}`}
                   />
                 </ItemColumn>

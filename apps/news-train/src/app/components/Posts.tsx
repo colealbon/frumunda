@@ -1,4 +1,4 @@
-import { FunctionComponent, useContext, createContext, useState} from 'react';
+import { FunctionComponent, useContext, createContext, useState, useEffect} from 'react';
 import { ParsedFeedContentContext } from './Feed'
 import { ClassifierContext } from './Classifier'
 import Post from './Post'
@@ -42,6 +42,10 @@ const Posts: FunctionComponent = () => {
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
+
+  useEffect(() => {
+    //reload
+  }, [processedPosts])
 
   return (
     <>

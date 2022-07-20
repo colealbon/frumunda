@@ -24,7 +24,7 @@ export function useSettings () {
     mlThresholdConfidence: {
       label: 'machine learning confidence threshold: .99',
       checked: true,
-      value: 0.82,
+      value: 0.99,
     },
     showClassifierOverride: {
       label: 'show classifier override',

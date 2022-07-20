@@ -2,7 +2,8 @@ import {
   FunctionComponent,
   ReactNode,
   createContext,
-  useContext
+  useContext,
+  useEffect
 } from 'react';
 import {useProcessedPosts} from '../react-hooks/useProcessedPosts'
 import useSWR from 'swr';
@@ -33,9 +34,9 @@ const ProcessedPostsFromStacks: FunctionComponent<Props> = ({children}: Props ) 
       .filter(noEmpties => !!noEmpties)
       .forEach((filename: string) => fetchQueue.push(
         stacksStorage.getFile(`${filename.toString()}`, {decrypt: true})
-        .then((fetchedContent) => {
-          const processedPostsFromStacks = JSON.parse(`${fetchedContent}`)
-          const newProcessedPosts = structuredClone({...processedPosts as object, ...processedPostsFromStacks})
+        .then((fetchedContent) => {         
+          const newProcessedPosts = structuredClone({...processedPosts as object)
+          newProcessedPosts[keyForFeed] = JSON.parse(fetchedContent)
           persistProcessedPosts(newProcessedPosts)
           resolve(newProcessedPosts)
         })
