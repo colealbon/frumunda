@@ -1,16 +1,25 @@
-import {Suspense, FunctionComponent, ReactNode, useCallback, useState } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Drawer from '@mui/material/Drawer';
-import IconButton from '@mui/material/IconButton';
+import {
+  Suspense, 
+  FunctionComponent, 
+  ReactNode, 
+  useCallback, 
+  useState 
+} from 'react';
+import {
+  AppBar,
+  Box,
+  CssBaseline,
+  Drawer,
+  IconButton,
+  Divider, 
+  Toolbar,
+  Typography
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import {Divider, Toolbar} from '@mui/material';
-import Typography from '@mui/material/Typography';
+
 import PageChooser from './PageChooser';
 import CategoryChooser from './CategoryChooser'
 import { labelOrEcho } from '../utils'
-
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
@@ -48,15 +57,18 @@ const Navigator: FunctionComponent<Props> = ({children}: Props) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-          {[selectedPageIndex].flat()
-          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
-          .map(() => labelOrEcho(`${selectedPageIndex}`))
-          }
-          {[selectedPageIndex].flat()
-          .filter(() => selectedCategoryIndex !== '' )
-          .filter(() =>selectedCategoryIndex !== 'allCategories')
-          .map(() => `posts - ${selectedCategoryIndex}`)
-          }
+
+            {[selectedPageIndex].flat()
+            .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+            .map(() => labelOrEcho(`${selectedPageIndex}`))
+            }
+
+            {
+            [selectedPageIndex].flat()
+            .filter(() => selectedCategoryIndex !== '' )
+            .filter(() =>selectedCategoryIndex !== 'allCategories')
+            .map(() => `posts - ${selectedCategoryIndex}`)
+            }
           </Typography>
         </Toolbar>
       </AppBar>

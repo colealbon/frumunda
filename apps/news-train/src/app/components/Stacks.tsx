@@ -6,15 +6,10 @@ import StacksFilenamesDisplay from './StacksFilenamesDisplay'
 import {useStacks} from '../react-hooks/useStacks';
 
 const Stacks: FunctionComponent = () => {
-  const {stacksSession} = useStacks()
+  const {userSession} = useStacks()
   return (
     <div>
-      {stacksSession.isUserSignedIn() && <StacksProfileDisplay/>}
-      <div>
-        <StacksSignIn />
-        <StacksSignOut />
-      </div>
-      <StacksFilenamesDisplay /> 
+      {userSession.isUserSignedIn() && <StacksProfileDisplay/>}
     </div>
   );
 };

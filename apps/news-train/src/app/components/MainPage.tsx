@@ -2,7 +2,6 @@ import {Suspense} from 'react';
 import Category from './Category'
 import Contribute from './Contribute'
 import Classifiers from './Classifiers'
-import ClassifiersFromStacks from './ClassifiersFromStacks'
 import Classifier from './Classifier'
 import Feed from './Feed'
 import Posts from './Posts'
@@ -26,7 +25,6 @@ export function MainPage() {
         <Suspense fallback={`loading and processing posts (be patient...)`}>
             <CorsProxies>
               <Category>
-                <ClassifiersFromStacks>
                   <Classifier>
                     <Feed>
                       <ProcessedPostsFromStacks>
@@ -34,7 +32,6 @@ export function MainPage() {
                       </ProcessedPostsFromStacks>
                     </Feed>
                   </Classifier>
-                </ClassifiersFromStacks>
               </Category>
             </CorsProxies>
         </Suspense>

@@ -51,6 +51,9 @@ return removePunctuation(encodeURIComponent(hash(new Buffer(text)).toString()))
 export const shortUrl = (text: string) => {
 const theUrl = new URL(text)
 const newPath = removePunctuation(`${theUrl.hostname}${theUrl.pathname}`)
+  .replace(/-/g, '')
+  .toLowerCase()
+  
 return newPath
 }
 

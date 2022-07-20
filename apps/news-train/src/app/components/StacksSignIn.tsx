@@ -5,7 +5,7 @@ import { showConnect } from '@stacks/connect';
 
 const StacksSignin: FunctionComponent = () => {
   
-  const { stacksSession }  = useStacks()
+  const { userSession }  = useStacks()
 
   const authenticate = () => {
     showConnect({
@@ -15,17 +15,17 @@ const StacksSignin: FunctionComponent = () => {
       },
       redirectTo: '/',
       onFinish: () => {
-        stacksSession.loadUserData();
+        userSession.loadUserData();
         window.location.reload()
       },
-      userSession: stacksSession,
+      userSession: userSession,
     });
   };
 
 
   return (
     <>
-      {[stacksSession.isUserSignedIn()]
+      {[userSession.isUserSignedIn()]
         .filter(signedIn => !signedIn)
         .map(() => {
           return (

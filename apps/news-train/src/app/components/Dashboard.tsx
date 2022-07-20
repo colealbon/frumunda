@@ -18,7 +18,7 @@ const drawerWidth = 240;
 
 type Props = {children: ReactNode}
 
-const Navigator: FunctionComponent<Props> = ({children}: Props) => {
+const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { selectedPageIndex } = useSelectedPageIndex();
   const { selectedCategoryIndex } = useSelectedCategoryIndex();
@@ -113,4 +113,4 @@ const Navigator: FunctionComponent<Props> = ({children}: Props) => {
   );
 }
 
-export default Navigator
+export default Dashboard

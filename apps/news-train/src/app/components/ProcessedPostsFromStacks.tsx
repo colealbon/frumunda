@@ -2,13 +2,11 @@ import {
   FunctionComponent,
   ReactNode,
   createContext,
-  useContext,
-  useEffect
+  useContext
 } from 'react';
 import {useProcessedPosts} from '../react-hooks/useProcessedPosts'
 import useSWR from 'swr';
 import {useStacks} from '../react-hooks/useStacks'
-import {StacksFilenamesContext} from './StacksFilenames'
 import {ParsedFeedContentContext} from './Feed'
 import {shortUrl} from '../utils'
 
@@ -17,49 +15,47 @@ export const ProcessedPostsFromStacksContext = createContext({});
 type Props = {children: ReactNode}
 
 const ProcessedPostsFromStacks: FunctionComponent<Props> = ({children}: Props ) => {
-  const { stacksStorage }  = useStacks()
-  const stacksFilenamesContext = useContext(StacksFilenamesContext)
-  const stacksFilenames = [...stacksFilenamesContext as string[]] 
-  const {processedPosts, persistProcessedPosts} = useProcessedPosts()
+  const { fetchFile }  = useStacks()
+  const {processedPosts} = useProcessedPosts()
   const parsedFeedContentContext = useContext(ParsedFeedContentContext)
   const parsedFeedContent = structuredClone(parsedFeedContentContext as object)
   const keyForFeed = Object.keys(parsedFeedContent)[0]
-  const filenameForFeed = `processed_${shortUrl(keyForFeed)}`
 
-  const fetcher = (fileName: string, blockstackStorage: any) => {
-    return new Promise(resolve => {
-      const fetchQueue: unknown[] = []
-      stacksFilenames
-      .filter((filename: string) => `${filename.toString()}` === filenameForFeed)
-      .filter(noEmpties => !!noEmpties)
-      .forEach((filename: string) => fetchQueue.push(
-        stacksStorage.getFile(`${filename.toString()}`, {decrypt: true})
-        .then((fetchedContent) => {         
-          const newProcessedPosts = structuredClone({...processedPosts as object)
-          newProcessedPosts[keyForFeed] = JSON.parse(fetchedContent)
-          persistProcessedPosts(newProcessedPosts)
-          resolve(newProcessedPosts)
-        })
-      ))
+  
+  // const fetchFromStacks = () => {
+  //   return new Promise((resolve, reject) => {
+  //     const fetchQueue: unknown[] = []
+  //     stacksFilenames
+  //     .filter((stacksFilename: string) => `${stacksFilename.toString()}` === filenameForFeed)
+  //     .filter(noEmpties => !!noEmpties)
+  //     .forEach((filename: string) => fetchQueue.push(
+  //       fetchFile(filename)
+  //       .then((fetchedContent: string) => {         
+  //         resolve(JSON.parse(`${fetchedContent}`))
+  //       })
+  //     ))
 
-      Promise.all(fetchQueue)
-      .then(processedPosts => {
-        resolve([])
-      })
-      .catch((error: Error) => console.log(error))
-      .finally(() => resolve([]))
+  //     Promise.all(fetchQueue)
+  //     .then(processedPosts => {
+  //       reject(new Error('stacks file not found'))
+  //     })
+  //     .catch((error: Error) => reject(error))
+  //   });
+  // };
+
+  const { data: processedPostsForFeed } = useSWR(
+    `processed_${shortUrl(keyForFeed)}`,
+    fetchFile, 
+    {
+      fallbackData: {...processedPosts as object}[keyForFeed]
     });
-  };
-
-  const { data } = useSWR(`processed_${shortUrl(keyForFeed)}`, fetcher, {
-    suspense: true,
-    shouldRetryOnError: false,
-  });
-
-  const processedPostsForFeed = structuredClone(data)
 
   return (
-    <ProcessedPostsFromStacksContext.Provider value={processedPostsForFeed}>
+    <pre>{JSON.stringify(processedPostsForFeed as object, null, 2)}</pre>
+  )
+
+  return (
+    <ProcessedPostsFromStacksContext.Provider value={processedPostsForFeed as object}>
       {children}
     </ProcessedPostsFromStacksContext.Provider>
   );

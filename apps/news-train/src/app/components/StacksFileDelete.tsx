@@ -12,7 +12,7 @@ const StacksFileDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
 
-  const { stacksStorage } = useStacks()
+  const { deleteFile } = useStacks()
   const [deleted, setDeleted] = useState(false)
 
   const setDeletedCallback = useCallback(() => {
@@ -24,8 +24,8 @@ const StacksFileDelete: FunctionComponent<{ text: string }> = (props: {
   }, [deleted])
 
   const deleteStacksFile = () => {
-    stacksStorage.deleteFile(`${props.text}`)
-    .then(() => setDeletedCallback())
+    deleteFile(`${props.text}`)
+    setDeletedCallback()
   }
 
   if (deleted) {

@@ -1,15 +1,28 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import Navigator from './Navigator';
+import Dashboard from './Navigator';
 import MainPage from './MainPage'
-import StacksFilenames from './StacksFilenames'
+import { SWRConfig, mutate } from 'swr'
+import { useStacks } from '../react-hooks/useStacks'
 
 export function App() {
+  const SWRoptions = {
+    suspense: true,
+    shouldRetryOnError: false,
+    revalidateOnFocus: false
+  }
+  const {
+    fetchStacksFilenames,
+    fetchFile
+  } = useStacks()
+
+  mutate('stacksFilenames', fetchStacksFilenames);
+  mutate('categories', fetchFile('categories'));
+
   return (
-      <Navigator>
-        <StacksFilenames>
-          <MainPage />
-        </StacksFilenames> 
-      </Navigator>  
+    <SWRConfig value={SWRoptions}>
+      <Dashboard>
+        <MainPage />
+      </Dashboard>  
+    </SWRConfig>
   )
 }
 

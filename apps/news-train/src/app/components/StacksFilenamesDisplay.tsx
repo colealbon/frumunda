@@ -1,11 +1,11 @@
 import { FunctionComponent, useContext } from 'react';
 import StacksFileDelete from './StacksFileDelete';
-import {StacksFilenamesContext} from './StacksFilenames'
 import {Box, Typography} from '@mui/material'
+import useSWR from 'swr'
 
 const StacksFilenamesDisplay: FunctionComponent = () => {
-  const stacksFilenamesContext = useContext(StacksFilenamesContext)
-  const stacksFilenames = [...stacksFilenamesContext as string[]] 
+
+  const {data: stacksFilenames } = useSWR('stacksFilenames')
 
   return (
     <div>

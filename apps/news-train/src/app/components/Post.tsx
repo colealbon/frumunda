@@ -1,4 +1,4 @@
-import { FunctionComponent, useContext, useCallback, useState, useEffect } from 'react';
+import { FunctionComponent, useContext, useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import { removePunctuation, shortUrl } from '../utils'
 // import { ClassifierContext } from './Classifier'
@@ -32,9 +32,10 @@ import 'react-swipeable-list/dist/styles.css';
 const bayes = require('classificator')
 
 const Post: FunctionComponent = () => {
+  const { persist } = useStacks()
+
   const { processedPosts, persistProcessedPosts } = useProcessedPosts()
   const { classifiers, persistClassifiers } = useClassifiers()
-  const { stacksSession, stacksStorage }  = useStacks()
   const postContext = useContext(PostContext)
   const postItem = Object.assign(postContext)
   const categoryContext = useContext(CategoryContext)
@@ -78,13 +79,10 @@ const Post: FunctionComponent = () => {
     const newProcessedPostsForFeed = Array.from(new Set([...processedPostsForFeed].concat(mlText)))
     console.log(newProcessedPostsForFeed)
     newProcessedPosts[keyForFeed] = newProcessedPostsForFeed
-    persistProcessedPosts(newProcessedPosts)
-    if( !stacksSession.isUserSignedIn() ) {
-      return
-    }
-    stacksStorage.putFile(`classifier_${category}`, classifier.toJson())
-    .then(() => stacksStorage.putFile(processedFilenameForFeed, JSON.stringify(newProcessedPostsForFeed)))
-  }, [category, classifier, classifiers, keyForFeed, mlText, persistClassifiers, persistProcessedPosts, processedFilenameForFeed, processedPosts, stacksSession, stacksStorage]);
+    persist(`classifier_${category}`, JSON.parse(classifier.toJson()))
+    persist(processedFilenameForFeed, newProcessedPostsForFeed)
+
+  }, [category, classifier, classifiers, keyForFeed, mlText, persist, persistClassifiers, processedFilenameForFeed, processedPosts]);
 
   const handleTrainNotGood = useCallback(() => {
     classifier.learn(`${mlText}`, 'notgood');
@@ -102,13 +100,9 @@ const Post: FunctionComponent = () => {
     console.log(newProcessedPostsForFeed)
 
     newProcessedPosts[keyForFeed] = newProcessedPostsForFeed
-    persistProcessedPosts(newProcessedPosts)
-    if( !stacksSession.isUserSignedIn() ) {
-      return
-    }
-    stacksStorage.putFile(`classifier_${category}`, classifier.toJson())
-    .then(() => stacksStorage.putFile(processedFilenameForFeed, JSON.stringify(newProcessedPostsForFeed)))
-  }, [category, classifier, classifiers, keyForFeed, mlText, persistProcessedPosts, processedFilenameForFeed, processedPosts, stacksSession, stacksStorage])
+    persist(`classifier_${category}`, JSON.parse(classifier.toJson()))
+    persist(processedFilenameForFeed, newProcessedPostsForFeed)
+  }, [category, classifier, classifiers, keyForFeed, mlText, persist, processedFilenameForFeed, processedPosts])
 
   const handleOnClick = () => () => {
     console.log('[handle on click]', id);
