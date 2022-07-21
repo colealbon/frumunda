@@ -224,7 +224,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
   const parsedContent: unknown = Object.assign(data as object)
 
   return (
-    <pre>JSON.stringify(feedsForCategory)</pre>
+    <pre>{JSON.stringify(checkedFeedsForCategory)}</pre>
   )
 
   return (

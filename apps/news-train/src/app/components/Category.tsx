@@ -1,5 +1,4 @@
 import React, { FunctionComponent, ReactNode } from 'react';
-import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
 import useSWR from 'swr'
 
@@ -8,12 +7,13 @@ export const CategoryContext = React.createContext('');
 type Props = {children: ReactNode}
 const Category: FunctionComponent<Props> = ({children}: Props) => {
 
-  const { selectedCategoryIndex } = useSelectedCategoryIndex()
+  const { data: selectedCategory } = useSWR('selectedCategory')
+
   const { data: categories } = useSWR('categories')
   
   const checkedCategories = Object.entries(categories as object)
     .filter(categoryEntry => {
-      return ['allCategories', `${categoryEntry[0]}`].indexOf(`${selectedCategoryIndex}`) !== -1
+      return ['allCategories', `${categoryEntry[0]}`].indexOf(`${selectedCategory}`) !== -1
     })
     .filter((categoryEntry) => {
       return Object.entries(categoryEntry[1] as object)

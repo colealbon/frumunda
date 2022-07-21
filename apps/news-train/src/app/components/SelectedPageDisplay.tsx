@@ -5,6 +5,7 @@ import {
   useCallback, 
   useState 
 } from 'react';
+import useSWR from 'swr'
 import {
   AppBar,
   Box,
@@ -16,12 +17,9 @@ import {
   Typography
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-
 import PageChooser from './PageChooser';
 import CategoryChooser from './CategoryChooser'
 import { labelOrEcho } from '../utils'
-import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
-import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
 const drawerWidth = 240;
 
@@ -29,8 +27,9 @@ type Props = {children: ReactNode}
 
 const Navigator: FunctionComponent<Props> = ({children}: Props) => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { selectedPageIndex } = useSelectedPageIndex();
-  const { selectedCategoryIndex } = useSelectedCategoryIndex();
+  const {data: selectedPage} = useSWR('selectedPage')
+  const {data: selectedCategory} = useSWR('selectedCategory')
+
 
   const handleDrawerToggle = useCallback(() => {
     setMobileOpen(!mobileOpen);
@@ -58,16 +57,16 @@ const Navigator: FunctionComponent<Props> = ({children}: Props) => {
           </IconButton>
           <Typography variant="h6" noWrap component="div">
 
-            {[selectedPageIndex].flat()
-            .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
-            .map(() => labelOrEcho(`${selectedPageIndex}`))
+            {[selectedPage].flat()
+            .filter(() => selectedCategory === '' || selectedCategory === 'allCategories')
+            .map(() => labelOrEcho(`${selectedPage}`))
             }
 
             {
-            [selectedPageIndex].flat()
-            .filter(() => selectedCategoryIndex !== '' )
-            .filter(() =>selectedCategoryIndex !== 'allCategories')
-            .map(() => `posts - ${selectedCategoryIndex}`)
+            [selectedPage].flat()
+            .filter(() => selectedCategory !== '' )
+            .filter(() =>selectedCategory !== 'allCategories')
+            .map(() => `posts - ${selectedCategory}`)
             }
           </Typography>
         </Toolbar>

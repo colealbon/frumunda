@@ -1,4 +1,5 @@
 import {Suspense, FunctionComponent, ReactNode, useCallback, useState } from 'react';
+import useSWR from 'swr'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -11,17 +12,14 @@ import PageChooser from './PageChooser';
 import CategoryChooser from './CategoryChooser'
 import { labelOrEcho } from '../utils'
 
-import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
-import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
-
 const drawerWidth = 240;
 
 type Props = {children: ReactNode}
 
 const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { selectedPageIndex } = useSelectedPageIndex();
-  const { selectedCategoryIndex } = useSelectedCategoryIndex();
+  const {data: selectedPage} = useSWR('selectedPage')
+  const {data: selectedCategory} = useSWR('selectedCategory')
 
   const handleDrawerToggle = useCallback(() => {
     setMobileOpen(!mobileOpen);
@@ -48,59 +46,61 @@ const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-          {[selectedPageIndex].flat()
-          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
-          .map(() => labelOrEcho(`${selectedPageIndex}`))
+          {[selectedPage].flat()
+          .filter(() => selectedCategory === '' || selectedCategory === 'allCategories')
+          .map(() => labelOrEcho(`${selectedPage}`))
           }
-          {[selectedPageIndex].flat()
-          .filter(() => selectedCategoryIndex !== '' )
-          .filter(() =>selectedCategoryIndex !== 'allCategories')
-          .map(() => `posts - ${selectedCategoryIndex}`)
+          {[selectedPage].flat()
+          .filter(() => selectedCategory !== '' )
+          .filter(() => selectedCategory !== 'allCategories')
+          .map(() => `posts - ${selectedCategory}`)
           }
           </Typography>
         </Toolbar>
       </AppBar>
+
+
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-          <Suspense fallback={<>loading categories...</>}>
-            <Drawer
-              variant="temporary"
-              open={mobileOpen}
-              onClose={() => handleDrawerToggle()}
-              onBlur={() => handleDrawerToggle()}
-              ModalProps={{
-                keepMounted: true, // Better open performance on mobile.
-              }}
-              sx={{
-                display: { xs: 'block', sm: 'none' },
-                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-              }}
-            >
-              <Toolbar />
-              <Divider />
-              <CategoryChooser />
-              <PageChooser />
-            </Drawer>
-            <Drawer
-              variant="permanent"
-              sx={{
-                display: { xs: 'none', sm: 'block' },
-                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-              }}
-              open
-            >
-              <Toolbar />
-              <Divider />
-              <Suspense fallback={<>loading menu items</>}>
-                <CategoryChooser/>
-                <PageChooser/>
-              </Suspense>
-            </Drawer>
-          </Suspense>
+        <Suspense fallback={<>loading categories...</>}>
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={() => handleDrawerToggle()}
+            onBlur={() => handleDrawerToggle()}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            sx={{
+              display: { xs: 'block', sm: 'none' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+          >
+            <Toolbar />
+            <Divider />
+            <CategoryChooser/>
+            <PageChooser />
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: 'none', sm: 'block' },
+              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+            open
+          >
+            <Toolbar />
+            <Divider />
+            <Suspense fallback={<>loading menu items</>}>
+              <CategoryChooser/>
+              <PageChooser/>
+            </Suspense>
+          </Drawer>
+        </Suspense>
+
       </Box>
       <Box
         component="main"
@@ -110,7 +110,15 @@ const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
         {children}
       </Box>
     </Box>
+
   );
 }
 
 export default Dashboard
+
+
+
+
+
+
+

@@ -1,29 +1,37 @@
 import {FunctionComponent } from 'react';
-import {List,ListItem,ListItemButton,ListItemText,Collapse } from '@mui/material';
-import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
-import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
+import useSWR, { mutate } from 'swr'
+import {
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Collapse 
+} from '@mui/material';
+
 import { labelOrEcho } from '../utils'
+
 
 const PageChooser: FunctionComponent = () => {
 
-  const {selectedPageIndex, persistSelectedPageIndex} = useSelectedPageIndex()
-  const {persistSelectedCategoryIndex} = useSelectedCategoryIndex()
+  const {data: selectedPage} = useSWR('selectedCategory')
+
+  const {data: selectedCategory} = useSWR('selectedCategory')
 
   return (
     <div>
       <List>
         <ListItem key={'classifiers'} disablePadding>
-          <ListItemButton disabled={ 'classifiers' === `${selectedPageIndex}`} onClick={() => {
-            persistSelectedPageIndex('classifiers')
-            persistSelectedCategoryIndex('')
+          <ListItemButton disabled={ 'classifiers' === `${selectedPage}`} onClick={() => {
+            mutate('selectedPage', 'classifiers', { optimisticData: 'classifiers' } )
+            mutate('selectedCategory', '',{ optimisticData: '' } )
           }} >
             <ListItemText primary={`${labelOrEcho('classifiers')}`} />
           </ListItemButton>
         </ListItem>
         <ListItem key={'contribute'} disablePadding>
-          <ListItemButton disabled={ 'contribute' === `${selectedPageIndex}`} onClick={() => {
-            persistSelectedPageIndex('contribute')
-            persistSelectedCategoryIndex('')
+          <ListItemButton disabled={ 'contribute' === `${selectedPage}`} onClick={() => {
+            mutate('selectedPage', 'contribute', { optimisticData: 'contribute' } )
+            mutate('selectedCategory', '',{ optimisticData: '' } )
           }} >
             <ListItemText primary={`${labelOrEcho('contribute')}`} />
           </ListItemButton>
@@ -34,10 +42,10 @@ const PageChooser: FunctionComponent = () => {
             <ListItem key={'pageChooserFeeds'} disablePadding>
               <ListItemButton 
                 sx={{ pl: 4 }} 
-                disabled={'feeds' === `${selectedPageIndex}`} 
+                disabled={'feeds' === `${selectedPage}`} 
                 onClick={() => {
-                  persistSelectedPageIndex('feeds')
-                  persistSelectedCategoryIndex('')
+                  mutate('selectedPage', 'feeds', { optimisticData: 'feeds' } )
+                  mutate('selectedCategory', '',{ optimisticData: '' } )
                 }}
               >
                 <ListItemText primary={`${labelOrEcho('feeds')}`} />
@@ -46,10 +54,10 @@ const PageChooser: FunctionComponent = () => {
             <ListItem key={'pageChooserCategories'} disablePadding>
               <ListItemButton 
                 sx={{ pl: 4 }} 
-                disabled={'categories' === `${selectedPageIndex}`} 
+                disabled={'categories' === `${selectedPage}`} 
                 onClick={() => {
-                  persistSelectedPageIndex('categories')
-                  persistSelectedCategoryIndex('')
+                  mutate('selectedPage', 'categories', { optimisticData: 'categories' } )
+                  mutate('selectedCategory', '',{ optimisticData: '' } )
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('categories')}`} />
@@ -58,10 +66,10 @@ const PageChooser: FunctionComponent = () => {
             <ListItem key={'pageChooserStacks'} disablePadding>
               <ListItemButton 
                 sx={{ pl: 4 }} 
-                disabled={'stacks' === `${selectedPageIndex}`} 
+                disabled={'stacks' === `${selectedPage}`} 
                 onClick={() => {
-                  persistSelectedPageIndex('stacks')
-                  persistSelectedCategoryIndex('')
+                  mutate('selectedPage', 'stacks', { optimisticData: 'stacks' } )
+                  mutate('selectedCategory', '',{ optimisticData: '' } )
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('stacks')}`} />
@@ -70,10 +78,10 @@ const PageChooser: FunctionComponent = () => {
             <ListItem key={'pageChooserCorsProxies'} disablePadding>
               <ListItemButton 
                 sx={{ pl: 4 }} 
-                disabled={'corsproxies' === `${selectedPageIndex}`} 
+                disabled={'corsproxies' === `${selectedPage}`} 
                 onClick={() => {
-                  persistSelectedPageIndex('corsproxies')
-                  persistSelectedCategoryIndex('')
+                  mutate('selectedPage', 'corsproxies', { optimisticData: 'corsproxies' } )
+                  mutate('selectedCategory', '',{ optimisticData: '' } )
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('corsproxies')}`} />

@@ -24,15 +24,15 @@ describe('PageChooser', () => {
   const handleCategoryClick = () => {
     return
   }
-  const cloneSelectedCategoryIndex = 'testcategory'
-  const cloneSelectedPageIndex = 'testpage'
+  const cloneselectedCategory = 'testcategory'
+  const cloneselectedPage = 'testpage'
 
   it('should render successfully', () => {
     const { baseElement } = render(<PageChooser 
       handleCategoryClick={handleCategoryClick}
       handlePageIndexClick={handlePageIndexClick} 
-      selectedCategoryIndex={cloneSelectedCategoryIndex}
-      selectedPageIndex={cloneSelectedPageIndex}
+      selectedCategory={cloneselectedCategory}
+      selectedPage={cloneselectedPage}
       labelOrEcho={labelOrEcho}
     />);
 

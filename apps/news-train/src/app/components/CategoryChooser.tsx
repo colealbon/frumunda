@@ -6,17 +6,13 @@ import {
   ListItemText,
   Collapse
 } from '@mui/material';
-import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
-import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
-// import { useCategories } from '../react-hooks/useCategories'
-import useSWR from 'swr'
-import {useStacks} from '../react-hooks/useStacks'
+import useSWR, {mutate} from 'swr'
 
 const CategoryChooserCategories: FunctionComponent = () => {
   const { data: categories } = useSWR('categories')
+  const { data: selectedCategory } = useSWR('selectedCategory')
+
   const [open, setOpen] = React.useState(true);
-  const { persistSelectedPageIndex, mutate: mutateSelectedPageIndex } = useSelectedPageIndex()
-  const {selectedCategoryIndex, persistSelectedCategoryIndex, mutate: mutateSelectedCategoryIndex } = useSelectedCategoryIndex()
 
   const handleClick = () => {
     setOpen(!open);
@@ -30,13 +26,18 @@ const CategoryChooserCategories: FunctionComponent = () => {
             key={'category_chooser_button_allcategories'}
             onClick={() => {
               handleClick()
-              persistSelectedCategoryIndex('allCategories')
-              persistSelectedPageIndex('posts')
-              mutateSelectedCategoryIndex()
-              mutateSelectedPageIndex()
-              }
+              mutate(
+                'selectedCategory',
+                'allCategories',
+                {optimisticData: 'allCategories'}
+              )
+              mutate(
+                'selectedPage',
+                'posts',
+                {optimisticData: 'posts'}
+              )
             }
-          >
+          }>
             <ListItemText key={'CategoryChooserAllCategories'} primary={'posts'} />
           </ListItemButton>
         </ListItem>
@@ -44,22 +45,28 @@ const CategoryChooserCategories: FunctionComponent = () => {
         <Collapse in={true} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
         {
-          Object.entries(categories as object)
+          Object.entries({...categories as object})
           .filter(categoryItem =>  Object.assign(categoryItem[1] as object).checked === true)
           .map((categoryItem) => {
-            const categoryIndex = `${categoryItem[0]}`
+            const newCategory = `${categoryItem[0]}`
             const handleClick = () => {
-                persistSelectedCategoryIndex(`${categoryIndex}`)
-                persistSelectedPageIndex('posts')
-                mutateSelectedCategoryIndex(`${categoryIndex}`)
-                mutateSelectedPageIndex('posts')
+              mutate(
+                'selectedCategory',
+                newCategory,
+                {optimisticData: newCategory}
+              )
+              mutate(
+                'selectedPage',
+                'posts',
+                {optimisticData: 'posts'}
+              )
             }
             return (
               <ListItem key={`category_chooser_${categoryItem[0]}`} disablePadding>
                 <ListItemButton 
                   sx={{ pl: 4 }} 
                   key={`category_chooser_button_${categoryItem[0]}`}
-                  disabled={`${categoryItem[0]}` === `${selectedCategoryIndex}`} 
+                  disabled={`${categoryItem[0]}` === `${selectedCategory}`} 
                   onClick={handleClick}
                 > 
                   {

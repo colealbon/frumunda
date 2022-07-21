@@ -9,12 +9,13 @@ import CategoriesEdit from './CategoriesEdit'
 import CorsProxiesEdit from './CorsProxiesEdit'
 import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
-import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
-import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
+
+
+import useSWR from 'swr'
 
 export function MainPage() {
-  const { selectedPageIndex } = useSelectedPageIndex();
-  const { selectedCategoryIndex } = useSelectedCategoryIndex();
+  const {data: selectedPage} = useSWR('selectedPage')
+  const {data: selectedCategory} = useSWR('selectedCategory')
 
   const fetchAndRenderPosts = () => {
     return (
@@ -25,44 +26,44 @@ export function MainPage() {
               <Posts />
             </Feed>
           </Category>
-
         </Suspense>
       </ErrorBoundary>
     )
   }
 
+  console.log(selectedPage)
   return (
     <>
         {
-          [selectedPageIndex].flat().filter(() => {
-            return selectedPageIndex === 'contribute'
+          [selectedPage].flat().filter(() => {
+            return selectedPage === 'contribute'
           })
-          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .filter(() => selectedCategory === '' || selectedCategory === 'allCategories')
           .map(() => <Contribute key='contribute'/>)
         }
         
         {
-          [selectedPageIndex].flat()
-          .filter(() => selectedPageIndex === 'posts')
-          .filter(() => selectedCategoryIndex === 'allCategories')
+          [selectedPage].flat()
+          .filter(() => selectedPage === 'posts')
+          .filter(() => selectedCategory === 'allCategories')
           .map(() => fetchAndRenderPosts())
         }
         {
-          [selectedPageIndex].flat()
-          .filter(() => selectedPageIndex === 'posts')
-          .filter(() => `${selectedCategoryIndex}` === '')
+          [selectedPage].flat()
+          .filter(() => selectedPage === 'posts')
+          .filter(() => `${selectedCategory}` === '')
           .map(() => fetchAndRenderPosts())
         }
         {
-          [selectedCategoryIndex].flat()
-          .filter(() => `${selectedCategoryIndex}` !== '')
-          .filter(() => selectedCategoryIndex !== 'allCategories')
+          [selectedCategory].flat()
+          .filter(() => `${selectedCategory}` !== '')
+          .filter(() => selectedCategory !== 'allCategories')
           .map(() => fetchAndRenderPosts())
         }
         {
-          [selectedPageIndex].flat()
-          .filter(() => selectedPageIndex === 'categories')
-          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          [selectedPage].flat()
+          .filter(() => selectedPage === 'categories')
+          .filter(() => selectedCategory === '' || selectedCategory === 'allCategories')
           .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryCategories'} fallback={<>error fetching categories</>}>
@@ -74,10 +75,10 @@ export function MainPage() {
           })
         }
         {
-          [selectedPageIndex].flat().filter(() => {
-            return selectedPageIndex === 'feeds'
+          [selectedPage].flat().filter(() => {
+            return selectedPage === 'feeds'
           })
-          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .filter(() => selectedCategory === '' || selectedCategory === 'allCategories')
           .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryFeeds'} fallback={<>error fetching feeds</>}>
@@ -89,10 +90,10 @@ export function MainPage() {
           })
         }
         {
-          [selectedPageIndex].flat().filter(() => {
-            return selectedPageIndex === 'stacks'
+          [selectedPage].flat().filter(() => {
+            return selectedPage === 'stacks'
           })
-          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .filter(() => selectedCategory === '' || selectedCategory === 'allCategories')
           .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryStacks'} fallback={<>error fetching stacks session</>}>
@@ -104,10 +105,10 @@ export function MainPage() {
           })
         }
         {
-          [selectedPageIndex].flat().filter(() => {
-            return selectedPageIndex === 'corsproxies'
+          [selectedPage].flat().filter(() => {
+            return selectedPage === 'corsproxies'
           })
-          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
+          .filter(() => selectedCategory === '' || selectedCategory === 'allCategories')
           .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryCorsProxies'} fallback={<>error fetching cors proxies</>}>

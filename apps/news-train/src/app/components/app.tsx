@@ -1,4 +1,4 @@
-import Dashboard from './Navigator';
+import Dashboard from './Dashboard';
 import MainPage from './MainPage'
 import { SWRConfig, useSWRConfig } from 'swr'
 import { useStacks } from '../react-hooks/useStacks'
@@ -8,11 +8,6 @@ import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json'
 
 export function App() {
   const {mutate} = useSWRConfig()
-  const SWRoptions = {
-    suspense: true,
-    shouldRetryOnError: false,
-    revalidateOnFocus: false
-  }
   const {
     fetchStacksFilenames,
     fetchFile,
@@ -25,14 +20,14 @@ export function App() {
   mutate('corsProxies', fetchFile('corsProxies', defaultCorsProxies))
   mutate('categories', fetchFile('categories', defaultCategories))
   mutate('feeds', fetchFile('feeds', defaultFeeds))
- 
+  console.log('app')
+
   return (
-    <SWRConfig value={SWRoptions}>
+
       <Dashboard>
-        <MainPage />
+
       </Dashboard>  
-    </SWRConfig>
+
   )
 }
-
 export default App;
