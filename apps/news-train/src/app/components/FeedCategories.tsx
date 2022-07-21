@@ -1,13 +1,13 @@
 import { useCallback, FunctionComponent, Fragment } from 'react';
 import { Chip } from '@mui/material';
 import { useFeeds } from '../react-hooks/useFeeds';
-import { useCategories } from '../react-hooks/useCategories';
+import useSWR from 'swr'
 
 const FeedCategories: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
   const { feeds, persistFeeds } = useFeeds();
-  const { categories } = useCategories();
+  const { data: categories } = useSWR('categories');
 
   const persistFeedsCallback = useCallback(
     (newFeeds: object) => {

@@ -16,7 +16,6 @@ const StacksFileDelete: FunctionComponent<{ text: string }> = (props: {
   const [deleted, setDeleted] = useState(false)
 
   const setDeletedCallback = useCallback(() => {
-    console.log(`setDeletedCallback ${props.text}`)
     setDeleted(true)
     mutate('stacksFilenames', deleteFile(`${props.text}`))
   }, [props.text, deleteFile])

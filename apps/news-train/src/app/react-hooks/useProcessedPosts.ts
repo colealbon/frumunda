@@ -1,16 +1,12 @@
 import { useCallback} from 'react';
 import localforage from 'localforage'
 import useSWR  from 'swr';
-import defaultProcessedPosts from './defaultProcessedPosts.json'
 
 export function useProcessedPosts () {
   const fetcher = () => {
     return new Promise((resolve, reject) => {
       localforage.getItem('processedPosts')
       .then((value: unknown) => {
-        if (!value) {
-          resolve(defaultProcessedPosts)
-        }
         resolve(value)
       })
     })
@@ -21,7 +17,6 @@ export function useProcessedPosts () {
     fetcher , 
     {
       suspense: true,
-      fallbackData: defaultProcessedPosts,
       shouldRetryOnError: false
     }
   )
@@ -39,7 +34,7 @@ export function useProcessedPosts () {
   }, [ mutate ])
 
   const factoryReset = () => {
-    persistProcessedPosts(defaultProcessedPosts)
+    persistProcessedPosts([])
   }
   
   return {

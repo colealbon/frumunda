@@ -8,10 +8,12 @@ import {
 } from '@mui/material';
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
-import { useCategories } from '../react-hooks/useCategories'
+// import { useCategories } from '../react-hooks/useCategories'
+import useSWR from 'swr'
+import {useStacks} from '../react-hooks/useStacks'
 
 const CategoryChooserCategories: FunctionComponent = () => {
-  const { categories } = useCategories()
+  const { data: categories } = useSWR('categories')
   const [open, setOpen] = React.useState(true);
   const { persistSelectedPageIndex, mutate: mutateSelectedPageIndex } = useSelectedPageIndex()
   const {selectedCategoryIndex, persistSelectedCategoryIndex, mutate: mutateSelectedCategoryIndex } = useSelectedCategoryIndex()

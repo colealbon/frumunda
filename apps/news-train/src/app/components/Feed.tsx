@@ -1,14 +1,16 @@
-import React, { FunctionComponent, createContext, useContext, ReactNode } from 'react';
+import { FunctionComponent, createContext, useContext, ReactNode } from 'react';
 import useSWR  from 'swr';
 import {
   Grid
 } from '@mui/material';
 import { useFeeds } from '../react-hooks/useFeeds'
-import { CorsProxiesContext } from './CorsProxies'
-import { CategoryContext } from './Category';
+
 import { cleanTags } from '../utils'
 import xml2js from 'xml2js';
 import axios from 'axios';
+
+import {CategoryContext} from './Category'
+
 
 // import VisibilitySensor from 'react-visibility-sensor';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -23,8 +25,10 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
   const categoryContext = useContext(CategoryContext)
   const category = `${categoryContext}`
 
-  const corsProxiesContext = useContext(CorsProxiesContext)
-  const corsProxies = Object.assign(corsProxiesContext)
+  // const corsProxiesContext = useContext(CorsProxiesContext)
+  // const corsProxies = Object.assign(corsProxiesContext)
+
+  const {data: corsProxies} = useSWR('corsProxies')
   
   const checkedFeedsForCategory = Object.entries(feeds as object)
     .filter(feedEntry => {
@@ -218,6 +222,10 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
   )
   
   const parsedContent: unknown = Object.assign(data as object)
+
+  return (
+    <pre>JSON.stringify(feedsForCategory)</pre>
+  )
 
   return (
     <Grid>

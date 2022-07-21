@@ -1,33 +1,41 @@
 import {
-  useCallback,
   FunctionComponent,
   Fragment,
+  useState
 } from 'react';
 import { IconButton } from '@mui/material';
-import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
-import { useCorsProxies } from '../react-hooks/useCorsProxies';
+import { DeleteOutlined } from '@mui/icons-material';
+import useSWR, { mutate } from 'swr';
+import {useStacks} from '../react-hooks/useStacks'
 
 const CorsProxyDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { corsProxies, persistCorsProxies, inFlight } = useCorsProxies()
 
-  const deleteCorsProxy = useCallback(() => {
-    const newCorsProxies = JSON.parse(
-      JSON.stringify({
-        ...Object.fromEntries(
-          Object.entries(JSON.parse(JSON.stringify(corsProxies))).filter(
-            (corsProxy: [string, unknown]) => corsProxy[0] !== props.text
-          )
-        ),
-      })
-    );
-    persistCorsProxies(newCorsProxies);
-  }, [corsProxies, props.text, persistCorsProxies]);
+  const { persist } = useStacks()
+  const { data: corsProxies } = useSWR('corsProxies')
+  const [inFlight, setInFlight] = useState(false)
+  
+  const deleteCorsProxy = () => {
+    setInFlight(true)
+    const newCorsProxies = {
+      ...Object.fromEntries(
+        Object.entries(corsProxies).filter(
+          (corsProxy: [string, unknown]) => corsProxy[0] !== props.text
+        )
+      ),
+    }
+    mutate(
+      'corsProxies', 
+      persist('corsProxies', newCorsProxies), 
+      { optimisticData: newCorsProxies, rollbackOnError: true }
+    )
+    .then(() => setInFlight(false))
+  }
 
   return (
     <Fragment>
-      {Object.entries(JSON.parse(JSON.stringify(corsProxies)))
+      {Object.entries(corsProxies)
         .filter((corsProxy: [string, unknown]) => corsProxy[0] === props.text)
         .map((corsProxy: [string, unknown]) => {
           return (

@@ -1,52 +1,56 @@
-import React, { useCallback, FunctionComponent, Fragment } from 'react';
-import { Switch, FormControlLabel,Typography} from '@mui/material';
-import { useCategories } from '../react-hooks/useCategories';
+import { FunctionComponent, Fragment, useState } from 'react';
+import useSWR, { mutate } from 'swr'
+import { Switch, FormControlLabel,Typography } from '@mui/material';
+import { useStacks } from '../react-hooks/useStacks'
 
 const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
 
-  const { categories, publishCategories, inFlight } = useCategories()
+  const {data: categories} = useSWR('categories')
+  const {persist} = useStacks()
+  const [inFlight, setInFlight] = useState(false)
 
-  const setCategoriesCallback = useCallback(() => {
-    const newCategory = JSON.parse(
-      JSON.stringify({
-        ...Object.fromEntries(
-          Object.entries(JSON.parse(JSON.stringify(categories)))
-            .filter((category: [string, unknown]) => category[0] === props.text)
-            .map((category: [string, unknown]) => {
-              return [
-                category[0],
-                {
-                  ...Object.fromEntries(
-                    Object.entries({
-                      ...(category[1] as Record<string, unknown>),
-                    })
-                      .filter(
-                        (attribute: [string, unknown]) =>
-                          attribute[0] === 'checked'
-                      )
-                      .map((attribute : [string, unknown]) => [attribute[0], !attribute[1]])
-                  ),
-                  ...Object.fromEntries(
-                    Object.entries({
-                      ...(category[1] as Record<string, unknown>),
-                    }).filter((attribute : [string, unknown]) => attribute[0] !== 'checked')
-                  ),
-                },
-              ];
-            })
-        ),
+  const toggleCategory = () => {
+    const newCategory = {
+    ...Object.fromEntries(
+      Object.entries(categories)
+      .filter((category: [string, unknown]) => category[0] === props.text)
+      .map((category: [string, unknown]) => {
+        return [
+          category[0],
+          {
+            ...Object.fromEntries(
+              Object.entries({
+                ...(category[1] as Record<string, unknown>),
+              })
+                .filter(
+                  (attribute: [string, unknown]) =>
+                    attribute[0] === 'checked'
+                )
+                .map((attribute : [string, unknown]) => [attribute[0], !attribute[1]])
+            ),
+            ...Object.fromEntries(
+              Object.entries({
+                ...(category[1] as Record<string, unknown>),
+              }).filter((attribute : [string, unknown]) => attribute[0] !== 'checked')
+            ),
+          },
+        ];
       })
-    );
+    )}
     const newCategories = { ...categories as object, ...newCategory }
-    publishCategories(newCategories)
-
-  }, [categories, props.text, publishCategories]);
+    mutate(
+      'categories', 
+      persist('categories', newCategories),
+      { optimisticData: newCategories, rollbackOnError: true }
+    )
+    .then(() => setInFlight(false))
+  }
 
   return (
     <Fragment>
-      {Object.entries(JSON.parse(JSON.stringify(categories)))
+      {Object.entries(categories)
         .filter((category : [string, unknown]) => category[0] === props.text)
         .map((category : [string, unknown]) => {
           const attributes = category[1] as Record<string, unknown>;
@@ -64,7 +68,7 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
                       )
                     )
                   ).some(checked => checked)}
-                  onChange={() => setCategoriesCallback()}
+                  onChange={() => toggleCategory()}
                   name={props.text}
                 />
               }

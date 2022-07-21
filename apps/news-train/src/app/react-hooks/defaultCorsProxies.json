@@ -1,0 +1,4 @@
+{
+  "/.netlify/functions/main?url=": { "checked": true },
+  "http://localhost:8888/.netlify/functions/main?url=": { "checked": false }
+}

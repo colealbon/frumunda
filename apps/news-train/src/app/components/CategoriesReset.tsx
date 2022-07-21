@@ -1,11 +1,22 @@
-import React, { FunctionComponent, useState } from 'react';
+import { FunctionComponent} from 'react';
 import Button from '@mui/material/Button';
-import { useCategories } from '../react-hooks/useCategories';
+import defaultCategories from '../react-hooks/defaultCategories.json'
+import {useStacks} from '../react-hooks/useStacks'
+import { mutate } from 'swr';
 
 const CategoriesReset: FunctionComponent = () => {
-  const { factoryReset, inFlight } = useCategories();
+  const {persist} = useStacks()
+
+  const factoryReset = () => {
+    mutate(
+      'categories',
+      persist('categories', defaultCategories),
+      { optimisticData: defaultCategories }
+    )
+  }
+
   return (
-    <Button key="categoriesreset" disabled={inFlight} onClick={() => factoryReset()}>
+    <Button key="categoriesreset" onClick={() => factoryReset()}>
       reset categories
     </Button>
   );

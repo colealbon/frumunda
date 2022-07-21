@@ -1,8 +1,7 @@
 import { FunctionComponent, useContext, createContext, useState, useEffect} from 'react';
 import { ParsedFeedContentContext } from './Feed'
-import { ClassifierContext } from './Classifier'
+import useSWR from 'swr'
 import Post from './Post'
-import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
 import {
   Link,
   Typography,
@@ -14,7 +13,7 @@ import {
 import { useSettings } from '../react-hooks/useSettings'
 
 import {ExpandMore} from '@mui/icons-material';
-import {cleanPostItem, removePunctuation} from '../utils'
+import {shortUrl, cleanPostItem, removePunctuation} from '../utils'
 import stringSimilarity from 'string-similarity'
 import MarkFeedProcessedButton from './MarkFeedProcessedButton'
 
@@ -32,45 +31,40 @@ const Posts: FunctionComponent = () => {
 
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
-  const classifierContext = useContext(ClassifierContext);
-  const classifier = structuredClone(classifierContext);
-  const {processedPosts} = useProcessedPosts()
+  const keyForFeed = Object.keys(parsedFeedContent)[0]
+  const processedFilenameForFeed = `processed_${shortUrl(keyForFeed)}`
+
+  // const classifierContext = useContext(ClassifierContext);
+  // const classifier = structuredClone(classifierContext);
+  // const {processedPosts} = useProcessedPosts()
   const [expanded, setExpanded] = useState<string | false>(false);
   const {settings} = useSettings()
   const {hideProcessedPosts, disableMachineLearning, mlThresholdDocuments, mlThresholdConfidence} = structuredClone(settings)
+
+  const {data: category} = useSWR('category')
+  const {data: classifierdata} = useSWR(`classifier_${category}`)
+  const {data: processedPosts} = useSWR(processedFilenameForFeed)
+
+  let classifier = bayes()
+
+  try {
+    classifier = bayes.fromJson(JSON.stringify(classifierdata))
+  } catch (error) {
+    console.log(error)
+  }
 
   const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  useEffect(() => {
-    //reload
-  }, [processedPosts])
+  return <pre>{JSON.stringify(category)}</pre>
 
   return (
     <>
       {
       Object.entries(parsedFeedContent).map((feedContentEntry) => {
         const feedLink: string = feedContentEntry[0]
-
-        const processedPostsForFeed = [Object.entries(processedPosts as object)
-          .filter((feedEntry) => feedEntry[0] === feedLink)
-          .map(feedEntry => feedEntry[1])]
-          .flat(Infinity)
-
-        const postsForFeed: cleanPostItemType[] = structuredClone(feedContentEntry[1]).items
-
-        let classifierForCategory = bayes()
-
-        try {
-          if (classifier !== {}) {
-            classifierForCategory = structuredClone(classifier) ? bayes.fromJson(JSON.stringify(classifier)) : bayes()
-          }
-        } catch (err) {
-        // console.log(err)
-        }
-
-        const unprocessedCleanPostItems = [...postsForFeed]
+        const unprocessedCleanPostItems = [...processedPosts]
           .filter((noEmpties) => !!noEmpties)
           .filter((noEmpties) => `${structuredClone(noEmpties as object).link}` !== ``)
           .map((postItem) => cleanPostItem(postItem))
@@ -80,7 +74,7 @@ const Posts: FunctionComponent = () => {
             }
             // surpress previously processed posts
             const mlText = removePunctuation(`${structuredClone(postItem).title} ${structuredClone(postItem).description}`)
-            return !processedPostsForFeed.find((postItem: string) => {
+            return !processedPosts.find((postItem: string) => {
               const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
               return similarity > .8
             })
@@ -91,11 +85,11 @@ const Posts: FunctionComponent = () => {
             if (disableMachineLearning) {
               return true
             }
-            if (parseFloat(classifierForCategory.totalDocuments) < parseFloat(mlThresholdDocuments)) {
+            if (parseFloat(classifier.totalDocuments) < parseFloat(mlThresholdDocuments)) {
               return true
             }
             try {
-              const prediction = classifierForCategory.categorize(`${mlText}`);
+              const prediction = classifier.categorize(`${mlText}`);
               const surpress = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
                 (likelihood: object) => likelihood && structuredClone(likelihood).category === 'notgood'
               )?.proba || 0.0) > mlThresholdConfidence.value
@@ -152,7 +146,7 @@ const Posts: FunctionComponent = () => {
                     {`${feedLink}`}
                   </Link>
                 </Typography>
-                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${[...postsForFeed as object[]].length} posts remaining)`}</Typography>
+                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${[...processedPosts as object[]].length} posts remaining)`}</Typography>
               </Box>
             </AccordionSummary>
             <AccordionDetails>

@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react';
-import { useCategories } from '../react-hooks/useCategories'
+import { FunctionComponent } from 'react';
+import useSWR from 'swr'
 
 import CategoriesAdd from './CategoriesAdd';
 import CategoriesReset from './CategoriesReset';
@@ -8,7 +8,8 @@ import CategoryToggle from './CategoryToggle';
 import CategoryDelete from './CategoryDelete';
 
 const CategoriesEdit: FunctionComponent = () => {
-  const { categories } = useCategories()
+
+  const { data: categories } = useSWR('categories')
 
   return (
 

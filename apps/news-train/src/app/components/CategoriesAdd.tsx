@@ -1,14 +1,17 @@
-import React, {
+import {
   ChangeEvent,
   useState,
-  useCallback,
+  useCallback
 } from 'react';
+import { useStacks } from '../react-hooks/useStacks'
 import { TextField } from '@mui/material';
-import { useCategories } from '../react-hooks/useCategories'
+import useSWR, { mutate } from 'swr';
 
 const CategoriesAdd = () => {
+  const {data: categories} = useSWR('categories')
+  const [inFlight, setInFlight] = useState(false)
   const [inputValue, setInputValue] = useState('');
-  const { categories, publishCategories, inFlight } = useCategories()
+  const {persist} = useStacks()
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -17,31 +20,36 @@ const CategoriesAdd = () => {
     [setInputValue]
   );
 
-  const addCategoryCallback = useCallback(() => {
+  const addCategory = () => {
+    setInFlight(true)
     const newCategory = JSON.parse(`{"${inputValue}": {"checked": true}}`);
-    const newCategoriesClone = { ...newCategory, ...JSON.parse(JSON.stringify(categories)) }
-    publishCategories(newCategoriesClone);
-  }, [ categories, publishCategories, inputValue]);
+    const newCategories = { ...newCategory, ...categories }
+    mutate(
+      'categories', 
+      persist('categories', newCategories), 
+      { optimisticData: newCategories, rollbackOnError: true }
+    ).then(() => setInFlight(false))
+  }
 
   return (
-      <TextField
-        disabled={inFlight}
-        id="addCategoryTextField"
-        placeholder="add category here"
-        value={inputValue}
-        onKeyPress={(event: {key: string}) => {
-          [event.key]
-            .filter(theKey => theKey === 'Enter')
-            .forEach(() => {
-              addCategoryCallback();
-              setInputCallback('');
-            });
-        }}
-        onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-          setInputCallback(event.target.value);
-        }}
-        fullWidth
-      />
+    <TextField
+      disabled={inFlight}
+      id="addCategoryTextField"
+      placeholder="add category here"
+      value={inputValue}
+      onKeyPress={(event: {key: string}) => {
+        [event.key]
+          .filter(theKey => theKey === 'Enter')
+          .forEach(() => {
+            addCategory();
+            setInputCallback('');
+          });
+      }}
+      onChange={(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setInputCallback(event.target.value);
+      }}
+      fullWidth
+    />
   );
 };
 

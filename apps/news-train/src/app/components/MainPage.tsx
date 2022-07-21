@@ -1,8 +1,7 @@
 import {Suspense} from 'react';
-import Category from './Category'
+
 import Contribute from './Contribute'
-import Classifiers from './Classifiers'
-import Classifier from './Classifier'
+import Category from './Category'
 import Feed from './Feed'
 import Posts from './Posts'
 import Stacks from './Stacks'
@@ -10,8 +9,6 @@ import CategoriesEdit from './CategoriesEdit'
 import CorsProxiesEdit from './CorsProxiesEdit'
 import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
-import CorsProxies from './CorsProxies'
-import ProcessedPostsFromStacks from './ProcessedPostsFromStacks'
 import { useSelectedPageIndex } from '../react-hooks/useSelectedPageIndex'
 import { useSelectedCategoryIndex } from '../react-hooks/useSelectedCategoryIndex'
 
@@ -23,17 +20,12 @@ export function MainPage() {
     return (
       <ErrorBoundary key={'errorBoundaryPosts'} fallback={<>error fetching posts</>}>
         <Suspense fallback={`loading and processing posts (be patient...)`}>
-            <CorsProxies>
-              <Category>
-                  <Classifier>
-                    <Feed>
-                      <ProcessedPostsFromStacks>
-                        <Posts />
-                      </ProcessedPostsFromStacks>
-                    </Feed>
-                  </Classifier>
-              </Category>
-            </CorsProxies>
+          <Category>
+            <Feed>
+              <Posts />
+            </Feed>
+          </Category>
+
         </Suspense>
       </ErrorBoundary>
     )
@@ -47,13 +39,6 @@ export function MainPage() {
           })
           .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
           .map(() => <Contribute key='contribute'/>)
-        }
-        {
-          [selectedPageIndex].flat().filter(() => {
-            return selectedPageIndex === 'classifiers'
-          })
-          .filter(() => selectedCategoryIndex === '' || selectedCategoryIndex === 'allCategories')
-          .map(() => <Classifiers key='classifiers'/>)
         }
         
         {
@@ -111,7 +96,7 @@ export function MainPage() {
           .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryStacks'} fallback={<>error fetching stacks session</>}>
-                <Suspense fallback={<>...fetching stacks session</>}>
+                <Suspense fallback={<>fetching stacks stuff</>}>
                   <Stacks key='stacks' />
                 </Suspense>
               </ErrorBoundary>

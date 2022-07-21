@@ -1,12 +1,9 @@
-import { FunctionComponent, useContext, useCallback, useEffect } from 'react';
+import { FunctionComponent, useContext, useCallback } from 'react';
+import useSWR from 'swr'
 import styled from 'styled-components';
 import { removePunctuation, shortUrl } from '../utils'
-// import { ClassifierContext } from './Classifier'
 import { PostContext } from './Posts';
-import { CategoryContext } from './Category'
 import { ParsedFeedContentContext } from './Feed'
-import { useClassifiers } from '../react-hooks/useClassifiers'
-import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
 import { useStacks } from '../react-hooks/useStacks'
 
 import {
@@ -34,12 +31,13 @@ const bayes = require('classificator')
 const Post: FunctionComponent = () => {
   const { persistFile } = useStacks()
 
-  const { processedPosts, persistProcessedPosts } = useProcessedPosts()
-  const { classifiers, persistClassifiers } = useClassifiers()
+  // const { processedPosts, persistProcessedPosts } = useProcessedPosts()
+  // const { classifiers, persistClassifiers } = useClassifiers()
+
   const postContext = useContext(PostContext)
   const postItem = Object.assign(postContext)
-  const categoryContext = useContext(CategoryContext)
-  const category = `${categoryContext}`
+  // const categoryContext = useContext(CategoryContext)
+  // const category = `${categoryContext}`
   const id = `${postItem.link}`
 
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
@@ -49,61 +47,25 @@ const Post: FunctionComponent = () => {
 
   const mlText = removePunctuation(`${postItem.title} ${postItem.description} ${postItem.summary}`)
 
-  const classifierForCategory = {...Object.entries(classifiers as object)
-    .filter((classifierEntry: [string, object]) => (classifierEntry[0] === category))
-    .map((classifierEntry: [string, object]) => classifierEntry[1])
-    .find(() => true)}
+  const {data: category} = useSWR('category')
+  const {data: classifierdata} = useSWR(`classifier_${category}`)
+  const {data: processedPosts} = useSWR(processedFilenameForFeed)
 
   let classifier = bayes()
+
   try {
-    classifier = bayes.fromJson(JSON.stringify(classifierForCategory))
+    classifier = bayes.fromJson(JSON.stringify(classifierdata))
   } catch (error) {
     console.log(error)
   }
 
-  useEffect(() => {
-    //console.log(processedPosts)
-  }, [processedPosts])
-
-  const handleTrainGood = useCallback( () => {
-    classifier.learn(`${mlText}`, 'good');
-    const newClassifiers = structuredClone(classifiers)
-    newClassifiers[`${category}`] = JSON.parse(classifier.toJson())
-    persistClassifiers(newClassifiers)
-    const newProcessedPosts = structuredClone(processedPosts)
-    const processedPostsForFeed = Object.entries(processedPosts as object).filter(feedEntry => {
-      return feedEntry[0] === keyForFeed
-    }).map(feedEntry => feedEntry[1])
-    .flat(Infinity)
-    console.log(processedPostsForFeed)
-    const newProcessedPostsForFeed = Array.from(new Set([...processedPostsForFeed].concat(mlText)))
-    console.log(newProcessedPostsForFeed)
-    newProcessedPosts[keyForFeed] = newProcessedPostsForFeed
+  const handleTrain = useCallback( (label: string) => {
+    classifier.learn(`${mlText}`, label);
     persistFile(`classifier_${category}`, JSON.parse(classifier.toJson()))
-    persistFile(processedFilenameForFeed, newProcessedPostsForFeed)
+    const newProcessedPosts: string[] = Array.from(new Set([...processedPosts].concat(mlText)))
+    persistFile(processedFilenameForFeed, newProcessedPosts)
 
-  }, [category, classifier, classifiers, keyForFeed, mlText, persistFile, persistClassifiers, processedFilenameForFeed, processedPosts]);
-
-  const handleTrainNotGood = useCallback(() => {
-    classifier.learn(`${mlText}`, 'notgood');
-    const newClassifiers = structuredClone(classifiers)
-    newClassifiers[`${category}`] = JSON.parse(classifier.toJson())
-
-    const newProcessedPosts = structuredClone(processedPosts)
-    const processedPostsForFeed = Object.entries(processedPosts as object).filter(feedEntry => {
-      return feedEntry[0] === keyForFeed
-    }).map(feedEntry => feedEntry[1])
-    .flat(Infinity)
-
-    console.log(processedPostsForFeed)
-    const newProcessedPostsForFeed = Array.from(new Set([...processedPostsForFeed].concat(mlText)))
-    console.log(newProcessedPostsForFeed)
-
-    newProcessedPosts[keyForFeed] = newProcessedPostsForFeed
-    persistFile(`classifier_${category}`, JSON.parse(classifier.toJson()))
-    persistFile(processedFilenameForFeed, newProcessedPostsForFeed)
-  }, [category, classifier, classifiers, keyForFeed, mlText, persistFile, processedFilenameForFeed, processedPosts])
-
+  }, [category, classifier, mlText, persistFile, processedFilenameForFeed, processedPosts]);
   const handleOnClick = () => () => {
     console.log('[handle on click]', id);
   };
@@ -112,14 +74,14 @@ const Post: FunctionComponent = () => {
   let predictionGood = -.001
 
   try {
-    if (classifierForCategory !== undefined) {
+    if (classifier !== undefined) {
       const prediction = classifier.categorize(`${mlText}`);
       predictionNotGood = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
-        (likelihood: any) => likelihood && likelihood.category === 'notgood'
+        (likelihood: {category: string}) => likelihood && likelihood.category === 'notgood'
       )?.proba || 0.0)
   
       predictionGood = parseFloat(prediction.likelihoods ?.filter((likelihood: {proba: string}) => likelihood.proba !== `NaN`).find(
-        (likelihood: any) => likelihood && likelihood.category === 'good'
+        (likelihood: {category: string}) => likelihood && likelihood.category === 'good'
       )?.proba || 0.0)
     }
   } catch(err) {
@@ -128,7 +90,7 @@ const Post: FunctionComponent = () => {
 
   const leadingActions = () => (
     <LeadingActions>
-      <SwipeAction onClick={() => handleTrainGood()} destructive={true}>
+      <SwipeAction onClick={() => handleTrain('good')} destructive={true}>
         <ActionContent>
           <ItemColumnCentered>
           {`${category}`}
@@ -144,7 +106,7 @@ const Post: FunctionComponent = () => {
 
   const trailingActions = () => (
     <TrailingActions>
-      <SwipeAction destructive={true} onClick={() => handleTrainNotGood()}>
+      <SwipeAction destructive={true} onClick={() => handleTrain('notgood')}>
         <ActionContent>
           <ItemColumnCentered>
             {`${category}`}

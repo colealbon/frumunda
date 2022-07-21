@@ -1,12 +1,22 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent} from 'react';
 import Button from '@mui/material/Button';
-import { useCorsProxies } from '../react-hooks/useCorsProxies';
-
+import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json'
+import { useStacks } from '../react-hooks/useStacks'
+import { mutate } from 'swr'
 const CorsProxiesReset: FunctionComponent = () => {
-  const { factoryReset, inFlight } = useCorsProxies();
+  
+  const {persist} = useStacks()
+  const factoryReset = () => {
+    mutate(
+      'corsProxies'
+      , persist('corsProxies', defaultCorsProxies)
+      , { optimisticData: defaultCorsProxies }
+    );
+  }
+
   return (
-    <Button key="corsProxiesreset" disabled={inFlight} onClick={() => factoryReset()}>
-      reset cors proxies
+    <Button key="corsProxiesreset" onClick={() => factoryReset()}>
+      reset corsProxies
     </Button>
   );
 };

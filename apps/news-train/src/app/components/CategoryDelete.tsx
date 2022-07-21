@@ -1,33 +1,41 @@
-import React, {
-  useCallback,
+import {
   FunctionComponent,
   Fragment,
+  useState
 } from 'react';
 import { IconButton } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
-import { useCategories } from '../react-hooks/useCategories';
+import useSWR, { mutate } from 'swr';
+import {useStacks} from '../react-hooks/useStacks'
 
 const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { categories, publishCategories, inFlight } = useCategories()
 
-  const deleteCategory = useCallback(() => {
-    const newCategories = JSON.parse(
-      JSON.stringify({
-        ...Object.fromEntries(
-          Object.entries(JSON.parse(JSON.stringify(categories))).filter(
-            (category: [string, unknown]) => category[0] !== props.text
-          )
-        ),
-      })
-    );
-    publishCategories(newCategories);
-  }, [categories, props.text, publishCategories]);
+  const { persist } = useStacks()
+  const { data: categories } = useSWR('categories')
+  const [inFlight, setInFlight] = useState(false)
+  
+  const deleteCategory = () => {
+    setInFlight(true)
+    const newCategories = {
+      ...Object.fromEntries(
+        Object.entries(categories).filter(
+          (category: [string, unknown]) => category[0] !== props.text
+        )
+      ),
+    }
+    mutate(
+      'categories', 
+      persist('categories', newCategories), 
+      { optimisticData: newCategories, rollbackOnError: true }
+    )
+    .then(() => setInFlight(false))
+  }
 
   return (
     <Fragment>
-      {Object.entries(JSON.parse(JSON.stringify(categories)))
+      {Object.entries(categories)
         .filter((category: [string, unknown]) => category[0] === props.text)
         .map((category: [string, unknown]) => {
           return (
