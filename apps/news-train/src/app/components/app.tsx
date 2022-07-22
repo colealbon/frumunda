@@ -25,7 +25,7 @@ export function App() {
   return (
 
       <Dashboard>
-
+        <MainPage />
       </Dashboard>  
 
   )

@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
-import { useFeeds } from '../react-hooks/useFeeds'
+import useSWR from 'swr'
 import { Card, CardContent } from '@mui/material';
-
 import FeedsAdd from './FeedsAdd';
 import FeedsReset from './FeedsReset';
 import FeedCategories from './FeedCategories';
@@ -10,15 +9,14 @@ import FeedDelete from './FeedDelete';
 import FeedLabel from './FeedLabel';
 
 const FeedsEdit: FunctionComponent = () => {
-  const { feeds } = useFeeds()
-
+  const { data: feeds } = useSWR('feeds')
   return (
     <>
       <FeedsAdd/>
       <div /> 
       <FeedsReset />
       <div />
-      {Object.keys(feeds as object).map(feed => {
+      {Object.keys({...feeds}).map(feed => {
         return (
           <Card variant="outlined" key={`feed-edit-${feed}`}>
             <CardContent>

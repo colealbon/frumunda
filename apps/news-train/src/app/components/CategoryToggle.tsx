@@ -14,7 +14,7 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
   const toggleCategory = () => {
     const newCategory = {
     ...Object.fromEntries(
-      Object.entries(categories)
+      Object.entries({...categories})
       .filter((category: [string, unknown]) => category[0] === props.text)
       .map((category: [string, unknown]) => {
         return [
@@ -50,7 +50,7 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
 
   return (
     <Fragment>
-      {Object.entries(categories)
+      {Object.entries({...categories})
         .filter((category : [string, unknown]) => category[0] === props.text)
         .map((category : [string, unknown]) => {
           const attributes = category[1] as Record<string, unknown>;

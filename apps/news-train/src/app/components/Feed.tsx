@@ -3,7 +3,6 @@ import useSWR  from 'swr';
 import {
   Grid
 } from '@mui/material';
-import { useFeeds } from '../react-hooks/useFeeds'
 
 import { cleanTags } from '../utils'
 import xml2js from 'xml2js';
@@ -11,23 +10,16 @@ import axios from 'axios';
 
 import {CategoryContext} from './Category'
 
-
 // import VisibilitySensor from 'react-visibility-sensor';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-// const { parse } = require('rss-to-json');
 
 export const ParsedFeedContentContext = createContext({});
 
 type Props = {children: ReactNode}
 const Feed: FunctionComponent<Props> = ({children}: Props) => {
 
-  const { feeds } = useFeeds()
+  const { data: feeds } = useSWR('feeds')
   const categoryContext = useContext(CategoryContext)
   const category = `${categoryContext}`
-
-  // const corsProxiesContext = useContext(CorsProxiesContext)
-  // const corsProxies = Object.assign(corsProxiesContext)
-
   const {data: corsProxies} = useSWR('corsProxies')
   
   const checkedFeedsForCategory = Object.entries(feeds as object)
@@ -222,10 +214,6 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
   )
   
   const parsedContent: unknown = Object.assign(data as object)
-
-  return (
-    <pre>{JSON.stringify(checkedFeedsForCategory)}</pre>
-  )
 
   return (
     <Grid>

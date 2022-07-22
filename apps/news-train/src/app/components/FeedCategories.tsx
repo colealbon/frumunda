@@ -1,23 +1,17 @@
-import { useCallback, FunctionComponent, Fragment } from 'react';
+import {FunctionComponent, Fragment } from 'react';
+import useSWR, { mutate } from 'swr'
 import { Chip } from '@mui/material';
-import { useFeeds } from '../react-hooks/useFeeds';
-import useSWR from 'swr'
+import {useStacks} from '../react-hooks/useStacks'
 
 const FeedCategories: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { feeds, persistFeeds } = useFeeds();
+  const { data: feeds } = useSWR('feeds')
   const { data: categories } = useSWR('categories');
-
-  const persistFeedsCallback = useCallback(
-    (newFeeds: object) => {
-      persistFeeds(newFeeds);
-    },
-    [persistFeeds]
-  );
+  const { persist } = useStacks()
 
   const appendOrRemoveChip = (category: string) => {
-    persistFeedsCallback({
+    const newFeeds = {
       ...JSON.parse(JSON.stringify(feeds)),
       ...Object.fromEntries(
         Object.entries(JSON.parse(JSON.stringify(feeds)))
@@ -67,12 +61,13 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
               })
           )
       ),
-    });
+    }
+    mutate('feeds', persist('feeds', newFeeds), {optimisticData: newFeeds})
   };
 
   return (
     <Fragment>
-      {Object.entries(JSON.parse(JSON.stringify(feeds)))
+      {Object.entries({...feeds})
         .filter((feed: [string, unknown]) => feed[0] === props.text)
         .map((feed: [string, unknown]) => {
           const attributes = feed[1] as Record<string, unknown>;
@@ -81,7 +76,7 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
           );
           return (
             <Fragment key={feed[0]}>
-              {Object.entries(JSON.parse(JSON.stringify(categories))).map((category: [string, unknown]) => {
+              {Object.entries({...categories}).map((category: [string, unknown]) => {
                 return [
                   feedCategories
                     .filter(feedCategory => {

@@ -20,7 +20,7 @@ const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
     setInFlight(true)
     const newCategories = {
       ...Object.fromEntries(
-        Object.entries(categories).filter(
+        Object.entries({...categories}).filter(
           (category: [string, unknown]) => category[0] !== props.text
         )
       ),
@@ -35,7 +35,7 @@ const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
 
   return (
     <Fragment>
-      {Object.entries(categories)
+      {Object.entries({...categories})
         .filter((category: [string, unknown]) => category[0] === props.text)
         .map((category: [string, unknown]) => {
           return (

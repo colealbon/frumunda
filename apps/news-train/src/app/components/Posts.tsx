@@ -34,15 +34,12 @@ const Posts: FunctionComponent = () => {
   const keyForFeed = Object.keys(parsedFeedContent)[0]
   const processedFilenameForFeed = `processed_${shortUrl(keyForFeed)}`
 
-  // const classifierContext = useContext(ClassifierContext);
-  // const classifier = structuredClone(classifierContext);
-  // const {processedPosts} = useProcessedPosts()
   const [expanded, setExpanded] = useState<string | false>(false);
   const {settings} = useSettings()
   const {hideProcessedPosts, disableMachineLearning, mlThresholdDocuments, mlThresholdConfidence} = structuredClone(settings)
 
-  const {data: category} = useSWR('category')
-  const {data: classifierdata} = useSWR(`classifier_${category}`)
+  const {data: selectedCategory} = useSWR('selectedCategory')
+  const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
   const {data: processedPosts} = useSWR(processedFilenameForFeed)
 
   let classifier = bayes()
@@ -57,7 +54,7 @@ const Posts: FunctionComponent = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  return <pre>{JSON.stringify(category)}</pre>
+  return <pre>{JSON.stringify(selectedCategory)}</pre>
 
   return (
     <>

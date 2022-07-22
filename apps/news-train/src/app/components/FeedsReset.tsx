@@ -1,11 +1,19 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
+import { mutate } from 'swr'
 import Button from '@mui/material/Button';
-import { useFeeds } from '../react-hooks/useFeeds';
+import defaultFeeds from '../react-hooks/defaultFeeds.json'
+import {useStacks} from '../react-hooks/useStacks'
 
 const FeedsReset: FunctionComponent = () => {
-  const { factoryReset, inFlight } = useFeeds();
+  const {persist} = useStacks()
   return (
-    <Button key="feedsreset" disabled={inFlight} onClick={() => factoryReset()}>
+    <Button key="feedsreset" onClick={() => () => {
+      mutate(
+        'feeds',
+        persist('feeds', defaultFeeds),
+        {optimisticData: defaultFeeds}
+      )}
+    }>
       reset feeds
     </Button>
   );

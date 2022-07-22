@@ -2,17 +2,22 @@ import {
   useCallback,
   FunctionComponent,
   Fragment,
+  useState
 } from 'react';
+import useSWR, {mutate} from 'swr'
+import {useStacks} from '../react-hooks/useStacks'
+
 import { IconButton } from '@mui/material';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
-import { useFeeds } from '../react-hooks/useFeeds';
 
 const FeedDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { feeds, persistFeeds, inFlight } = useFeeds()
+  const [inFlight, setInFlight] = useState(false)
+  const { data: feeds } = useSWR('feeds')
+  const { persist } = useStacks()
 
-  const deleteFeed = useCallback(() => {
+  const deleteFeed = () => {
     const newFeeds = JSON.parse(
       JSON.stringify({
         ...Object.fromEntries(
@@ -22,17 +27,21 @@ const FeedDelete: FunctionComponent<{ text: string }> = (props: {
         ),
       })
     );
-    persistFeeds(newFeeds);
-  }, [feeds, props.text, persistFeeds]);
+    mutate('feeds', persist('feeds', newFeeds), {optimisticData: feeds});
+  };
 
   return (
     <Fragment>
-      {Object.entries(JSON.parse(JSON.stringify(feeds)))
+      {Object.entries({...feeds})
         .filter((feed: [string, unknown]) => feed[0] === props.text)
         .map((feed: [string, unknown]) => {
           return (
             <Fragment key={`${feed}`}>
-              <IconButton disabled={inFlight} aria-label="Delete Feed" onClick={deleteFeed}>
+              <IconButton 
+                disabled={inFlight} 
+                aria-label="Delete Feed" 
+                onClick={() => deleteFeed()}
+              >
                 <DeleteOutlined />
               </IconButton>
             </Fragment>

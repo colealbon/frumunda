@@ -1,17 +1,22 @@
-import React, {
+import {
   ChangeEvent,
   useState,
   useCallback,
   FunctionComponent
 } from 'react';
+import useSWR, {mutate} from 'swr'
+import { useStacks } from '../react-hooks/useStacks'
 import { TextField } from '@mui/material';
-import { useFeeds } from '../react-hooks/useFeeds'
+
 
 type Props = {text: string}
 
 const FeedLabelEdit: FunctionComponent<Props> = ({text}: Props) => {
   const [inputValue, setInputValue] = useState('');
-  const { feeds, persistFeeds, inFlight } = useFeeds()
+  const [inFlight, setInFlight] = useState(false)
+  const { data: feeds } = useSWR('feeds')
+  const { persist } = useStacks()
+
 
   const defaultFeedLabel = Object.entries(feeds as object)
     .filter(feedItem => {
@@ -31,14 +36,18 @@ const FeedLabelEdit: FunctionComponent<Props> = ({text}: Props) => {
     [setInputValue]
   );
 
-  const setFeedLabelCallback = useCallback(() => {
+  const setFeedLabel = () => {
     const newFeed = Object.fromEntries(Object.entries(feeds as object)
       .filter(feedItem => feedItem[0] === text)
       .map(feedItem => [feedItem[0], {...feedItem[1], ...{label: `${inputValue}`}}])
     )
-    const newFeedsClone = structuredClone({ ...feeds as object, ...newFeed})
-    persistFeeds(newFeedsClone);
-  }, [ feeds, persistFeeds, inputValue, text]);
+    const newFeeds = { ...feeds , ...newFeed}
+    mutate(
+      'feeds',
+      persist('feeds', newFeeds),
+      {optimisticData: newFeeds}
+    );
+  }
 
   return (
       <TextField
@@ -51,7 +60,7 @@ const FeedLabelEdit: FunctionComponent<Props> = ({text}: Props) => {
           [event.key]
             .filter(theKey => theKey === 'Enter')
             .forEach(() => {
-              setFeedLabelCallback();
+              setFeedLabel();
               setInputCallback('');
             });
         }}

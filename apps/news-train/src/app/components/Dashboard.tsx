@@ -53,7 +53,7 @@ const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
           {[selectedPage].flat()
           .filter(() => selectedCategory !== '' )
           .filter(() => selectedCategory !== 'allCategories')
-          .map(() => `posts - ${selectedCategory}`)
+          .map(() => `posts - ${selectedCategory}`.replace(` - undefined`,''))
           }
           </Typography>
         </Toolbar>

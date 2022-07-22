@@ -11,7 +11,7 @@ const Category: FunctionComponent<Props> = ({children}: Props) => {
 
   const { data: categories } = useSWR('categories')
   
-  const checkedCategories = Object.entries(categories as object)
+  const checkedCategories = Object.entries({...categories} as object)
     .filter(categoryEntry => {
       return ['allCategories', `${categoryEntry[0]}`].indexOf(`${selectedCategory}`) !== -1
     })

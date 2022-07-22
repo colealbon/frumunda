@@ -1,14 +1,25 @@
-import { useCallback, FunctionComponent, Fragment } from 'react';
-import { Switch, FormControlLabel,Typography} from '@mui/material';
-import { useFeeds } from '../react-hooks/useFeeds';
+import {
+  FunctionComponent,
+  Fragment,
+  useState
+} from 'react';
+import useSWR, { mutate } from 'swr'
+import {
+  Switch,
+  FormControlLabel,
+  Typography
+} from '@mui/material';
+import {useStacks} from '../react-hooks/useStacks'
 
 const FeedToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
 
-  const { feeds, persistFeeds, inFlight } = useFeeds()
+  const [inFlight, setInFlight] = useState(false)
+  const {data: feeds} = useSWR('feeds')
+  const {persist} = useStacks()
 
-  const setFeedsCallback = useCallback(() => {
+  const persistFeeds = () => {
     const newFeed = JSON.parse(
       JSON.stringify({
         ...Object.fromEntries(
@@ -39,10 +50,9 @@ const FeedToggle: FunctionComponent<{ text: string }> = (props: {
         ),
       })
     );
-    const newFeeds = { ...JSON.parse(JSON.stringify(feeds)), ...newFeed }
-    persistFeeds(newFeeds)
-
-  }, [feeds, props.text, persistFeeds]);
+    const newFeeds = { ...feeds, ...newFeed }
+    mutate('feeds', persist('feeds', newFeeds), {optimisticData: newFeeds})
+  }
 
   return (
     <Fragment>
@@ -64,7 +74,7 @@ const FeedToggle: FunctionComponent<{ text: string }> = (props: {
                       )
                     )
                   ).some(checked => checked)}
-                  onChange={() => setFeedsCallback()}
+                  onChange={() => persistFeeds()}
                   name={props.text}
                 />
               }
