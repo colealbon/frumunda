@@ -23,13 +23,13 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
                 return [
                   feed[0],
                   {
-                    ...JSON.parse(JSON.stringify(feed[1])),
+                    ...feed[1] as object,
                     categories: [
                       ...Object.entries({...feeds})
                         .filter((feed: [string, unknown]) => feed[0] === props.text)
                         .map((feed: [string, unknown]) => {
                           const attributes = feed[1] as Record<string, unknown>;
-                          const feedCategories: string[] = attributes['categories'] as string[];
+                          const feedCategories: string[] = [{...attributes}['categories']].flat() as string[];
                           return feedCategories;
                         })
                         .flat()
@@ -42,7 +42,7 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
                               string,
                               unknown
                             >;
-                            const feedCategories: string[] = attributes['categories'] as string[];
+                            const feedCategories: string[] = [{...attributes}['categories']].flat() as string[];
                             return feedCategories;
                           })
                           .flat()
@@ -67,13 +67,12 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
         .filter((feed: [string, unknown]) => feed[0] === props.text)
         .map((feed: [string, unknown]) => {
           const attributes = feed[1] as Record<string, unknown>;
-          const feedCategories: string[] = attributes['categories'] as string[];
+          const feedCategories: string[] = [{...attributes}['categories']].flat() as string[];
           return (
             <Fragment key={feed[0]}>
               {Object.entries({...categories}).map((category: [string, unknown]) => {
                 return [
-                  feedCategories
-                    .filter((feedCategory: string) => {
+                  feedCategories.filter((feedCategory: string) => {
                       return feedCategory === category[0];
                     })
                     .map(() => (

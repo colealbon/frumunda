@@ -1,4 +1,6 @@
-import {Suspense} from 'react';
+import {
+  Suspense
+} from 'react';
 
 import Contribute from './Contribute'
 import Category from './Category'
@@ -31,7 +33,6 @@ export function MainPage() {
     )
   }
 
-  console.log(selectedPage)
   return (
     <>
         {
@@ -97,7 +98,7 @@ export function MainPage() {
           .map(() => {
             return (
               <ErrorBoundary key={'errorBoundaryStacks'} fallback={<>error fetching stacks session</>}>
-                <Suspense fallback={<>fetching stacks stuff</>}>
+                <Suspense fallback={<>updating latest from stacks</>}>
                   <Stacks key='stacks' />
                 </Suspense>
               </ErrorBoundary>

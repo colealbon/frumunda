@@ -17,17 +17,16 @@ export function App() {
   loadUserData()
   fetchStacksFilenames()
 
-  mutate('corsProxies', fetchFile('corsProxies', defaultCorsProxies))
-  mutate('categories', fetchFile('categories', defaultCategories))
-  mutate('feeds', fetchFile('feeds', defaultFeeds))
+  mutate('corsProxies', fetchFile('corsProxies', {fallbackData: defaultCorsProxies}))
+  mutate('categories', fetchFile('categories', {fallbackData: defaultCategories}))
+  mutate('feeds', fetchFile('feeds', {fallbackData: defaultFeeds}))
+  //mutate('stacksFilenames', fetchStacksFilenames, {optimisticData: []})
   console.log('app')
 
   return (
-
-      <Dashboard>
-        <MainPage />
-      </Dashboard>  
-
+    <Dashboard>
+      <MainPage />
+    </Dashboard>  
   )
 }
 export default App;

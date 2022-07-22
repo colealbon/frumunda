@@ -45,7 +45,7 @@ export function useSettings () {
   }
 
   const { data, mutate } = useSWR(
-    'feeds',
+    'settings',
     fetcher , 
     {
       suspense: true,

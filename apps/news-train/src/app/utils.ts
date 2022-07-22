@@ -2,12 +2,12 @@ import {hash} from 'tweetnacl';
 import {convert} from 'html-to-text';
 
 export const removePunctuation = (text: string) => {
-  return text.replace(/[/?…".,#!$%^&*;:{}=_`~()'’‘“”]/g,"")
-    .replace(/\s{2,}/g," ")
+  return `${text}`.replace(/[/?…".,#!$%^&*;:{}=_`~()'’‘“”]/g,"")
+  .replace(/\s{2,}/g," ")
 }
 
 export const removeTrackingGarbage = (text: string) => {
-  return text.replace(/read full article at rtcom.*$/g,"")
+  return `${text}`.replace(/read full article at rtcom.*$/g,"")
   .replace(/appeared first on.*$/g,"")
   .replace(/\[httpstheinterceptcom.*$/g,"")
   .replace(/\[httpselectrekcowebstories.*$/g,"")

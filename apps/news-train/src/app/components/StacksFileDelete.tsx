@@ -1,41 +1,39 @@
 import {
   FunctionComponent,
   useState,
-  useEffect,
+  Fragment,
   useCallback
 } from 'react';
 import { IconButton, Typography} from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
-import { useStacks } from '../react-hooks/useStacks';
-import { mutate } from 'swr';
+import useSWR, { mutate } from 'swr';
+import {useStacks} from '../react-hooks/useStacks'
 
 const StacksFileDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { deleteFile } = useStacks()
   const [deleted, setDeleted] = useState(false)
+  const {fetchStacksFilenames, deleteFile} = useStacks()
+  const {data: stacksFilenamesdata } = useSWR('stacksFilenames', fetchStacksFilenames)
+  const stacksFilenames = [stacksFilenamesdata as string[]].flat(Infinity).slice()
 
   const setDeletedCallback = useCallback(() => {
     setDeleted(true)
-    mutate('stacksFilenames', deleteFile(`${props.text}`))
-  }, [props.text, deleteFile])
-
-  useEffect(() => {
-    //reload
-  }, [deleted])
+  }, [])
 
   const deleteStacksFile = () => {
-    console.log(`deleteFile(${props.text})`)
+    const newStacksFilenames = [stacksFilenames].flat()
+    .filter(stacksFilename => stacksFilename !== props.text)
+    mutate('stacksFilenames', deleteFile(props.text), {optimisticData: newStacksFilenames})
     setDeletedCallback()
   }
 
-
   if (deleted) {
-    return <span></span>
+    return <Fragment key={props.text}></Fragment>
   }
 
   return (
-    <Typography>
+    <Typography key={props.text}>
       <IconButton aria-label="Delete StacksFile" onClick={() => deleteStacksFile()}>
         <DeleteOutlined />
       </IconButton>

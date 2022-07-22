@@ -1,43 +1,39 @@
-import { FunctionComponent, useContext } from 'react';
+import { FunctionComponent, Fragment } from 'react';
 import StacksFileDelete from './StacksFileDelete';
 import {Box, Typography} from '@mui/material'
 import useSWR from 'swr'
+import {useStacks} from '../react-hooks/useStacks'
 
 const StacksFilenamesDisplay: FunctionComponent = () => {
+  const {fetchStacksFilenames} = useStacks()
+  const {data: stacksFilenamesdata } = useSWR('stacksFilenames', fetchStacksFilenames, { suspense: true })
+  const stacksFilenames = [(stacksFilenamesdata as string[])].flat().slice()
 
-  const {data: stacksFilenames } = useSWR('stacksFilenames')
+  if (stacksFilenames === []) {
+    return <span key='nothing'></span>
+  }
 
   return (
-    <div>
+    <Fragment key='stacksFilenamesDisplay'>
       <Box sx={{ maxHeight: 300, width: '100%', overflow:'auto'}}>
-        <Box
-          sx={{
-            bgcolor: (theme) =>
-              theme.palette.mode === 'dark' ? '#101010' : 'grey.100',
-            color: (theme) =>
-              theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-            border: '1px solid',
-            borderColor: (theme) =>
-              theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-          }}
-        >
+        <Box>
           {
-          [...stacksFilenames].map((stacksFilename) => {
+          [...stacksFilenames as string[]]
+          .filter(stacksFilename => stacksFilename !== '')
+          .map((stacksFilename) => {
             return (
-              <div key={stacksFilename}>
-                <StacksFileDelete text={stacksFilename} />
-              </div>
+              <StacksFileDelete key={stacksFilename} text={stacksFilename} />
             )
           })
           }
         </Box>
       </Box>
       {
-        [...stacksFilenames]
-        .map(() => <Typography key='caption' variant="caption">delete files from stacks/gaia storage (cannot be undone)</Typography>)
+        [...stacksFilenames as string[]]
+        .map(stacksFilename => <Typography key={`${stacksFilename}typography`} variant="caption">delete files from stacks/gaia storage (cannot be undone)</Typography>)
         .find(() => true)
       }
-    </div>
+    </Fragment>
   )
 }
 

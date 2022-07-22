@@ -40,7 +40,9 @@ const Posts: FunctionComponent = () => {
 
   const {data: selectedCategory} = useSWR('selectedCategory')
   const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
-  const {data: processedPosts} = useSWR(processedFilenameForFeed)
+  const {data: processedPostsdata} = useSWR(processedFilenameForFeed)
+
+  const processedPosts = [processedPostsdata].flat().slice()
 
   let classifier = bayes()
 
@@ -56,17 +58,18 @@ const Posts: FunctionComponent = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
-  return <pre>{JSON.stringify(selectedCategory)}</pre>
-
+  // return (
+  //   <pre>{JSON.stringify(parsedFeedContent, null, 2)}</pre>
+  // )
   return (
     <>
       {
       Object.entries(parsedFeedContent).map((feedContentEntry) => {
         const feedLink: string = feedContentEntry[0]
-        const unprocessedCleanPostItems = [...processedPosts]
-          .filter((noEmpties) => !!noEmpties)
-          .filter((noEmpties) => `${structuredClone(noEmpties as object).link}` !== ``)
-          .map((postItem) => cleanPostItem(postItem))
+        const unprocessedCleanPostItems = structuredClone(feedContentEntry[1]).items
+          .filter((noEmpties: object) => !!noEmpties)
+          .filter((noEmpties: object) => !!structuredClone(noEmpties).link)
+          .map((postItem: cleanPostItemType) => cleanPostItem(postItem))
           .filter((postItem: object) => {
             if (!hideProcessedPosts) {
               return true
@@ -145,7 +148,7 @@ const Posts: FunctionComponent = () => {
                     {`${feedLink}`}
                   </Link>
                 </Typography>
-                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${[...processedPosts as object[]].length} posts remaining)`}</Typography>
+                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${structuredClone(feedContentEntry[1]).items.length} posts remaining)`}</Typography>
               </Box>
             </AccordionSummary>
             <AccordionDetails>

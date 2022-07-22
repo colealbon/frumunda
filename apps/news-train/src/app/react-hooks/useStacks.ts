@@ -1,3 +1,4 @@
+import { ConfirmationNumberOutlined } from '@mui/icons-material';
 import { AppConfig, UserSession } from '@stacks/connect';
 import { Storage, StorageOptions } from '@stacks/storage';
 import localforage from 'localforage'
@@ -14,26 +15,23 @@ export function useStacks () {
   const { mutate } = useSWRConfig()
   
   const fetchStacksFilenames = () => {
-    const updateFn = (filename: string) => {
-      return new Promise((resolve, reject) => {
-        const fetchedFilenames: string[] = []
-        if (!userSession.isUserSignedIn()) {
-          resolve([])
-        }
-        storage.listFiles((filename: string) => {
-          fetchedFilenames.push(filename)
-          return true
-        })
-        .then(() => {
-          resolve(fetchedFilenames)
-        })
-        .catch((error: Error) => {
-          reject(new Error('stacks listFiles error -> is user signed in?'))
-        })
+    return new Promise((resolve, reject) => {
+      const fetchedFilenames: string[] = []
+      if (!userSession.isUserSignedIn()) {
+        resolve([])
+      }
+      storage.listFiles((filename: string) => {
+        fetchedFilenames.push(filename)
+        return true
       })
-    }
-    mutate('stacksFilenames', updateFn);
-  };
+      .then(() => {
+        resolve([fetchedFilenames].flat())
+      })
+      .catch((error: Error) => {
+        reject(new Error('stacks listFiles error -> is user signed in?'))
+      })
+    })
+  }
 
   const fetchFile = (filename: string, defaultValue: object) => () => {
     return new Promise((resolve, reject) => {
@@ -65,8 +63,15 @@ export function useStacks () {
     })
   }
   const deleteFile = (filename: string) => () => {
-    storage.deleteFile(filename)
-    .then(() => fetchStacksFilenames())
+    return new Promise((resolve, reject) => {
+      storage.deleteFile(filename)
+      .then((result) => {
+        console.log(result)
+        fetchStacksFilenames()
+        .then(fetchedFiles => resolve(fetchedFiles))
+      })
+    })
+    
   }
 
   const persistFile = (filename: string, content: object) => () => {
