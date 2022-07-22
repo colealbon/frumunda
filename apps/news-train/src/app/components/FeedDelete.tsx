@@ -21,7 +21,7 @@ const FeedDelete: FunctionComponent<{ text: string }> = (props: {
     const newFeeds = JSON.parse(
       JSON.stringify({
         ...Object.fromEntries(
-          Object.entries(JSON.parse(JSON.stringify(feeds))).filter(
+          Object.entries({...feeds}).filter(
             (feed: [string, unknown]) => feed[0] !== props.text
           )
         ),

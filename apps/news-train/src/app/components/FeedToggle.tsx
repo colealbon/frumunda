@@ -23,7 +23,7 @@ const FeedToggle: FunctionComponent<{ text: string }> = (props: {
     const newFeed = JSON.parse(
       JSON.stringify({
         ...Object.fromEntries(
-          Object.entries(JSON.parse(JSON.stringify(feeds)))
+          Object.entries({...feeds})
             .filter((feed: [string, unknown]) => feed[0] === props.text)
             .map((feed: [string, unknown]) => {
               return [

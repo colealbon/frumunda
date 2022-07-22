@@ -54,7 +54,9 @@ const Post: FunctionComponent = () => {
   let classifier = bayes()
 
   try {
-    classifier = bayes.fromJson(JSON.stringify(classifierdata))
+    if (classifierdata) {
+      classifier = bayes.fromJson(JSON.stringify(classifierdata))
+    } 
   } catch (error) {
     console.log(error)
   }

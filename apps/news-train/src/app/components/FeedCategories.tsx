@@ -12,12 +12,12 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
 
   const appendOrRemoveChip = (category: string) => {
     const newFeeds = {
-      ...JSON.parse(JSON.stringify(feeds)),
+      ...{...feeds},
       ...Object.fromEntries(
-        Object.entries(JSON.parse(JSON.stringify(feeds)))
+        Object.entries({...feeds})
           .filter((feed: [string, unknown]) => feed[0] !== props.text)
           .concat(
-            Object.entries(JSON.parse(JSON.stringify(feeds)))
+            Object.entries({...feeds})
               .filter((feed: [string, unknown]) => feed[0] === props.text)
               .map((feed: [string, unknown]) => {
                 return [
@@ -25,28 +25,24 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
                   {
                     ...JSON.parse(JSON.stringify(feed[1])),
                     categories: [
-                      ...Object.entries(JSON.parse(JSON.stringify(feeds)))
+                      ...Object.entries({...feeds})
                         .filter((feed: [string, unknown]) => feed[0] === props.text)
                         .map((feed: [string, unknown]) => {
                           const attributes = feed[1] as Record<string, unknown>;
-                          const feedCategories: string[] = JSON.parse(
-                            JSON.stringify(attributes['categories'])
-                          );
+                          const feedCategories: string[] = attributes['categories'] as string[];
                           return feedCategories;
                         })
                         .flat()
                         .filter((removeCategory: string) => removeCategory !== category),
                       ...[
-                        Object.entries(JSON.parse(JSON.stringify(feeds)))
+                        Object.entries({...feeds})
                           .filter((feed: [string, unknown]) => feed[0] === props.text)
                           .map((feed: [string, unknown]) => {
                             const attributes = feed[1] as Record<
                               string,
                               unknown
                             >;
-                            const feedCategories: string[] = JSON.parse(
-                              JSON.stringify(attributes['categories'])
-                            );
+                            const feedCategories: string[] = attributes['categories'] as string[];
                             return feedCategories;
                           })
                           .flat()
@@ -71,15 +67,13 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
         .filter((feed: [string, unknown]) => feed[0] === props.text)
         .map((feed: [string, unknown]) => {
           const attributes = feed[1] as Record<string, unknown>;
-          const feedCategories: string[] = JSON.parse(
-            JSON.stringify(attributes['categories'])
-          );
+          const feedCategories: string[] = attributes['categories'] as string[];
           return (
             <Fragment key={feed[0]}>
               {Object.entries({...categories}).map((category: [string, unknown]) => {
                 return [
                   feedCategories
-                    .filter(feedCategory => {
+                    .filter((feedCategory: string) => {
                       return feedCategory === category[0];
                     })
                     .map(() => (
