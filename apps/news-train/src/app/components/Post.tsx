@@ -1,9 +1,10 @@
-import { FunctionComponent, useContext, useCallback } from 'react';
-import useSWR from 'swr'
+import { FunctionComponent, useContext } from 'react';
+import useSWR, {mutate} from 'swr'
 import styled from 'styled-components';
 import { removePunctuation, shortUrl } from '../utils'
 import { PostContext } from './Posts';
 import { ParsedFeedContentContext } from './Feed'
+import { CategoryContext } from './Category'
 import { useStacks } from '../react-hooks/useStacks'
 
 import {
@@ -29,15 +30,15 @@ import 'react-swipeable-list/dist/styles.css';
 const bayes = require('classificator')
 
 const Post: FunctionComponent = () => {
-  const { persistFile } = useStacks()
-
-  // const { processedPosts, persistProcessedPosts } = useProcessedPosts()
-  // const { classifiers, persistClassifiers } = useClassifiers()
+  const { 
+    persist, 
+    fetchFile 
+  } = useStacks()
 
   const postContext = useContext(PostContext)
   const postItem = Object.assign(postContext)
-  // const categoryContext = useContext(CategoryContext)
-  // const category = `${categoryContext}`
+  const categoryContext = useContext(CategoryContext)
+  const category = `${categoryContext}`
   const id = `${postItem.link}`
 
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
@@ -47,11 +48,10 @@ const Post: FunctionComponent = () => {
 
   const mlText = removePunctuation(`${postItem.title} ${postItem.description} ${postItem.summary}`)
 
-  const {data: category} = useSWR('category')
-  const {data: classifierdata} = useSWR(`classifier_${category}`)
-  const {data: processedPosts} = useSWR(processedFilenameForFeed)
-
   let classifier = bayes()
+  const {data: classifierdata} = useSWR(`classifier_${category}`, fetchFile(`classifier_${category}`, JSON.parse(classifier.toJson()) ))
+  const {data: processedPostsdata} = useSWR(processedFilenameForFeed, fetchFile(processedFilenameForFeed, [] ))
+  const processedPosts = [processedPostsdata].flat().slice()
 
   try {
     if (classifierdata) {
@@ -61,15 +61,26 @@ const Post: FunctionComponent = () => {
     console.log(error)
   }
 
-  const handleTrain = useCallback( (label: string) => {
-    classifier.learn(`${mlText}`, label);
-    persistFile(`classifier_${category}`, JSON.parse(classifier.toJson()))
-    const newProcessedPosts: string[] = Array.from(new Set([...processedPosts].concat(mlText)))
-    persistFile(processedFilenameForFeed, newProcessedPosts)
+  const handleTrain = (label: string) => {
+    classifier.learn(`${mlText}`, label)
+    const newClassifier = structuredClone(JSON.parse(classifier.toJson()))
+    mutate(
+      `classifier_${category}`,
+      persist(`classifier_${category}`, newClassifier),
+      {optimisticData: newClassifier}
+    ).then(() => {
+      const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
+        .filter(removeEmpty => !!removeEmpty)
+      mutate(
+        processedFilenameForFeed, 
+        persist(processedFilenameForFeed, newProcessedPosts),
+        {optimisticData: newProcessedPosts}
+      )
+    })
+  }
 
-  }, [category, classifier, mlText, persistFile, processedFilenameForFeed, processedPosts]);
   const handleOnClick = () => () => {
-    console.log('[handle on click]', id);
+    // console.log('[handle on click]', id);
   };
 
   let predictionNotGood = -.001

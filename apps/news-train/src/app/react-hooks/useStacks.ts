@@ -1,4 +1,3 @@
-import { ConfirmationNumberOutlined } from '@mui/icons-material';
 import { AppConfig, UserSession } from '@stacks/connect';
 import { Storage, StorageOptions } from '@stacks/storage';
 import localforage from 'localforage'
@@ -66,7 +65,6 @@ export function useStacks () {
     return new Promise((resolve, reject) => {
       storage.deleteFile(filename)
       .then((result) => {
-        console.log(result)
         fetchStacksFilenames()
         .then(fetchedFiles => resolve(fetchedFiles))
       })
@@ -85,6 +83,19 @@ export function useStacks () {
           })
           return
         }
+        [stacksFilenames].flat().filter((stacksFilename: string) => (
+          stacksFilename === filename
+        )).forEach(() => {
+          storage.deleteFile(filename)
+          .then(() => {
+            storage.putFile(filename, JSON.stringify(content))
+            .catch((error) => console.log(error))
+            .finally(() => {
+              localforage.setItem(filename, content)
+              resolve(content)
+            })
+          })
+        })
         storage.putFile(filename, JSON.stringify(content))
         .catch((error) => console.log(error))
         .finally(() => {

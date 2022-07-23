@@ -20,8 +20,8 @@ export function App() {
   mutate('corsProxies', fetchFile('corsProxies', {fallbackData: defaultCorsProxies}))
   mutate('categories', fetchFile('categories', {fallbackData: defaultCategories}))
   mutate('feeds', fetchFile('feeds', {fallbackData: defaultFeeds}))
-  //mutate('stacksFilenames', fetchStacksFilenames, {optimisticData: []})
-  console.log('app')
+  mutate('stacksFilenames', fetchStacksFilenames, {optimisticData: []})
+
 
   return (
     <Dashboard>
