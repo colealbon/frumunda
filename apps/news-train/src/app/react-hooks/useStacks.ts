@@ -32,6 +32,13 @@ export function useStacks () {
     })
   }
 
+  const fetchFileLocal = (filename: string, defaultValue: object) => () => {
+    return new Promise((resolve, reject) => {
+        localforage.getItem(filename)
+        .then(value => resolve(value || defaultValue))
+    })
+  }
+
   const fetchFile = (filename: string, defaultValue: object) => () => {
     return new Promise((resolve, reject) => {
       if( !userSession.isUserSignedIn() ) {
@@ -72,41 +79,6 @@ export function useStacks () {
     
   }
 
-  const persistFile = (filename: string, content: object) => () => {
-    const updateFn = (filename: string, content: object) => {
-      //deprecated - use persist
-      return new Promise((resolve) => {
-        if( !userSession.isUserSignedIn() ) {
-          localforage.setItem(filename, content)
-          .then(() => {
-            resolve(content)
-          })
-          return
-        }
-        [stacksFilenames].flat().filter((stacksFilename: string) => (
-          stacksFilename === filename
-        )).forEach(() => {
-          storage.deleteFile(filename)
-          .then(() => {
-            storage.putFile(filename, JSON.stringify(content))
-            .catch((error) => console.log(error))
-            .finally(() => {
-              localforage.setItem(filename, content)
-              resolve(content)
-            })
-          })
-        })
-        storage.putFile(filename, JSON.stringify(content))
-        .catch((error) => console.log(error))
-        .finally(() => {
-          localforage.setItem(filename, content)
-          resolve(content)
-        })
-      })
-    }
-    mutate(filename, updateFn(filename, content));
-  }
-
   const persist = (filename: string, content: object) => () => {
     return new Promise((resolve) => {
       if( !userSession.isUserSignedIn() ) {
@@ -114,10 +86,30 @@ export function useStacks () {
         .then(() => {
           resolve(content)
         })
-        return
       }
-      storage.putFile(filename, JSON.stringify(content))
+      fetchStacksFilenames()
+      .then((stacksFilenames) => (
+        Promise.all(
+          [stacksFilenames]
+          .filter(stacksFilename => {
+            console.log(stacksFilename)
+            return stacksFilename === filename
+          })
+          .map((stacksFilename) => {
+            console.log('deleting', stacksFilename)
+            return new Promise((resolve) => storage.deleteFile(filename)
+            .then(() => resolve(filename))
+            .catch(() => resolve(filename))
+            .finally(() => resolve(filename))
+            )
+          })
+        )
+      ))
       .then(() => {
+        storage.putFile(filename, JSON.stringify(content))
+      })
+      .catch((error) => console.log(error))
+      .finally(() => {
         localforage.setItem(filename, content)
         resolve(content)
       })
@@ -140,7 +132,7 @@ export function useStacks () {
     fetchStacksFilenames,
     deleteFile,
     fetchFile,
-    persistFile,
+    fetchFileLocal,
     persist,
     loadUserData,
     userSession: userSession

@@ -1,26 +1,24 @@
 import Dashboard from './Dashboard';
 import MainPage from './MainPage'
-import { SWRConfig, useSWRConfig } from 'swr'
+import { mutate } from 'swr'
+import localforage from 'localforage'
 import { useStacks } from '../react-hooks/useStacks'
 import defaultFeeds from '../react-hooks/defaultFeeds.json'
 import defaultCategories from '../react-hooks/defaultCategories.json'
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json'
 
 export function App() {
-  const {mutate} = useSWRConfig()
   const {
-    fetchStacksFilenames,
     fetchFile,
-    loadUserData
   } = useStacks()
 
-  loadUserData()
-  fetchStacksFilenames()
+  // loadUserData()
+  // fetchStacksFilenames()
 
-  mutate('corsProxies', fetchFile('corsProxies', {fallbackData: defaultCorsProxies}))
-  mutate('categories', fetchFile('categories', {fallbackData: defaultCategories}))
-  mutate('feeds', fetchFile('feeds', {fallbackData: defaultFeeds}))
-  mutate('stacksFilenames', fetchStacksFilenames, {optimisticData: []})
+  mutate('corsProxies', localforage.getItem('corsProxies'), {optimisticData: defaultCorsProxies})
+  mutate('categories', fetchFile('categories', defaultCategories), {optimisticData: defaultCategories})
+  mutate('feeds', fetchFile('feeds', defaultFeeds), {optimisticData: defaultFeeds})
+  // mutate('stacksFilenames', fetchStacksFilenames, {optimisticData: []})
 
 
   return (

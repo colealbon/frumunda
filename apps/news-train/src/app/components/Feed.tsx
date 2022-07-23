@@ -3,10 +3,12 @@ import useSWR  from 'swr';
 import {
   Grid
 } from '@mui/material';
-
+import localforage from 'localforage'
 import { cleanTags } from '../utils'
 import xml2js from 'xml2js';
 import axios from 'axios';
+
+import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json'
 
 import {CategoryContext} from './Category'
 
@@ -20,8 +22,10 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
   const { data: feeds } = useSWR('feeds')
   const categoryContext = useContext(CategoryContext)
   const category = `${categoryContext}`
-  const {data: corsProxies} = useSWR('corsProxies')
-  
+
+  const {data: corsProxiesdata} = useSWR('corsProxies', () => localforage.getItem('corsProxies'), {fallbackData: defaultCorsProxies})
+  const corsProxies = {...corsProxiesdata as object}
+
   const checkedFeedsForCategory = Object.entries(feeds as object)
     .filter(feedEntry => {
       if (category === 'allCategories') {
@@ -46,7 +50,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
         .find(() => true);
     })
 
-  const checkedCorsProxies = Object.entries(corsProxies)
+  const checkedCorsProxies = Object.entries({...corsProxies})
   .filter(corsProxyEntry => Object.assign(corsProxyEntry[1] as object).checked === true)
   .map((corsProxyEntry: [string, unknown]) => corsProxyEntry[0])
   .filter(noblanks => !!noblanks);

@@ -7,9 +7,14 @@ import FeedCategories from './FeedCategories';
 import FeedToggle from './FeedToggle';
 import FeedDelete from './FeedDelete';
 import FeedLabel from './FeedLabel';
+import {useStacks} from '../react-hooks/useStacks'
+import defaultFeeds from '../react-hooks/defaultFeeds.json'
 
 const FeedsEdit: FunctionComponent = () => {
-  const { data: feeds } = useSWR('feeds')
+  const {fetchFile} = useStacks()
+
+  const { data: feedsdata } = useSWR('feeds', fetchFile('feeds', defaultFeeds), {fallbackData: defaultFeeds})
+  const feeds = {...feedsdata as object}
   return (
     <>
       <FeedsAdd/>
@@ -23,7 +28,6 @@ const FeedsEdit: FunctionComponent = () => {
               <div>
                 <FeedDelete text={feed} />
                 <FeedToggle text={feed} />
-                
               </div>
               <div>
               <FeedCategories text={feed} />

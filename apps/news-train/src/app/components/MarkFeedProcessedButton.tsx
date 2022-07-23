@@ -1,10 +1,9 @@
 import {
-  useContext, 
-  useCallback, 
+  useContext,
   FunctionComponent,
-  useState,
-  useEffect
+  useState
 } from 'react';
+import {mutate} from 'swr'
 import {
   IconButton,
   Typography
@@ -18,37 +17,36 @@ import {
 } from '../utils'
 import { cleanPostItemType } from './Posts'
 import { ParsedFeedContentContext } from './Feed'
-import { useProcessedPosts } from '../react-hooks/useProcessedPosts'
 import { useStacks } from '../react-hooks/useStacks'
-
 
 const MarkFeedProcessedButton: FunctionComponent = () => {
   const [inFlight, setInFlight] = useState(false)
-  const { persistFile }  = useStacks()
+  const { persist}  = useStacks()
 
-  const {processedPosts, persistProcessedPosts} = useProcessedPosts();
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
   const keyForFeed = Object.keys(parsedFeedContent)[0]
   const filenameForFeed = `processed_${shortUrl(keyForFeed)}`
 
-  const setProcessedPostsCallback = useCallback((newPosts: object) => {
-    persistProcessedPosts(newPosts)
+  // const setProcessedPosts = () => {
+  //         const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
+  //       .filter(removeEmpty => !!removeEmpty)
+  //     mutate(
+  //       processedFilenameForFeed, 
+  //       persist(processedFilenameForFeed, newProcessedPosts),
+  //       {optimisticData: newProcessedPosts}
+  //     )
+  //   persistProcessedPosts(newPosts)
+  //   setInFlight(true)
+  // }
+
+  const markFeedComplete = (newProcessedPostsForFeed: string[]) => {
     setInFlight(true)
-
-
-  }, [persistProcessedPosts, setInFlight])
-
-  useEffect(() => {
-    // reload
-  }, [inFlight])
-
-  const markFeedComplete = (feedLink: string, newProcessedPostsForFeed: string[]) => {
-    const newProcessedPosts = structuredClone(processedPosts)
-    newProcessedPosts[`${feedLink}`] = newProcessedPostsForFeed.flat(Infinity).slice()
-    setProcessedPostsCallback(newProcessedPosts)
-    persistFile(`${filenameForFeed}`, newProcessedPosts)
-    setInFlight(false)
+    mutate(
+      `${filenameForFeed}`, 
+      persist(`${filenameForFeed}`, newProcessedPostsForFeed),
+      {optimisticData: newProcessedPostsForFeed}
+    )
   }
 
   return (
@@ -66,7 +64,8 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
               <IconButton 
                 title="mark articles completed"
                 aria-label="mark articles completed" 
-                onClick={() => markFeedComplete(feedLink, processedPosts)}
+                onClick={() => markFeedComplete(processedPosts)}
+                disabled={inFlight}
               >
                 <RemoveDone />
               </IconButton>

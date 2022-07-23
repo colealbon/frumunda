@@ -11,15 +11,18 @@ import Typography from '@mui/material/Typography';
 import PageChooser from './PageChooser';
 import CategoryChooser from './CategoryChooser'
 import { labelOrEcho } from '../utils'
+import {useStacks} from '../react-hooks/useStacks'
+import localforage from 'localforage'
 
 const drawerWidth = 240;
 
 type Props = {children: ReactNode}
 
 const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
+  const {fetchFileLocal} = useStacks()
   const [mobileOpen, setMobileOpen] = useState(false);
-  const {data: selectedPage} = useSWR('selectedPage')
-  const {data: selectedCategory} = useSWR('selectedCategory')
+  const {data: selectedPage} = useSWR('selectedPage', () => localforage.getItem('selectedPage'), {fallbackData:'posts'})
+  const {data: selectedCategory} = useSWR('selectedCategory', () => localforage.getItem('selectedCategory'))
 
   const handleDrawerToggle = useCallback(() => {
     setMobileOpen(!mobileOpen);
@@ -53,7 +56,10 @@ const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
           {[selectedPage].flat()
           .filter(() => selectedCategory !== '' )
           .filter(() => selectedCategory !== 'allCategories')
-          .map(() => `posts - ${selectedCategory}`.replace(` - undefined`,''))
+          .map(() => `posts - ${selectedCategory}`
+            .replace(` - undefined`,'')
+            .replace(` - null`,'')
+            )
           }
           </Typography>
         </Toolbar>

@@ -63,7 +63,7 @@ const Post: FunctionComponent = () => {
 
   const handleTrain = (label: string) => {
     classifier.learn(`${mlText}`, label)
-    const newClassifier = structuredClone(JSON.parse(classifier.toJson()))
+    const newClassifier = JSON.parse(classifier.toJson())
     mutate(
       `classifier_${category}`,
       persist(`classifier_${category}`, newClassifier),
@@ -184,7 +184,6 @@ font-size: 12px;
 box-sizing: border-box;
 user-select: none;
 `;
-
 
 const ItemRow = styled.div`
 width: 100%;
