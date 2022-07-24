@@ -71,15 +71,13 @@ const Post: FunctionComponent = () => {
       persist(filenameForClassifier, newClassifier),
       {optimisticData: newClassifier}
     ).then(() => {
-      setTimeout(() => {
-        const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
+      const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
         .filter(removeEmpty => !!removeEmpty)
       mutate(
         processedFilenameForFeed, 
         persist(processedFilenameForFeed, newProcessedPosts),
         {optimisticData: newProcessedPosts}
       )
-      }, 1000)
     })
   }
 
@@ -183,7 +181,6 @@ const ActionContent = styled.div`
 height: 100%;
 display: flex;
 align-items: center;
-padding: 8px;
 font-size: 12px;
 box-sizing: border-box;
 user-select: none;
@@ -192,7 +189,6 @@ user-select: none;
 const ItemRow = styled.div`
 width: 100%;
 display: flex;
-padding: 0 8px;
 `;
 
 const ItemColumn = styled.div`
