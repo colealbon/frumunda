@@ -131,6 +131,7 @@ const Posts: FunctionComponent = () => {
             expanded={expanded === `panel-${feedLink}`} 
             onChange={handleChange(`panel-${feedLink}`)}
             key={`accordion-${feedLink}`}
+            style={{padding: '0px;'}}
           >
             <AccordionSummary
               expandIcon={<ExpandMore />}
@@ -142,6 +143,7 @@ const Posts: FunctionComponent = () => {
                 display="flex"
                 alignItems="flex-start"
                 flexDirection="column"
+                style={{padding: '0px;'}}
               >
                 <Typography variant='h3'>
                   <Link href={`${feedLink}`} component="button">

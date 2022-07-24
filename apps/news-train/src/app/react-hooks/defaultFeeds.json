@@ -6,7 +6,7 @@
     ]
   },
   "https://cryptobriefing.com/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": [
       "bitcoin"
     ]
@@ -54,13 +54,13 @@
     ]
   },
   "https://www.eff.org/rss/updates.xml": {
-    "checked": false,
+    "checked": true,
     "categories": [
       "politics"
     ]
   },
   "https://gcaptain.com/feed/": {
-    "checked": false,
+    "checked": true,
     "categories": [
       "maritime"
     ]
@@ -142,7 +142,7 @@
     ]
   },
   "https://www.coindesk.com/arc/outboundfeeds/rss/?outputType=xml": {
-    "checked": false,
+    "checked": true,
     "categories": [
       "bitcoin"
     ]
@@ -154,7 +154,7 @@
     ]
   },
   "https://sf.streetsblog.org/feed/": {
-    "checked": false,
+    "checked": true,
     "categories": [
       "local"
     ]
@@ -178,7 +178,7 @@
     "checked": false
   },
   "https://www.statnews.com/feed": {
-    "checked": false,
+    "checked": true,
     "categories": [
       "technology"
     ]

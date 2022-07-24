@@ -63,19 +63,23 @@ const Post: FunctionComponent = () => {
 
   const handleTrain = (label: string) => {
     classifier.learn(`${mlText}`, label)
-    const newClassifier = JSON.parse(classifier.toJson())
+    const newClassifier = JSON.parse(JSON.stringify(JSON.parse(classifier.toJson())))
+    const filenameForClassifier = `classifier_${category}`.replace(/_$/,'')
+    
     mutate(
-      `classifier_${category}`,
-      persist(`classifier_${category}`, newClassifier),
+      filenameForClassifier,
+      persist(filenameForClassifier, newClassifier),
       {optimisticData: newClassifier}
     ).then(() => {
-      const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
+      setTimeout(() => {
+        const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
         .filter(removeEmpty => !!removeEmpty)
       mutate(
         processedFilenameForFeed, 
         persist(processedFilenameForFeed, newProcessedPosts),
         {optimisticData: newProcessedPosts}
       )
+      }, 1000)
     })
   }
 
@@ -152,7 +156,7 @@ const Post: FunctionComponent = () => {
               <ItemRow>
                 <ItemColumn>
                   <ListItemText
-                    primary={<Link href={`${postItem.link} target='cafe-society`}>{postItem.title}</Link>}
+                    primary={<Link href={`${postItem.link}`} target='cafe-society'>{postItem.title}</Link>}
                     secondary={`${postItem.description}`}
                   />
                 </ItemColumn>

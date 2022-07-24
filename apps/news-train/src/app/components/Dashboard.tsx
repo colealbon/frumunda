@@ -28,6 +28,10 @@ const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
     setMobileOpen(!mobileOpen);
   }, [mobileOpen, setMobileOpen]);
 
+  const setDrawerClosed = useCallback(() => {
+    setMobileOpen(false);
+  }, [ setMobileOpen]);
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -75,8 +79,8 @@ const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
           <Drawer
             variant="temporary"
             open={mobileOpen}
-            onClose={() => handleDrawerToggle()}
-            onBlur={() => handleDrawerToggle()}
+            onClose={() => setDrawerClosed()}
+            onBlur={() => setDrawerClosed()}
             ModalProps={{
               keepMounted: true, // Better open performance on mobile.
             }}
@@ -121,10 +125,3 @@ const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
 }
 
 export default Dashboard
-
-
-
-
-
-
-

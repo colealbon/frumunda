@@ -86,33 +86,11 @@ export function useStacks () {
         .then(() => {
           resolve(content)
         })
-      }
-      fetchStacksFilenames()
-      .then((stacksFilenames) => (
-        Promise.all(
-          [stacksFilenames]
-          .filter(stacksFilename => {
-            console.log(stacksFilename)
-            return stacksFilename === filename
-          })
-          .map((stacksFilename) => {
-            console.log('deleting', stacksFilename)
-            return new Promise((resolve) => storage.deleteFile(filename)
-            .then(() => resolve(filename))
-            .catch(() => resolve(filename))
-            .finally(() => resolve(filename))
-            )
-          })
-        )
-      ))
-      .then(() => {
-        storage.putFile(filename, JSON.stringify(content))
-      })
-      .catch((error) => console.log(error))
-      .finally(() => {
+      } else {
         localforage.setItem(filename, content)
+        storage.putFile(`${filename}`, JSON.stringify(content), { dangerouslyIgnoreEtag: true })
         resolve(content)
-      })
+      }
     })
   }
 

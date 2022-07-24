@@ -13,7 +13,7 @@ import defaultFeeds from '../react-hooks/defaultFeeds.json'
 const FeedsEdit: FunctionComponent = () => {
   const {fetchFile} = useStacks()
 
-  const { data: feedsdata } = useSWR('feeds', fetchFile('feeds', defaultFeeds), {fallbackData: defaultFeeds})
+  const { data: feedsdata } = useSWR('feeds', fetchFile('feeds', defaultFeeds))
   const feeds = {...feedsdata as object}
   return (
     <>
