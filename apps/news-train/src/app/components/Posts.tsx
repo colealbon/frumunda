@@ -1,18 +1,20 @@
-import { FunctionComponent, useContext, createContext, useState, useEffect} from 'react';
+import { 
+  FunctionComponent, 
+  useContext, 
+  createContext, 
+  Fragment
+} from 'react';
 import { ParsedFeedContentContext } from './Feed'
 import useSWR from 'swr'
 import Post from './Post'
 import {
   Link,
   Typography,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Box
+  Divider
 } from '@mui/material';
 import { useSettings } from '../react-hooks/useSettings'
 
-import {ExpandMore} from '@mui/icons-material';
+
 import {shortUrl, cleanPostItem, removePunctuation} from '../utils'
 import stringSimilarity from 'string-similarity'
 import MarkFeedProcessedButton from './MarkFeedProcessedButton'
@@ -34,7 +36,6 @@ const Posts: FunctionComponent = () => {
   const keyForFeed = Object.keys(parsedFeedContent)[0]
   const processedFilenameForFeed = `processed_${shortUrl(keyForFeed)}`
 
-  const [expanded, setExpanded] = useState<string | false>(false);
   const {settings} = useSettings()
   const {hideProcessedPosts, disableMachineLearning, mlThresholdDocuments, mlThresholdConfidence} = structuredClone(settings)
 
@@ -54,13 +55,6 @@ const Posts: FunctionComponent = () => {
     console.log(error)
   }
 
-  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
-  // return (
-  //   <pre>{JSON.stringify(parsedFeedContent, null, 2)}</pre>
-  // )
   return (
     <>
       {
@@ -103,69 +97,39 @@ const Posts: FunctionComponent = () => {
 
         if (unprocessedCleanPostItems.length === 0) {
           return (
-            <Accordion expanded={false} key={`accordion-${feedLink}`}>
-              <AccordionSummary
-                aria-controls={`${feedLink}-content`}
-                id={`${feedLink}-header`}
-                key={`accordion-${feedLink}`}
-              >
-                <Box   
-                  display="flex"
-                  alignItems="flex-start"
-                  flexDirection="column"
-                  key={`box-${feedLink}`}
-                >
-                  <Typography variant='h3'>
-                    <Link href={feedLink} component="button">
-                      {`${feedLink}`}
-                    </Link>
-                  </Typography>
-                  <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} posts remaining)`}</Typography>
-                </Box>
-              </AccordionSummary>
-            </Accordion>
+            <Fragment key={feedLink}>
+              <Divider />
+              <Typography variant='h3'>
+                <Link href={feedLink} component="button">
+                  {`${feedLink}`}
+                </Link>
+              </Typography>
+            </Fragment>
           )
         }
         return (
-          <Accordion 
-            expanded={expanded === `panel-${feedLink}`} 
-            onChange={handleChange(`panel-${feedLink}`)}
-            key={`accordion-${feedLink}`}
-            style={{padding: '0px;'}}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMore />}
-              aria-controls={`${feedLink}-content`}
-              id={`${feedLink}-header`}
-              key={`${feedLink}-header`}
-            >
-              <Box   
-                display="flex"
-                alignItems="flex-start"
-                flexDirection="column"
-                style={{padding: '0px;'}}
-              >
-                <Typography variant='h3'>
-                  <Link href={`${feedLink}`} component="button">
-                    {`${feedLink}`}
-                  </Link>
-                </Typography>
-                <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${structuredClone(feedContentEntry[1]).items.length} posts remaining)`}</Typography>
-              </Box>
-            </AccordionSummary>
-            <AccordionDetails>
-              {
-                unprocessedCleanPostItems.map((cleanPostItem: object) => {
-                  return (
-                    <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${structuredClone(cleanPostItem).link}`}>
-                      <Post key={JSON.stringify(cleanPostItem)} />
-                    </PostContext.Provider>
-                  )
-                })
-              }
-              <MarkFeedProcessedButton />
-            </AccordionDetails>
-          </Accordion>
+          <Fragment key={feedLink}>
+            <Divider />
+            <Typography variant='h3'>
+              <Link href={`${feedLink}`} component="button">
+                {`${feedLink}`}
+              </Link>
+            </Typography>
+            <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${structuredClone(feedContentEntry[1]).items.length} posts remaining)`}</Typography>
+            <Divider />
+            {
+              unprocessedCleanPostItems.map((cleanPostItem: object) => {
+                return (
+                  <Fragment key={JSON.stringify(cleanPostItem)}>
+                  <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${structuredClone(cleanPostItem).link}`}>
+                    <Post key={JSON.stringify(cleanPostItem)} />
+                  </PostContext.Provider>
+                  </Fragment>
+                )
+              })
+            }
+          <MarkFeedProcessedButton />
+          </Fragment>
         )
         })
       }

@@ -28,9 +28,6 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
 
   const checkedFeedsForCategory = Object.entries(feeds as object)
     .filter(feedEntry => {
-      if (category === 'allCategories') {
-        return true
-      }
       return Object.entries(feedEntry[1] as object)
         .filter(feedEntryAttribute => {
           return feedEntryAttribute[0] === 'categories';

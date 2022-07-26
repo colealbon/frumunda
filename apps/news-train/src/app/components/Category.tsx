@@ -1,19 +1,20 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 
 import useSWR from 'swr'
+// import { useStacks } from '../react-hooks/useStacks'
 
 export const CategoryContext = React.createContext('');
 
 type Props = {children: ReactNode}
 const Category: FunctionComponent<Props> = ({children}: Props) => {
 
+  // const {fetchFile} = useStacks()
   const { data: selectedCategory } = useSWR('selectedCategory')
-
   const { data: categories } = useSWR('categories')
   
   const checkedCategories = Object.entries({...categories} as object)
     .filter(categoryEntry => {
-      return ['allCategories', `${categoryEntry[0]}`].indexOf(`${selectedCategory}`) !== -1
+      return ['allCategories', `${categoryEntry[0]}`].indexOf(`${selectedCategory || 'allCategories'}`) !== -1
     })
     .filter((categoryEntry) => {
       return Object.entries(categoryEntry[1] as object)

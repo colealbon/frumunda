@@ -13,8 +13,7 @@ import {
 } from '@mui/icons-material'
 import {
     Link,
-    ListItem,
-    ListItemText
+    Box 
 } from '@mui/material';
 import {
   LeadingActions,
@@ -135,10 +134,18 @@ const Post: FunctionComponent = () => {
     </TrailingActions>
   );
 
+  // return  (
+  //   <Box 
+  //   style={{overflow: 'wrap', display: 'flex', flexDirection: 'column'}}
+  // >
+  //     <Link href={`${postItem.link}`} target='cafe-society'>{postItem.title}</Link>
+  //     <div />
+  //     {postItem.description}
+  //   </Box>
+  // )
 
   return (
-    <ListItem key={postItem.link}>
-      <div className="basic-swipeable-list__container">
+      <div style={{width: '100%'}} className="basic-swipeable-list__container" key={postItem.link} >
         <SwipeableList
           fullSwipe={true}
           threshold={.5}
@@ -149,21 +156,22 @@ const Post: FunctionComponent = () => {
             leadingActions={leadingActions()}
             trailingActions={trailingActions()}
             onClick={handleOnClick()}
+            
           >
-            <ItemContent>
-              <ItemRow>
-                <ItemColumn>
-                  <ListItemText
-                    primary={<Link href={`${postItem.link}`} target='cafe-society'>{postItem.title}</Link>}
-                    secondary={`${postItem.description}`}
-                  />
-                </ItemColumn>
-              </ItemRow>
-            </ItemContent>
+            <div style={{display: 'flex', justifyContent: 'centered'}}>
+              <div style={{display: 'flex', flexDirection: 'column', maxWidth: '355px'}}>
+                <div>
+                  <Link href={`${postItem.link}`} target='cafe-society'>{postItem.title}</Link>
+                </div>
+                <div style={{display: 'block', width: '100%', overflow: 'wrap'}}>
+                  {postItem.description}
+                </div>
+              </div>
+            </div>
+
           </SwipeableListItem>
         </SwipeableList>
       </div>
-    </ListItem>
   );
 };
 
@@ -174,7 +182,7 @@ display: flex;
 align-items: center;
 justify-content: center;
 width: 100%;
-user-select: none;
+user-select: none
 `;
 
 const ActionContent = styled.div`
@@ -182,7 +190,7 @@ height: 100%;
 display: flex;
 align-items: center;
 font-size: 12px;
-box-sizing: border-box;
+
 user-select: none;
 `;
 

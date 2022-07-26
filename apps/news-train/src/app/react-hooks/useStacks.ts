@@ -39,7 +39,7 @@ export function useStacks () {
     })
   }
 
-  const fetchFile = (filename: string, defaultValue: object) => () => {
+  const fetchFile = (filename: string, defaultValue: object | string) => () => {
     return new Promise((resolve, reject) => {
       if( !userSession.isUserSignedIn() ) {
         localforage.getItem(filename)
@@ -52,7 +52,7 @@ export function useStacks () {
       }
       [stacksFilenames].flat().filter((stacksFilename: string) => (
         stacksFilename === filename
-      )).map((stacksFilename: string) => {
+      )).forEach((stacksFilename: string) => {
         storage.getFile(filename, {
           decrypt: true
         })
