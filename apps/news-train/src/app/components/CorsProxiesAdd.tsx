@@ -11,7 +11,7 @@ const CorsProxiesAdd = () => {
   const {data: corsProxies} = useSWR('corsProxies')
   const [inFlight, setInFlight] = useState(false)
   const [inputValue, setInputValue] = useState('');
-  const {persist} = useStacks()
+  const {persistLocal} = useStacks()
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -26,7 +26,7 @@ const CorsProxiesAdd = () => {
     const newCorsProxies = { ...newCorsProxy, ...corsProxies }
     mutate(
       'corsProxies', 
-      persist('corsProxies', newCorsProxies), 
+      persistLocal('corsProxies', newCorsProxies), 
       { optimisticData: newCorsProxies, rollbackOnError: true }
     ).then(() => setInFlight(false))
   }

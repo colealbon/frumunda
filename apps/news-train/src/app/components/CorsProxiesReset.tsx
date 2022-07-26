@@ -5,11 +5,11 @@ import { useStacks } from '../react-hooks/useStacks'
 import { mutate } from 'swr'
 const CorsProxiesReset: FunctionComponent = () => {
   
-  const {persist} = useStacks()
+  const {persistLocal} = useStacks()
   const factoryReset = () => {
     mutate(
       'corsProxies'
-      , persist('corsProxies', defaultCorsProxies)
+      , persistLocal('corsProxies', defaultCorsProxies)
       , { optimisticData: defaultCorsProxies }
     );
   }

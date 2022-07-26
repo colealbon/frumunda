@@ -9,7 +9,6 @@ export function useStacks () {
 
   const storageOptions: StorageOptions = { userSession };
   const storage = new Storage(storageOptions);
-  const { data: stacksFilenames } = useSWR('stacksFilenames')
 
   const { mutate } = useSWRConfig()
   
@@ -32,6 +31,8 @@ export function useStacks () {
     })
   }
 
+  const { data: stacksFilenames } = useSWR('stacksFilenames', fetchStacksFilenames)
+
   const fetchFileLocal = (filename: string, defaultValue: object) => () => {
     return new Promise((resolve, reject) => {
         localforage.getItem(filename)
@@ -42,6 +43,7 @@ export function useStacks () {
   const fetchFile = (filename: string, defaultValue: object | string) => () => {
     return new Promise((resolve, reject) => {
       if( !userSession.isUserSignedIn() ) {
+        console.log('USER NOT SIGNED IN')
         localforage.getItem(filename)
         .then((value: unknown) => {
           if (!value) {
@@ -50,9 +52,9 @@ export function useStacks () {
           resolve(value)
         })
       }
-      [stacksFilenames].flat().filter((stacksFilename: string) => (
+      [stacksFilenames].flat().filter((stacksFilename) => (
         stacksFilename === filename
-      )).forEach((stacksFilename: string) => {
+      )).forEach((stacksFilename) => {
         storage.getFile(filename, {
           decrypt: true
         })
@@ -94,6 +96,15 @@ export function useStacks () {
     })
   }
 
+  const persistLocal = (filename: string, content: object) => () => {
+    return new Promise((resolve) => {
+      localforage.setItem(filename, content)
+      .then(() => {
+        resolve(content)
+      })
+    })
+  }
+
   const loadUserData = () => () => {
     const updateFn = () => {
       return new Promise((resolve, reject) => {
@@ -112,6 +123,7 @@ export function useStacks () {
     fetchFile,
     fetchFileLocal,
     persist,
+    persistLocal,
     loadUserData,
     userSession: userSession
   }

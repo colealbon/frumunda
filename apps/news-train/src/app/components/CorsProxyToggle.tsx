@@ -2,13 +2,17 @@ import { FunctionComponent, Fragment, useState } from 'react';
 import useSWR, { mutate } from 'swr'
 import { Switch, FormControlLabel,Typography } from '@mui/material';
 import { useStacks } from '../react-hooks/useStacks'
+import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json'
 
 const CorsProxyToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
 
-  const {data: corsProxies} = useSWR('corsProxies')
-  const {persist} = useStacks()
+  const {fetchFileLocal} = useStacks()
+  const {data: corsProxiesdata} = useSWR('corsProxies', fetchFileLocal('corsProxies', defaultCorsProxies), {fallbackData: defaultCorsProxies})
+  const corsProxies = {...corsProxiesdata as object}
+
+  const {persistLocal} = useStacks()
   const [inFlight, setInFlight] = useState(false)
 
   const toggleCorsProxy = () => {
@@ -42,7 +46,7 @@ const CorsProxyToggle: FunctionComponent<{ text: string }> = (props: {
     const newCorsProxies = { ...corsProxies as object, ...newCorsProxy }
     mutate(
       'corsProxies', 
-      persist('corsProxies', newCorsProxies),
+      persistLocal('corsProxies', newCorsProxies),
       { optimisticData: newCorsProxies, rollbackOnError: true }
     )
     .then(() => setInFlight(false))
