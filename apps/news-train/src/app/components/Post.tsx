@@ -159,7 +159,7 @@ const Post: FunctionComponent = () => {
             
           >
             <div style={{display: 'flex', justifyContent: 'centered'}}>
-              <div style={{display: 'flex', flexDirection: 'column', maxWidth: '355px'}}>
+              <div style={{display: 'flex', flexDirection: 'column', maxWidth: '345px'}}>
                 <div>
                   <Link href={`${postItem.link}`} target='cafe-society'>{postItem.title}</Link>
                 </div>
