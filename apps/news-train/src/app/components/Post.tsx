@@ -12,8 +12,7 @@ import {
   ThumbUp
 } from '@mui/icons-material'
 import {
-    Link,
-    Box 
+    Link
 } from '@mui/material';
 import {
   LeadingActions,
@@ -134,16 +133,6 @@ const Post: FunctionComponent = () => {
     </TrailingActions>
   );
 
-  // return  (
-  //   <Box 
-  //   style={{overflow: 'wrap', display: 'flex', flexDirection: 'column'}}
-  // >
-  //     <Link href={`${postItem.link}`} target='cafe-society'>{postItem.title}</Link>
-  //     <div />
-  //     {postItem.description}
-  //   </Box>
-  // )
-
   return (
       <div style={{width: '100%'}} className="basic-swipeable-list__container" key={postItem.link} >
         <SwipeableList
@@ -156,10 +145,9 @@ const Post: FunctionComponent = () => {
             leadingActions={leadingActions()}
             trailingActions={trailingActions()}
             onClick={handleOnClick()}
-            
           >
-            <div style={{display: 'flex', justifyContent: 'centered'}}>
-              <div style={{display: 'flex', flexDirection: 'column', maxWidth: '345px'}}>
+            <div style={{display: 'flex', justifyContent: 'centered', paddingBottom: "25px"}}>
+              <div style={{display: 'flex', flexDirection: 'column', maxWidth: '300px'}}>
                 <div>
                   <Link href={`${postItem.link}`} target='cafe-society'>{postItem.title}</Link>
                 </div>
@@ -168,7 +156,6 @@ const Post: FunctionComponent = () => {
                 </div>
               </div>
             </div>
-
           </SwipeableListItem>
         </SwipeableList>
       </div>
@@ -177,13 +164,13 @@ const Post: FunctionComponent = () => {
 
 export default Post;
 
-const ItemContent = styled.div`
-display: flex;
-align-items: center;
-justify-content: center;
-width: 100%;
-user-select: none
-`;
+// const ItemContent = styled.div`
+// display: flex;
+// align-items: center;
+// justify-content: center;
+// width: 100%;
+// user-select: none
+// `;
 
 const ActionContent = styled.div`
 height: 100%;
@@ -194,16 +181,16 @@ font-size: 12px;
 user-select: none;
 `;
 
-const ItemRow = styled.div`
-width: 100%;
-display: flex;
-`;
+// const ItemRow = styled.div`
+// width: 100%;
+// display: flex;
+// `;
 
-const ItemColumn = styled.div`
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-`;
+// const ItemColumn = styled.div`
+// display: flex;
+// flex-direction: column;
+// align-items: flex-start;
+// `;
 
 const ItemColumnCentered = styled.div`
 display: flex;

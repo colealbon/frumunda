@@ -133,12 +133,12 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
                     return;
                   }
                   const feedTitle = `${result?.feed?.title[0]}`
-                  const channelObj = [result.rss?.channel]
+                  const channelObj = [result?.rss?.channel]
                   .flat()
                   .find(() => true)
 
-                  const channelTitle = `${channelObj?.title}`
-                  const channelDescription = `${channelObj?.description}`
+                  const channelTitle = channelObj?.title
+                  const channelDescription = channelObj?.description
                   const channelContentItem = [result.rss?.channel]
                     .flat()
                     .filter(channel => !!channel?.item)
@@ -160,18 +160,24 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
                   .flat()
                   .filter(feed => !!feed?.entry)
                   .map(feed => [feed?.entry].flat().map((feedEntry?: object) => {
-                      const rawLink: object = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'link')].flat().slice(-1).find(() => true)
-                      const linkVal: object = [Object.values(rawLink)].flat().find(() => true)
-                      const linkObj: object = [Object.values(linkVal)].flat().find(() => true)
-                      const hrefEntry: [string, object][] =  Object.entries(linkObj).filter((attribute: [string, unknown]) => attribute[0] === 'href')
-                      const hrefVal: unknown = Object.values(Object.fromEntries(hrefEntry)).find(() => true)
-                      const rawTitle : object = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'title')].flat().slice(-1).find(() => true)
-                      const rawDescription: object = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'summary')].flat().slice(-1).find(() => true)
-                      return {
-                        title: cleanTags(`${rawTitle}`),
-                        link: `${hrefVal}`,
-                        description: cleanTags(`${rawDescription}`),
-                      }
+                    const rawLink: unknown = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'link')].flat().slice(-1).find(() => true)
+                    const linkVal: unknown = [Object.values(rawLink as object)].flat().find(() => true)
+                    const linkObj: unknown = [Object.values(linkVal as object)].flat().find(() => true)
+                    const hrefEntry: unknown[] = Object.entries(linkObj as object).filter((attribute: [string, unknown]) => attribute[0] === 'href')
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    const hrefVal: unknown = Object.values(Object.fromEntries(hrefEntry as [PropertyKey, any])).find(() => true)
+                    const rawTitle : unknown = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'title')].flat().slice(-1).find(() => true)
+                    const titleVal : unknown = [Object.values(rawTitle as object)].flat().find(() => true)
+                    const titleStr: unknown = [Object.values(titleVal as object)].flat().find(() => true)
+                    const rawDescription: unknown = [Object.entries(feedEntry as object).find((attribute: [string, unknown]) => attribute[0] === 'summary')].flat().slice(-1).find(() => true)
+                    const descriptionVal : unknown = [Object.values({...rawDescription as object})].flat().find(() => true)
+                    const descriptionStr: unknown = [[Object.values(descriptionVal as object)].flat().find(() => true)].slice(-1).find(() => true)
+
+                    return {
+                      title: `${titleStr}`,
+                      link: `${hrefVal}`,
+                      description: `${descriptionStr}`,
+                    }
                     })
                   )
 
