@@ -2,7 +2,9 @@ import {
   FunctionComponent, 
   useContext, 
   createContext, 
-  Fragment
+  Fragment,
+  Suspense,
+  useEffect
 } from 'react';
 import { ParsedFeedContentContext } from './Feed'
 import useSWR from 'swr'
@@ -41,17 +43,17 @@ const Posts: FunctionComponent = () => {
   const {hideProcessedPosts, disableMachineLearning, mlThresholdDocuments, mlThresholdConfidence} = structuredClone(settings)
 
   const {fetchFile} = useStacks()
+
+
   const {data: selectedCategory} = useSWR('selectedCategory')
   const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
-
-  console.log(processedFilenameForFeed)
-  const {data: processedPostsdata} = useSWR(processedFilenameForFeed, fetchFile(processedFilenameForFeed, []), {
-    suspense: true,
-    fallbackData: []
-  })
-
-  const processedPosts = [processedPostsdata].flat().slice()
-  console.log(processedPosts)
+  const {data: processedPostsdata} = useSWR(`${processedFilenameForFeed}`, fetchFile(processedFilenameForFeed, {}))
+  const processedPosts = Object.values({...processedPostsdata as object}).flat().slice()
+  
+  useEffect(() => {
+    console.log(processedPosts)
+  }, [processedPosts])
+  
 
   let classifier = bayes()
 
@@ -125,17 +127,19 @@ const Posts: FunctionComponent = () => {
             </Typography>
             <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${structuredClone(feedContentEntry[1]).items.length} posts remaining)`}</Typography>
             <Divider />
+            <Suspense fallback={<></>}>
             {
               unprocessedCleanPostItems.map((cleanPostItem: object) => {
-                return (
-                  <Fragment key={JSON.stringify(cleanPostItem)}>
-                  <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${structuredClone(cleanPostItem).link}`}>
-                    <Post key={JSON.stringify(cleanPostItem)} />
-                  </PostContext.Provider>
-                  </Fragment>
+                return (  
+                    <Fragment key={JSON.stringify(cleanPostItem)}>
+                    <PostContext.Provider value={cleanPostItem} key={`postitem-swipeable-list-${structuredClone(cleanPostItem).link}`}>
+                      <Post key={JSON.stringify(cleanPostItem)} />
+                    </PostContext.Provider>
+                    </Fragment>
                 )
               })
             }
+            </Suspense>
           <MarkFeedProcessedButton />
           </Fragment>
         )

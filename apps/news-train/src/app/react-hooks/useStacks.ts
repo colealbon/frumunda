@@ -1,6 +1,7 @@
 import { AppConfig, UserSession } from '@stacks/connect';
 import { Storage, StorageOptions } from '@stacks/storage';
 import localforage from 'localforage'
+import { json } from 'stream/consumers';
 import useSWR, { useSWRConfig } from 'swr'
 
 export function useStacks () {
@@ -41,12 +42,8 @@ export function useStacks () {
   }
 
   const fetchFile = (filename: string, defaultValue: object | string) => () => {
-    console.log('fetchFile')
-    console.log(filename)
-    console.log(defaultValue)
     return new Promise((resolve, reject) => {
       if( !userSession.isUserSignedIn() ) {
-        console.log('USER NOT SIGNED IN')
         localforage.getItem(filename)
         .then((value: unknown) => {
           if (!value) {
@@ -62,7 +59,7 @@ export function useStacks () {
           decrypt: true
         })
         .then((content) => {
-          resolve(JSON.parse(`${content}`))
+          resolve(JSON.parse(`${content}`))     
         })
         .catch(() => {
           localforage.getItem(filename)

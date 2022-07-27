@@ -48,9 +48,9 @@ const Post: FunctionComponent = () => {
 
   let classifier = bayes()
   const {data: classifierdata} = useSWR(`classifier_${category}`, fetchFile(`classifier_${category}`, JSON.parse(classifier.toJson()) ))
-  const {data: processedPostsdata} = useSWR(processedFilenameForFeed, fetchFile(processedFilenameForFeed, [] ))
-  const processedPosts = [processedPostsdata].flat().slice()
-
+  const {data: processedPostsdata} = useSWR(processedFilenameForFeed)
+  const processedPosts = Object.values({...processedPostsdata as object}).flat().slice()
+  
   try {
     if (classifierdata) {
       classifier = bayes.fromJson(JSON.stringify(classifierdata))
@@ -73,9 +73,14 @@ const Post: FunctionComponent = () => {
         .filter(removeEmpty => !!removeEmpty)
       mutate(
         processedFilenameForFeed, 
-        persist(processedFilenameForFeed, newProcessedPosts),
+        persist(processedFilenameForFeed, JSON.parse(`{"${processedFilenameForFeed}": ${JSON.stringify(newProcessedPosts)}}`)),
         {optimisticData: newProcessedPosts}
       )
+      // mutate(
+      //   processedFilenameForFeed, 
+      //   persist(processedFilenameForFeed, JSON.parse(`{"${processedFilenameForFeed}": []}`)),
+      //   {optimisticData: newProcessedPosts}
+      // )
     })
   }
 
