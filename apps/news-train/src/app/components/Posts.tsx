@@ -2,9 +2,7 @@ import {
   FunctionComponent, 
   useContext, 
   createContext, 
-  Fragment,
-  Suspense,
-  useEffect
+  Fragment
 } from 'react';
 import { ParsedFeedContentContext } from './Feed'
 import useSWR from 'swr'
@@ -44,16 +42,10 @@ const Posts: FunctionComponent = () => {
 
   const {fetchFile} = useStacks()
 
-
   const {data: selectedCategory} = useSWR('selectedCategory')
   const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
   const {data: processedPostsdata} = useSWR(`${processedFilenameForFeed}`, fetchFile(processedFilenameForFeed, {}))
   const processedPosts = Object.values({...processedPostsdata as object}).flat().slice()
-  
-  useEffect(() => {
-    console.log(processedPosts)
-  }, [processedPosts])
-  
 
   let classifier = bayes()
 
@@ -127,7 +119,6 @@ const Posts: FunctionComponent = () => {
             </Typography>
             <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${structuredClone(feedContentEntry[1]).items.length} posts remaining)`}</Typography>
             <Divider />
-            <Suspense fallback={<></>}>
             {
               unprocessedCleanPostItems.map((cleanPostItem: object) => {
                 return (  
@@ -139,7 +130,6 @@ const Posts: FunctionComponent = () => {
                 )
               })
             }
-            </Suspense>
           <MarkFeedProcessedButton />
           </Fragment>
         )

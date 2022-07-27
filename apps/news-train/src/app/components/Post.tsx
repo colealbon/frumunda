@@ -72,15 +72,10 @@ const Post: FunctionComponent = () => {
       const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
         .filter(removeEmpty => !!removeEmpty)
       mutate(
-        processedFilenameForFeed, 
+        `${processedFilenameForFeed}`, 
         persist(processedFilenameForFeed, JSON.parse(`{"${processedFilenameForFeed}": ${JSON.stringify(newProcessedPosts)}}`)),
         {optimisticData: newProcessedPosts}
       )
-      // mutate(
-      //   processedFilenameForFeed, 
-      //   persist(processedFilenameForFeed, JSON.parse(`{"${processedFilenameForFeed}": []}`)),
-      //   {optimisticData: newProcessedPosts}
-      // )
     })
   }
 

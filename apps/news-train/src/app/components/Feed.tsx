@@ -1,5 +1,5 @@
 import { FunctionComponent, createContext, useContext, ReactNode } from 'react';
-import useSWR  from 'swr';
+import useSWR from 'swr';
 import {
   Grid
 } from '@mui/material';
@@ -214,7 +214,7 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
     })
   }
 
-  const { data } = useSWR(
+  const { data: parsedContentdata} = useSWR(
     `fetchedContent-${category}`,
     fetcher, 
     {
@@ -222,8 +222,8 @@ const Feed: FunctionComponent<Props> = ({children}: Props) => {
       ,dedupingInterval: 10 * 1000
     }
   )
-  
-  const parsedContent: unknown = Object.assign(data as object)
+
+  const parsedContent: unknown = {...parsedContentdata as object}
 
   return (
     <Grid>
