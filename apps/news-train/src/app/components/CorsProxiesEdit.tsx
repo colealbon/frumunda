@@ -16,7 +16,6 @@ const CorsProxiesEdit: FunctionComponent = () => {
   const corsProxies = {...corsProxiesdata as object}
 
   return (
-
       <>
         <CorsProxiesAdd key='CorsProxiesAdd' />
         <div />
@@ -25,8 +24,8 @@ const CorsProxiesEdit: FunctionComponent = () => {
         {Object.keys(corsProxies as object).map(category => {
           return (
             <div key={`category-edit-${category}`}>
-              <CorsProxyToggle text={category} />
               <CorsProxyDelete text={category} />
+              <CorsProxyToggle text={category} />
             </div>
           );
         })}

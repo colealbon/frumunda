@@ -2,13 +2,19 @@ import {FunctionComponent, Fragment } from 'react';
 import useSWR, { mutate } from 'swr'
 import { Chip } from '@mui/material';
 import {useStacks} from '../react-hooks/useStacks'
+import defaultCategories from '../react-hooks/defaultCategories.json'
+import defaultFeeds from '../react-hooks/defaultFeeds.json'
 
 const FeedCategories: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { data: feeds } = useSWR('feeds')
-  const { data: categories } = useSWR('categories');
-  const { persist } = useStacks()
+  const {fetchFileLocal, persistLocal} = useStacks()
+  const {data: feedsdata} = useSWR('feeds', fetchFileLocal('feeds', defaultFeeds), {fallbackData: defaultFeeds})
+  const feeds = {...feedsdata as object}
+  const {data: categoriesdata} = useSWR('categories', fetchFileLocal('categories', defaultCategories), {fallbackData: defaultCategories})
+  
+  const categories = {...categoriesdata as object}
+
 
   const appendOrRemoveChip = (category: string) => {
     const newFeeds = {
@@ -58,7 +64,7 @@ const FeedCategories: FunctionComponent<{ text: string }> = (props: {
           )
       ),
     }
-    mutate('feeds', persist('feeds', newFeeds), {optimisticData: newFeeds})
+    mutate('feeds', persistLocal('feeds', newFeeds), {optimisticData: newFeeds})
   };
 
   return (

@@ -10,8 +10,8 @@ import CategoryToggle from './CategoryToggle';
 import CategoryDelete from './CategoryDelete';
 
 const CategoriesEdit: FunctionComponent = () => {
-  const {fetchFile} = useStacks()
-  const { data: categories } = useSWR('categories', fetchFile('categories', defaultCategories))
+  const {fetchFileLocal} = useStacks()
+  const { data: categories } = useSWR('categories', fetchFileLocal('categories', defaultCategories), {fallbackData: defaultCategories})
 
   return (
 

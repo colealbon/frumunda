@@ -1,4 +1,4 @@
-import {FunctionComponent, startTransition } from 'react';
+import {FunctionComponent } from 'react';
 import useSWR, { mutate } from 'swr'
 import {
   List,
@@ -7,31 +7,42 @@ import {
   ListItemText,
   Collapse 
 } from '@mui/material';
+import {useStacks} from '../react-hooks/useStacks'
 
 import { labelOrEcho } from '../utils'
 
 
 const PageChooser: FunctionComponent = () => {
-
-  const {data: selectedPage} = useSWR('selectedCategory')
-
-  const {data: selectedCategory} = useSWR('selectedCategory')
+  const {fetchFileLocal, persistLocal} = useStacks()
+  const {data: selectedPage} = useSWR(
+    'selectedPage', 
+    fetchFileLocal('selectedPage',''),
+    {fallbackData: ''}
+  )
 
   return (
     <div>
       <List>
         <ListItem key={'classifiers'} disablePadding>
           <ListItemButton disabled={ 'classifiers' === `${selectedPage}`} onClick={() => {
-            mutate('selectedPage', 'classifiers', { optimisticData: 'classifiers' } )
-            mutate('selectedCategory', '',{ optimisticData: '' } )
+            mutate(
+              'selectedPage',
+              persistLocal('selectedPage', 'classifiers'),
+              { optimisticData: 'classifiers' }
+            )
+            mutate(
+              'selectedCategory',
+              persistLocal('selectedCategory', ''),
+              { optimisticData: '' }
+            )
           }} >
             <ListItemText primary={`${labelOrEcho('classifiers')}`} />
           </ListItemButton>
         </ListItem>
         <ListItem key={'contribute'} disablePadding>
           <ListItemButton disabled={ 'contribute' === `${selectedPage}`} onClick={() => {
-            mutate('selectedPage', 'contribute', { optimisticData: 'contribute' } )
-            mutate('selectedCategory', '',{ optimisticData: '' } )
+            mutate('selectedPage', persistLocal('selectedPage', 'contribute'), { optimisticData: 'contribute' } )
+            mutate('selectedCategory', persistLocal('selectedCategory', ''),{ optimisticData: '' } )
           }} >
             <ListItemText primary={`${labelOrEcho('contribute')}`} />
           </ListItemButton>
@@ -44,8 +55,8 @@ const PageChooser: FunctionComponent = () => {
                 sx={{ pl: 4 }} 
                 disabled={'feeds' === `${selectedPage}`} 
                 onClick={() => {
-                  mutate('selectedPage', 'feeds', { optimisticData: 'feeds' } )
-                  mutate('selectedCategory', '',{ optimisticData: '' } )
+                  mutate('selectedPage', persistLocal('selectedPage', 'feeds'), { optimisticData: 'feeds' } )
+                  mutate('selectedCategory', persistLocal('selectedCategory', ''),{ optimisticData: '' } )
                 }}
               >
                 <ListItemText primary={`${labelOrEcho('feeds')}`} />
@@ -56,8 +67,8 @@ const PageChooser: FunctionComponent = () => {
                 sx={{ pl: 4 }} 
                 disabled={'categories' === `${selectedPage}`} 
                 onClick={() => {
-                  mutate('selectedPage', 'categories', { optimisticData: 'categories' } )
-                  mutate('selectedCategory', '',{ optimisticData: '' } )
+                  mutate('selectedPage', persistLocal('selectedPage', 'categories'), { optimisticData: 'categories' } )
+                  mutate('selectedCategory', persistLocal('selectedCategory', ''),{ optimisticData: '' } )
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('categories')}`} />
@@ -68,8 +79,8 @@ const PageChooser: FunctionComponent = () => {
                 sx={{ pl: 4 }} 
                 disabled={'stacks' === `${selectedPage}`} 
                 onClick={() => {
-                  mutate('selectedPage', 'stacks', { optimisticData: 'stacks' } )
-                  mutate('selectedCategory', '',{ optimisticData: '' } )
+                  mutate('selectedPage', persistLocal('selectedPage', 'stacks'), { optimisticData: 'stacks' } )
+                  mutate('selectedCategory', persistLocal('selectedCategory', ''),{ optimisticData: '' } )
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('stacks')}`} />
@@ -80,8 +91,8 @@ const PageChooser: FunctionComponent = () => {
                 sx={{ pl: 4 }} 
                 disabled={'corsproxies' === `${selectedPage}`} 
                 onClick={() => {
-                  mutate('selectedPage', 'corsproxies', { optimisticData: 'corsproxies' } )
-                  mutate('selectedCategory', '',{ optimisticData: '' } )
+                  mutate('selectedPage', persistLocal('selectedPage', 'corsproxies'), { optimisticData: 'corsproxies' } )
+                  mutate('selectedCategory', persistLocal('selectedCategory', ''),{ optimisticData: '' } )
                 } }
               >
                 <ListItemText primary={`${labelOrEcho('corsproxies')}`} />

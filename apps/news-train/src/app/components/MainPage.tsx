@@ -11,13 +11,15 @@ import CategoriesEdit from './CategoriesEdit'
 import CorsProxiesEdit from './CorsProxiesEdit'
 import FeedsEdit from './FeedsEdit'
 import ErrorBoundary from './ErrorBoundary'
-
+import { useStacks } from '../react-hooks/useStacks'
 
 import useSWR from 'swr'
 
 export function MainPage() {
-  const {data: selectedPage} = useSWR('selectedPage')
-  const {data: selectedCategory} = useSWR('selectedCategory')
+  const { fetchFileLocal}  = useStacks()
+  const { data: selectedPage } = useSWR('selectedPage', fetchFileLocal('selectedPage', 'posts'))
+  const { data: selectedCategory } = useSWR('selectedCategory', fetchFileLocal('selectedCategory', ''))
+
 
   const fetchAndRenderPosts = () => {
     return (

@@ -7,10 +7,18 @@ import {
   Collapse
 } from '@mui/material';
 import useSWR, {mutate} from 'swr'
+import {useStacks} from '../react-hooks/useStacks'
+import defaultCategories from '../react-hooks/defaultCategories.json'
 
 const CategoryChooserCategories: FunctionComponent = () => {
-  const { data: categories } = useSWR('categories')
-  const { data: selectedCategory } = useSWR('selectedCategory')
+  const {fetchFileLocal, persistLocal} = useStacks()
+  const { data: categoriesdata } = useSWR(
+    'categories', 
+    fetchFileLocal('categories', defaultCategories),
+    {fallbackData: defaultCategories}
+  )
+  const categories = {...categoriesdata as object}
+  const { data: selectedCategory } = useSWR('selectedCategory', fetchFileLocal('selectedCategory', ''))
 
   const [open, setOpen] = React.useState(true);
 
@@ -28,12 +36,12 @@ const CategoryChooserCategories: FunctionComponent = () => {
               handleClick()
               mutate(
                 'selectedCategory',
-                'allCategories',
-                {optimisticData: 'allCategories'}
+                persistLocal('selectedCategory', ''),
+                {optimisticData: ''}
               )
               mutate(
                 'selectedPage',
-                'posts',
+                persistLocal('selectedPage', 'posts'),
                 {optimisticData: 'posts'}
               )
             }
@@ -52,12 +60,12 @@ const CategoryChooserCategories: FunctionComponent = () => {
             const handleClick = () => {
               mutate(
                 'selectedCategory',
-                newCategory,
+                persistLocal('selectedCategory', newCategory),
                 {optimisticData: newCategory}
               )
               mutate(
                 'selectedPage',
-                'posts',
+                persistLocal('selectedPage', 'posts'),
                 {optimisticData: 'posts'}
               )
             }

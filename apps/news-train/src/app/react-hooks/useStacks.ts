@@ -33,7 +33,7 @@ export function useStacks () {
 
   const { data: stacksFilenames } = useSWR('stacksFilenames', fetchStacksFilenames)
 
-  const fetchFileLocal = (filename: string, defaultValue: object) => () => {
+  const fetchFileLocal = (filename: string, defaultValue: object | string) => () => {
     return new Promise((resolve, reject) => {
         localforage.getItem(filename)
         .then(value => resolve(value || defaultValue))
@@ -43,7 +43,6 @@ export function useStacks () {
   const fetchFile = (filename: string, defaultValue: object | string) => () => {
     return new Promise((resolve, reject) => {
       if( !userSession.isUserSignedIn() ) {
-        console.log('USER NOT SIGNED IN')
         localforage.getItem(filename)
         .then((value: unknown) => {
           if (!value) {
@@ -96,7 +95,7 @@ export function useStacks () {
     })
   }
 
-  const persistLocal = (filename: string, content: object) => () => {
+  const persistLocal = (filename: string, content: object | string) => () => {
     return new Promise((resolve) => {
       localforage.setItem(filename, content)
       .then(() => {

@@ -8,7 +8,9 @@ import { cleanTags } from '../utils'
 import xml2js from 'xml2js';
 import axios from 'axios';
 
+import {useStacks} from '../react-hooks/useStacks'
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json'
+import defaultFeeds from '../react-hooks/defaultFeeds.json'
 
 import {CategoryContext} from './Category'
 
@@ -18,8 +20,9 @@ export const ParsedFeedContentContext = createContext({});
 
 type Props = {children: ReactNode}
 const Feed: FunctionComponent<Props> = ({children}: Props) => {
-
-  const { data: feeds } = useSWR('feeds')
+  const {fetchFileLocal} = useStacks()
+  const {data: feedsdata} = useSWR('feeds', fetchFileLocal('feeds', defaultFeeds), {fallbackData: defaultFeeds})
+  const feeds = {...feedsdata as object}
   const categoryContext = useContext(CategoryContext)
   const category = `${categoryContext}`
 

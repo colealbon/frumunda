@@ -11,7 +11,7 @@ const CategoriesAdd = () => {
   const {data: categories} = useSWR('categories')
   const [inFlight, setInFlight] = useState(false)
   const [inputValue, setInputValue] = useState('');
-  const {persist} = useStacks()
+  const {persistLocal} = useStacks()
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -26,7 +26,7 @@ const CategoriesAdd = () => {
     const newCategories = { ...newCategory, ...categories }
     mutate(
       'categories', 
-      persist('categories', newCategories), 
+      persistLocal('categories', newCategories), 
       { optimisticData: newCategories, rollbackOnError: true }
     ).then(() => setInFlight(false))
   }

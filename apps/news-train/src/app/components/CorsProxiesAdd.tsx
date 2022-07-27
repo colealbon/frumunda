@@ -6,12 +6,15 @@ import {
 import { useStacks } from '../react-hooks/useStacks'
 import { TextField } from '@mui/material';
 import useSWR, { mutate } from 'swr';
+import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json'
 
 const CorsProxiesAdd = () => {
-  const {data: corsProxies} = useSWR('corsProxies')
+  const {fetchFileLocal, persistLocal} = useStacks()
+  const {data: corsProxiesdata} = useSWR('corsProxies', fetchFileLocal('corsProxies', defaultCorsProxies), {fallbackData: defaultCorsProxies})
+  const corsProxies = {...corsProxiesdata as object}
+
   const [inFlight, setInFlight] = useState(false)
   const [inputValue, setInputValue] = useState('');
-  const {persistLocal} = useStacks()
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {

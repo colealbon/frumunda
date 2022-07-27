@@ -5,12 +5,12 @@ import {useStacks} from '../react-hooks/useStacks'
 import { mutate } from 'swr';
 
 const CategoriesReset: FunctionComponent = () => {
-  const {persist} = useStacks()
+  const {persistLocal} = useStacks()
 
   const factoryReset = () => {
     mutate(
       'categories',
-      persist('categories', defaultCategories),
+      persistLocal('categories', defaultCategories),
       { optimisticData: defaultCategories }
     )
   }

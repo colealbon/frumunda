@@ -9,15 +9,16 @@ import {
   FormControlLabel,
   Typography
 } from '@mui/material';
+import defaultFeeds from '../react-hooks/defaultFeeds.json'
 import {useStacks} from '../react-hooks/useStacks'
 
 const FeedToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-
+  const {fetchFileLocal, persistLocal} = useStacks()
   const [inFlight, setInFlight] = useState(false)
-  const {data: feeds} = useSWR('feeds')
-  const {persist} = useStacks()
+  const {data: feedsdata} = useSWR('feeds', fetchFileLocal('feeds', defaultFeeds), {fallbackData: defaultFeeds})
+  const feeds = {...feedsdata as object}
 
   const persistFeeds = () => {
     const newFeed = JSON.parse(
@@ -51,7 +52,8 @@ const FeedToggle: FunctionComponent<{ text: string }> = (props: {
       })
     );
     const newFeeds = { ...feeds, ...newFeed }
-    mutate('feeds', persist('feeds', newFeeds), {optimisticData: newFeeds})
+    mutate('feeds', persistLocal('feeds', newFeeds), {optimisticData: newFeeds})
+    setInFlight(false)
   }
 
   return (
