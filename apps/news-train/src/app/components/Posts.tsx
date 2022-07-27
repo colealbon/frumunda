@@ -13,6 +13,7 @@ import {
   Divider
 } from '@mui/material';
 import { useSettings } from '../react-hooks/useSettings'
+import {useStacks} from '../react-hooks/useStacks'
 
 
 import {shortUrl, cleanPostItem, removePunctuation} from '../utils'
@@ -39,11 +40,18 @@ const Posts: FunctionComponent = () => {
   const {settings} = useSettings()
   const {hideProcessedPosts, disableMachineLearning, mlThresholdDocuments, mlThresholdConfidence} = structuredClone(settings)
 
+  const {fetchFile} = useStacks()
   const {data: selectedCategory} = useSWR('selectedCategory')
   const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
-  const {data: processedPostsdata} = useSWR(processedFilenameForFeed)
+
+  console.log(processedFilenameForFeed)
+  const {data: processedPostsdata} = useSWR(processedFilenameForFeed, fetchFile(processedFilenameForFeed, []), {
+    suspense: true,
+    fallbackData: []
+  })
 
   const processedPosts = [processedPostsdata].flat().slice()
+  console.log(processedPosts)
 
   let classifier = bayes()
 
@@ -70,8 +78,8 @@ const Posts: FunctionComponent = () => {
             }
             // surpress previously processed posts
             const mlText = removePunctuation(`${structuredClone(postItem).title} ${structuredClone(postItem).description}`)
-            return !processedPosts.find((postItem: string) => {
-              const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(postItem)}`, mlText)
+            return !processedPosts.find(processedMLText => {
+              const similarity = stringSimilarity.compareTwoStrings(`${removePunctuation(`${processedMLText}`)}`, mlText)
               return similarity > .8
             })
           })

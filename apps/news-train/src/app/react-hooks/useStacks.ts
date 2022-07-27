@@ -41,8 +41,12 @@ export function useStacks () {
   }
 
   const fetchFile = (filename: string, defaultValue: object | string) => () => {
+    console.log('fetchFile')
+    console.log(filename)
+    console.log(defaultValue)
     return new Promise((resolve, reject) => {
       if( !userSession.isUserSignedIn() ) {
+        console.log('USER NOT SIGNED IN')
         localforage.getItem(filename)
         .then((value: unknown) => {
           if (!value) {
@@ -81,15 +85,17 @@ export function useStacks () {
   }
 
   const persist = (filename: string, content: object) => () => {
+    console.log(filename)
     return new Promise((resolve) => {
       if( !userSession.isUserSignedIn() ) {
+        console.log('USER NOT SIGNED IN')
         localforage.setItem(filename, content)
         .then(() => {
           resolve(content)
         })
       } else {
         localforage.setItem(filename, content)
-        storage.putFile(`${filename}`, JSON.stringify(content), { dangerouslyIgnoreEtag: true })
+        storage.putFile(`${filename}`, JSON.stringify(content))
         resolve(content)
       }
     })

@@ -8,7 +8,7 @@ import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json'
 
 export function App() {
   const {fetchFileLocal, loadUserData} = useStacks()
-  // loadUserData()
+  loadUserData()
   // mutate('corsProxies', fetchFileLocal('corsProxies', defaultCorsProxies), {optimisticData: defaultCorsProxies})
   // mutate('categories', fetchFileLocal('categories', defaultCategories), {optimisticData: defaultCategories})
   // mutate('feeds', fetchFileLocal('feeds', defaultFeeds), {optimisticData: defaultFeeds})

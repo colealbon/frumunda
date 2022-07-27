@@ -19,7 +19,6 @@ const drawerWidth = 240;
 type Props = {children: ReactNode}
 
 const Dashboard: FunctionComponent<Props> = ({children}: Props) => {
-  const {fetchFileLocal} = useStacks()
   const [mobileOpen, setMobileOpen] = useState(false);
   const {data: selectedPage} = useSWR('selectedPage', () => localforage.getItem('selectedPage'), {fallbackData:'posts'})
   const {data: selectedCategory} = useSWR('selectedCategory', () => localforage.getItem('selectedCategory'))
