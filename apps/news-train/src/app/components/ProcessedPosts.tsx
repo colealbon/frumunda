@@ -56,7 +56,7 @@ const ProcessedPosts: FunctionComponent<Props> = ({children}: Props) => {
     `processed_${shortUrl(keyForFeed)}`, fetcher, {suspense: true}
   )
   const processedPosts: object = structuredClone(processedPostsdata)
-  console.log(processedPosts)
+  // console.log(processedPosts)
 
   return (
     <ProcessedPostsContext.Provider key={JSON.stringify(processedPosts)} value={{...processedPosts as object}}>

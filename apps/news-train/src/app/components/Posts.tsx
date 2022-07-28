@@ -44,7 +44,8 @@ const Posts: FunctionComponent = () => {
 
   const {data: selectedCategory} = useSWR('selectedCategory')
   const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
-  const {data: processedPostsdata} = useSWR(`${processedFilenameForFeed}`, () => fetchFile(processedFilenameForFeed, {}))
+  const defaultProcessedPosts = JSON.parse(`{"${processedFilenameForFeed}":[]}`)
+  const {data: processedPostsdata} = useSWR(processedFilenameForFeed, () => fetchFile(processedFilenameForFeed, defaultProcessedPosts).then((fetched) => fetched))
   const processedPosts = Object.values({...processedPostsdata as object}).flat().slice()
 
   let classifier = bayes()
@@ -62,6 +63,7 @@ const Posts: FunctionComponent = () => {
       {
       Object.entries(parsedFeedContent).map((feedContentEntry) => {
         const feedLink: string = feedContentEntry[0]
+        
         const unprocessedCleanPostItems = structuredClone(feedContentEntry[1]).items
           .filter((noEmpties: object) => !!noEmpties)
           .filter((noEmpties: object) => !!structuredClone(noEmpties).link)

@@ -1,8 +1,8 @@
 import { AppConfig, UserSession } from '@stacks/connect';
 import { Storage, StorageOptions } from '@stacks/storage';
 import localforage from 'localforage'
-import { json } from 'stream/consumers';
 import useSWR, { useSWRConfig } from 'swr'
+import debounce from 'debounce'
 
 export function useStacks () {
   const appConfig = new AppConfig(['store_write', 'publish_data']);
@@ -41,7 +41,7 @@ export function useStacks () {
     })
   }
 
-  const fetchFile = (filename: string, defaultValue: object | string) => () => {
+  const fetchFile = (filename: string, defaultValue: object | string) => {
     return new Promise((resolve, reject) => {
       if( !userSession.isUserSignedIn() ) {
         localforage.getItem(filename)
@@ -78,8 +78,12 @@ export function useStacks () {
         .then(fetchedFiles => resolve(fetchedFiles))
       })
     })
-    
   }
+
+  const publishToStacks = debounce((filename: string) => {
+    localforage.getItem(filename)
+    .then((content: unknown) => storage.putFile(`${filename}`, JSON.stringify(content)))
+  }, 15 * 1000, true)
 
   const persist = (filename: string, content: object) => () => {
     console.log(filename)
@@ -92,8 +96,10 @@ export function useStacks () {
         })
       } else {
         localforage.setItem(filename, content)
-        storage.putFile(`${filename}`, JSON.stringify(content))
-        resolve(content)
+        .then(() => {
+          publishToStacks(`${filename}`)
+          resolve(content)
+        })
       }
     })
   }
