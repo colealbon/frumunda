@@ -61,7 +61,7 @@ const Post: FunctionComponent = () => {
 
   const handleTrain = (label: string) => {
     classifier.learn(`${mlText}`, label)
-    const newClassifier = JSON.parse(JSON.stringify(JSON.parse(classifier.toJson())))
+    const newClassifier = JSON.parse(classifier.toJson())
     const filenameForClassifier = `classifier_${category}`.replace(/_$/,'')
     
     mutate(
