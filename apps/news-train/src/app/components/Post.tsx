@@ -71,15 +71,25 @@ const Post: FunctionComponent = () => {
     
     mutate(
       processedFilenameForFeed,
-      persist(processedFilenameForFeed, payloadProcessedPosts)
+      persist(processedFilenameForFeed, payloadProcessedPosts),
+      {
+        optimisticData: payloadProcessedPosts,
+        rollbackOnError: false,
+        revalidate: false,
+        populateCache: false
+      }
     )
 
     mutate(
       filenameForClassifier,
       persist(filenameForClassifier, newClassifier),
-      {optimisticData: newClassifier}
+      {
+        optimisticData: newClassifier,
+        rollbackOnError: false,
+        revalidate: false,
+        populateCache: false
+      }
     )
-
   }
 
   const handleOnClick = () => () => {

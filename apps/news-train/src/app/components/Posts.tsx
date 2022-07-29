@@ -45,11 +45,9 @@ const Posts: FunctionComponent = () => {
   const {data: selectedCategory} = useSWR('selectedCategory')
   const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
   const defaultProcessedPosts = JSON.parse(`{"${processedFilenameForFeed}":[]}`)
-  const {data: processedPostsdata} = useSWR(processedFilenameForFeed, () => fetchFile(processedFilenameForFeed, defaultProcessedPosts).then((fetched) => {
-    return (fetched)
-  }))
+  const {data: processedPostsdata} = useSWR(processedFilenameForFeed, () => fetchFile(processedFilenameForFeed, defaultProcessedPosts))
   const processedPosts = Object.values({...processedPostsdata as object}).flat().slice()
-
+  
   let classifier = bayes()
 
   try {
