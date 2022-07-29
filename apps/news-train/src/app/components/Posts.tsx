@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { useSettings } from '../react-hooks/useSettings'
 import {useStacks} from '../react-hooks/useStacks'
+import defaultFeeds from '../react-hooks/defaultFeeds.json'
 
 
 import {shortUrl, cleanPostItem, removePunctuation} from '../utils'
@@ -36,18 +37,19 @@ const Posts: FunctionComponent = () => {
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
   const keyForFeed = Object.keys(parsedFeedContent)[0]
   const processedFilenameForFeed = `processed_${shortUrl(keyForFeed)}`
-
   const {settings} = useSettings()
   const {hideProcessedPosts, disableMachineLearning, mlThresholdDocuments, mlThresholdConfidence} = structuredClone(settings)
 
   const {fetchFile} = useStacks()
 
+  const { data: feedsdata } = useSWR('feeds', () => fetchFile('feeds', defaultFeeds))
+  const feeds = {...feedsdata as object}
   const {data: selectedCategory} = useSWR('selectedCategory')
   const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
   const defaultProcessedPosts = JSON.parse(`{"${processedFilenameForFeed}":[]}`)
   const {data: processedPostsdata} = useSWR(processedFilenameForFeed, () => fetchFile(processedFilenameForFeed, defaultProcessedPosts))
   const processedPosts = Object.values({...processedPostsdata as object}).flat().slice()
-  
+
   let classifier = bayes()
 
   try {
@@ -63,7 +65,17 @@ const Posts: FunctionComponent = () => {
       {
       Object.entries(parsedFeedContent).map((feedContentEntry) => {
         const feedLink: string = feedContentEntry[0]
-        
+        const feedTitle: string = structuredClone(feedContentEntry[1]).title
+        const feedDescription: string = structuredClone(feedContentEntry[1]).description
+
+        const feedLabel = Object.entries(feeds)
+        .filter(feedEntry => feedEntry[0] === feedLink)
+        .map(feedEntry => Object.entries(feedEntry[1] as object))
+        .flat()
+        .filter((feedValEntry: unknown[]) => feedValEntry[0] === 'label')
+        .map(feedLabelEntry => feedLabelEntry[1])
+        .find(() => true)
+
         const unprocessedCleanPostItems = structuredClone(feedContentEntry[1]).items
           .filter((noEmpties: object) => !!noEmpties)
           .filter((noEmpties: object) => !!structuredClone(noEmpties).link)
@@ -105,7 +117,7 @@ const Posts: FunctionComponent = () => {
               <Divider />
               <Typography variant='h3'>
                 <Link href={feedLink} component="button">
-                  {`${feedLink}`}
+                  {`${feedLabel || feedTitle || feedLink}`}
                 </Link>
               </Typography>
             </Fragment>
@@ -114,10 +126,13 @@ const Posts: FunctionComponent = () => {
         return (
           <Fragment key={feedLink}>
             <Divider />
-            <Typography variant='h3'>
+            <Typography style={{display: 'flex', flexDirection: 'column'}}>
               <Link href={`${feedLink}`} component="button">
-                {`${feedLink}`}
+                {`${feedLabel || feedTitle || feedLink}`}
               </Link>
+              <Typography variant='caption' style={{display: 'flex', justifyContent: 'center'}}>
+              {feedDescription}
+              </Typography>
             </Typography>
             <Typography variant='caption'>{` (${unprocessedCleanPostItems.length} of ${structuredClone(feedContentEntry[1]).items.length} posts remaining)`}</Typography>
             <Divider />

@@ -16,7 +16,8 @@ const FeedsEdit: FunctionComponent = () => {
   const { data: feedsdata } = useSWR('feeds', () => fetchFile('feeds', defaultFeeds))
   const feeds = {...feedsdata as object}
   return (
-    <>
+    <div style={{display: 'flex', flexDirection: 'column', maxWidth: '300px'}}>
+
       <FeedsAdd/>
       <div /> 
       <FeedsReset />
@@ -39,7 +40,7 @@ const FeedsEdit: FunctionComponent = () => {
           </Card>
         );
       })}
-    </>
+     </div>
   )
 };
 

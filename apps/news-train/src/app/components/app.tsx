@@ -8,16 +8,12 @@ import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json'
 
 export function App() {
   const {fetchFileLocal, loadUserData} = useStacks()
-  // const {mutate} = useSWR()
   loadUserData()
-  // mutate('corsProxies', fetchFileLocal('corsProxies', defaultCorsProxies), {optimisticData: defaultCorsProxies})
-  // mutate('categories', fetchFileLocal('categories', defaultCategories), {optimisticData: defaultCategories})
-  // mutate('feeds', fetchFileLocal('feeds', defaultFeeds), {optimisticData: defaultFeeds})
+  mutate('corsProxies', fetchFileLocal('corsProxies', defaultCorsProxies), {optimisticData: defaultCorsProxies})
+  mutate('categories', fetchFileLocal('categories', defaultCategories), {optimisticData: defaultCategories})
+  mutate('feeds', fetchFileLocal('feeds', defaultFeeds), {optimisticData: defaultFeeds})
   mutate('selectedPage', fetchFileLocal('selectedPage', 'posts'))
   mutate('selectedCategory', fetchFileLocal('selectedPage', 'selectedCategory'))
-
-  // mutate('selectedPage', 'posts', { optimisticData: 'posts' } )
-  // mutate('selectedCategory', 'science', { optimisticData: 'science' } )
 
   return (
     <Dashboard>
