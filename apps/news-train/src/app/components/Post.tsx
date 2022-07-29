@@ -46,12 +46,13 @@ const Post: FunctionComponent = () => {
 
   const mlText = removePunctuation(`${postItem.title} ${postItem.description} ${postItem.summary}`)
 
-  let classifier = bayes()
+  
   const {data: classifierdata} = useSWR(`classifier_${category}`, () => fetchFile(`classifier_${category}`, JSON.parse(classifier.toJson()) ))
   const defaultProcessedPosts = JSON.parse(`{"${processedFilenameForFeed}":[]}`)
   const {data: processedPostsdata} = useSWR(processedFilenameForFeed, () => fetchFile(processedFilenameForFeed, defaultProcessedPosts))
   const processedPosts = Object.values({...processedPostsdata as object}).flat().slice()
   
+  let classifier = bayes()
   try {
     if (classifierdata) {
       classifier = bayes.fromJson(JSON.stringify(classifierdata))
@@ -72,7 +73,6 @@ const Post: FunctionComponent = () => {
     ).then(() => {
       const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
         .filter(removeEmpty => !!removeEmpty)
-        console.log(newProcessedPosts)
       mutate(
         `${processedFilenameForFeed}`, 
         persist(processedFilenameForFeed, JSON.parse(`{"${processedFilenameForFeed}": ${JSON.stringify(newProcessedPosts)}}`)),

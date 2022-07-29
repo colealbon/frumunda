@@ -29,10 +29,12 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
 
   const markFeedComplete = (newProcessedPostsForFeed: string[]) => {
     setInFlight(true)
+    const processedPostsWithLabel = JSON.parse(`{"${filenameForFeed}": ${JSON.stringify(newProcessedPostsForFeed)}}`)
+
     mutate(
       `${filenameForFeed}`, 
-      persist(`${filenameForFeed}`, newProcessedPostsForFeed),
-      {optimisticData: newProcessedPostsForFeed}
+      persist(`${filenameForFeed}`, processedPostsWithLabel),
+      {optimisticData: processedPostsWithLabel}
     )
   }
 

@@ -59,15 +59,19 @@ export function useStacks () {
           decrypt: true
         })
         .then((content) => {
-          resolve(JSON.parse(`${content}`))     
+          localforage.setItem(filename, JSON.parse(`${content}`))
+          .then(() => resolve(JSON.parse(`${content}`)))
         })
         .catch(() => {
+          console.log('user not signed in - use fetchLocal')
+        })
+        .finally(() => {
           localforage.getItem(filename)
-          .then(value => resolve(value || defaultValue))
+          .then(value => {
+            resolve(value || defaultValue)
+          })
         })
       })
-      localforage.getItem(filename)
-      .then(value => resolve(value || defaultValue))
     })
   }
   const deleteFile = (filename: string) => () => {
@@ -86,10 +90,9 @@ export function useStacks () {
   }, 15 * 1000, true)
 
   const persist = (filename: string, content: object) => () => {
-    console.log(filename)
     return new Promise((resolve) => {
       if( !userSession.isUserSignedIn() ) {
-        console.log('USER NOT SIGNED IN')
+        console.log('USER NOT SIGNED IN - use persistLocal')
         localforage.setItem(filename, content)
         .then(() => {
           resolve(content)
