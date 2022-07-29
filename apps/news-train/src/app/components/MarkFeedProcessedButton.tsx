@@ -34,7 +34,12 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
     mutate(
       `${filenameForFeed}`, 
       persist(`${filenameForFeed}`, processedPostsWithLabel),
-      {optimisticData: processedPostsWithLabel}
+      {
+        optimisticData: processedPostsWithLabel,
+        rollbackOnError: false,
+        revalidate: false,
+        populateCache: false
+      }
     )
   }
 
