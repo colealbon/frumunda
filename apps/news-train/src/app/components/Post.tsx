@@ -65,20 +65,21 @@ const Post: FunctionComponent = () => {
     classifier.learn(`${mlText}`, label)
     const newClassifier = JSON.parse(classifier.toJson())
     const filenameForClassifier = `classifier_${category}`.replace(/_$/,'')
+    const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
+    .filter(removeEmpty => !!removeEmpty)
+    const payloadProcessedPosts = JSON.parse(`{"${processedFilenameForFeed}": ${JSON.stringify(newProcessedPosts)}}`)
     
+    mutate(
+      processedFilenameForFeed,
+      persist(processedFilenameForFeed, payloadProcessedPosts)
+    )
+
     mutate(
       filenameForClassifier,
       persist(filenameForClassifier, newClassifier),
       {optimisticData: newClassifier}
-    ).then(() => {
-      const newProcessedPosts: unknown[] = Array.from(new Set([...processedPosts, `${mlText}`.replace('undefined','')]))
-        .filter(removeEmpty => !!removeEmpty)
-      mutate(
-        `${processedFilenameForFeed}`, 
-        persist(processedFilenameForFeed, JSON.parse(`{"${processedFilenameForFeed}": ${JSON.stringify(newProcessedPosts)}}`)),
-        {optimisticData: newProcessedPosts}
-      )
-    })
+    )
+
   }
 
   const handleOnClick = () => () => {
@@ -180,6 +181,8 @@ display: flex;
 align-items: center;
 font-size: 12px;
 user-select: none;
+padding-right: 10px;
+padding-left: 10px;
 `;
 
 // const ItemRow = styled.div`

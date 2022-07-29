@@ -2,7 +2,7 @@ import { AppConfig, UserSession } from '@stacks/connect';
 import { Storage, StorageOptions } from '@stacks/storage';
 import localforage from 'localforage'
 import useSWR, { useSWRConfig } from 'swr'
-import debounce from 'debounce'
+import debounce from 'debounce-by-key'
 
 export function useStacks () {
   const appConfig = new AppConfig(['store_write', 'publish_data']);
@@ -84,10 +84,16 @@ export function useStacks () {
     })
   }
 
-  const publishToStacks = debounce((filename: string) => {
-    localforage.getItem(filename)
-    .then((content: unknown) => storage.putFile(`${filename}`, JSON.stringify(content)))
-  }, 15 * 1000, true)
+  const publishToStacks = (filename: string) => {
+      debounce({key: filename, duration:2000}).then(() => {
+        localforage.getItem(filename)
+        .then((content: unknown) => {
+          storage.putFile(`${filename}`, JSON.stringify(content), {dangerouslyIgnoreEtag: true})
+        }) 
+      }).catch(() => setTimeout(() => {
+        publishToStacks(filename)
+      }, 3000))
+  }
 
   const persist = (filename: string, content: object) => () => {
     return new Promise((resolve) => {
