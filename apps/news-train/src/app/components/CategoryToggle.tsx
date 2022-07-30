@@ -8,7 +8,7 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
 }) => {
 
   const {data: categories} = useSWR('categories')
-  const {persist} = useStacks()
+  const {persistLocal} = useStacks()
   const [inFlight, setInFlight] = useState(false)
 
   const toggleCategory = () => {
@@ -42,7 +42,7 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
     const newCategories = { ...categories as object, ...newCategory }
     mutate(
       'categories', 
-      persist('categories', newCategories),
+      persistLocal('categories', newCategories),
       { optimisticData: newCategories, rollbackOnError: true }
     )
     .then(() => setInFlight(false))

@@ -12,7 +12,7 @@ const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
 
-  const { persist } = useStacks()
+  const { persistLocal } = useStacks()
   const { data: categories } = useSWR('categories')
   const [inFlight, setInFlight] = useState(false)
   
@@ -27,7 +27,7 @@ const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
     }
     mutate(
       'categories', 
-      persist('categories', newCategories), 
+      persistLocal('categories', newCategories), 
       { optimisticData: newCategories, rollbackOnError: true }
     )
     .then(() => setInFlight(false))
