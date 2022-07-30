@@ -115,7 +115,7 @@ const Posts: FunctionComponent = () => {
           return (
             <Fragment key={feedLink}>
               <Divider />
-              <Typography variant='h3'>
+              <Typography variant='h3' style={{ maxWidth: '300px' , justifyContent: 'center'}}>
                 <Link href={feedLink} component="button">
                   {`${feedLabel || feedTitle || feedLink}`}
                 </Link>
@@ -126,7 +126,7 @@ const Posts: FunctionComponent = () => {
         return (
           <Fragment key={feedLink}>
             <Divider />
-            <Typography style={{display: 'flex', flexDirection: 'column'}}>
+            <Typography style={{display: 'flex', flexDirection: 'column', maxWidth: '300px'}}>
               <Link href={`${feedLink}`} component="button">
                 {`${feedLabel || feedTitle || feedLink}`}
               </Link>

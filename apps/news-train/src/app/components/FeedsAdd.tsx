@@ -11,7 +11,7 @@ const FeedsAdd = () => {
   const [inputValue, setInputValue] = useState('');
   const [inFlight, setInFlight] = useState(false);
   const { data: feeds } = useSWR('feeds');
-  const {persist} = useStacks();
+  const {persistLocal} = useStacks();
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -24,7 +24,7 @@ const FeedsAdd = () => {
     const newFeed = JSON.parse(`{"${inputValue}": {"checked": true, "categories": []}}`);
     const newFeeds = { ...newFeed, ...feeds };
     setInFlight(true);
-    mutate('feeds', persist('feeds', newFeeds), {optimisticData: newFeeds})
+    mutate('feeds', persistLocal('feeds', newFeeds), {optimisticData: newFeeds})
     .then(() => setInFlight(false));
   };
 

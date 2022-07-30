@@ -15,7 +15,7 @@ const FeedDelete: FunctionComponent<{ text: string }> = (props: {
 }) => {
   const [inFlight, setInFlight] = useState(false)
   const { data: feeds } = useSWR('feeds')
-  const { persist } = useStacks()
+  const { persistLocal } = useStacks()
 
   const deleteFeed = () => {
     const newFeeds = JSON.parse(
@@ -27,7 +27,7 @@ const FeedDelete: FunctionComponent<{ text: string }> = (props: {
         ),
       })
     );
-    mutate('feeds', persist('feeds', newFeeds), {optimisticData: feeds});
+    mutate('feeds', persistLocal('feeds', newFeeds), {optimisticData: feeds});
   };
 
   return (

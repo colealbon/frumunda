@@ -5,12 +5,12 @@ import defaultFeeds from '../react-hooks/defaultFeeds.json'
 import {useStacks} from '../react-hooks/useStacks'
 
 const FeedsReset: FunctionComponent = () => {
-  const {persist} = useStacks()
+  const {persistLocal} = useStacks()
   return (
     <Button key="feedsreset" onClick={() => () => {
       mutate(
         'feeds',
-        persist('feeds', defaultFeeds),
+        persistLocal('feeds', defaultFeeds),
         {optimisticData: defaultFeeds}
       )}
     }>
