@@ -1,7 +1,7 @@
 import { AppConfig, UserSession } from '@stacks/connect';
 import { Storage, StorageOptions } from '@stacks/storage';
 import localforage from 'localforage'
-import useSWR, { useSWRConfig } from 'swr'
+import useSWR, { mutate } from 'swr'
 import debounce from 'debounce-by-key'
 import promiseRetry from 'promise-retry'
 
@@ -12,7 +12,7 @@ export function useStacks () {
   const storageOptions: StorageOptions = { userSession };
   const storage = new Storage(storageOptions);
 
-  const { mutate } = useSWRConfig()
+  //const { mutate } = useSWRConfig()
   
   const fetchStacksFilenames = () => {
     return new Promise((resolve, reject) => {
