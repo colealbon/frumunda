@@ -18,7 +18,7 @@ import useSWR from 'swr'
 export function MainPage() {
   const { fetchFileLocal}  = useStacks()
   const { data: selectedPage } = useSWR('selectedPage', fetchFileLocal('selectedPage', 'posts'))
-  const { data: selectedCategory } = useSWR('selectedCategory', fetchFileLocal('selectedCategory', ''))
+  const { data: selectedCategory } = useSWR('selectedCategory', fetchFileLocal('selectedCategory', 'allCategories'))
 
 
   const fetchAndRenderPosts = () => {
@@ -44,7 +44,12 @@ export function MainPage() {
           .filter(() => selectedCategory === '' || selectedCategory === 'allCategories')
           .map(() => <Contribute key='contribute'/>)
         }
-        
+        {
+          [selectedPage].flat()
+          .filter(() => selectedPage === '')
+          .filter(() => selectedCategory === '')
+          .map(() => fetchAndRenderPosts())
+        }
         {
           [selectedPage].flat()
           .filter(() => selectedPage === 'posts')

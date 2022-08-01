@@ -13,7 +13,7 @@ export function App() {
   mutate('categories', fetchFileLocal('categories', defaultCategories), {optimisticData: defaultCategories})
   mutate('feeds', fetchFileLocal('feeds', defaultFeeds), {optimisticData: defaultFeeds})
   mutate('selectedPage', fetchFileLocal('selectedPage', 'posts'))
-  mutate('selectedCategory', fetchFileLocal('selectedPage', 'selectedCategory'))
+  mutate('selectedCategory', fetchFileLocal('selectedCategory', 'allCategories'))
 
   return (
     <Dashboard>

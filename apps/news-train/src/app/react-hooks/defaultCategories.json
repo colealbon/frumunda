@@ -4,7 +4,7 @@
   "science":{"checked":true},
   "bitcoin":{"checked":true},
   "local":{"checked":true},
-  "business":{"checked":true},
+  "business":{"checked":false},
   "world":{"checked":true},
   "politics":{"checked":false},
   "technology":{"checked":true},

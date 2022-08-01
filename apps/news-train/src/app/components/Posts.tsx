@@ -40,9 +40,9 @@ const Posts: FunctionComponent = () => {
   const {settings} = useSettings()
   const {hideProcessedPosts, disableMachineLearning, mlThresholdDocuments, mlThresholdConfidence} = structuredClone(settings)
 
-  const {fetchFile} = useStacks()
+  const {fetchFile, fetchFileLocal} = useStacks()
 
-  const { data: feedsdata } = useSWR('feeds', () => fetchFile('feeds', defaultFeeds))
+  const { data: feedsdata } = useSWR('feeds', () => fetchFileLocal('feeds', defaultFeeds))
   const feeds = {...feedsdata as object}
   const {data: selectedCategory} = useSWR('selectedCategory')
   const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
