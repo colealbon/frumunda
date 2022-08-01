@@ -13,7 +13,7 @@ import defaultFeeds from '../react-hooks/defaultFeeds.json'
 const FeedsEdit: FunctionComponent = () => {
   const {fetchFileLocal} = useStacks()
 
-  const { data: feedsdata } = useSWR('feeds', () => fetchFileLocal('feeds', defaultFeeds))
+  const { data: feedsdata } = useSWR('feeds', fetchFileLocal('feeds', defaultFeeds))
   const feeds = {...feedsdata as object}
   return (
     <div style={{display: 'flex', flexDirection: 'column', maxWidth: '300px'}}>

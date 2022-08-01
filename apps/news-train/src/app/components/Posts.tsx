@@ -42,7 +42,7 @@ const Posts: FunctionComponent = () => {
 
   const {fetchFile, fetchFileLocal} = useStacks()
 
-  const { data: feedsdata } = useSWR('feeds', () => fetchFileLocal('feeds', defaultFeeds))
+  const { data: feedsdata } = useSWR('feeds', fetchFileLocal('feeds', defaultFeeds))
   const feeds = {...feedsdata as object}
   const {data: selectedCategory} = useSWR('selectedCategory')
   const {data: classifierdata} = useSWR(`classifier_${selectedCategory}`.replace(/_$/, ""))
