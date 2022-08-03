@@ -1,0 +1,2096 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" >
+  <generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator>
+  <link href="https://bitcoinops.org/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://bitcoinops.org/" rel="alternate" type="text/html" /><updated>2022-08-03T17:01:38+00:00</updated>
+  <id>https://bitcoinops.org/</id>
+
+  
+    <title type="html">Bitcoin Optech</title>
+  
+
+  
+    <subtitle>Helping Bitcoin-based businesses integrate scaling technology.</subtitle>
+  
+
+  
+    <author>
+        <name>Bitcoin Optech</name>
+      
+      
+    </author>
+  
+
+  
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #211</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/08/03/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #211" />
+      <published>2022-08-03T00:00:00+00:00</published>
+      <updated>2022-08-03T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/08/2022-08-03-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/08/03/">&lt;p&gt;This week’s newsletter describes a proposal to allow multiple derivation
+paths in a single output script descriptor and includes our regular
+section with summaries of notable changes to popular Bitcoin
+infrastructure projects.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;multiple-derivation-path-descriptors&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#multiple-derivation-path-descriptors&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Multiple derivation path descriptors:&lt;/strong&gt; Andrew Chow &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020791.html&quot;&gt;posted&lt;/a&gt; a &lt;a href=&quot;https://github.com/achow101/bips/blob/bip-multipath-descs/bip-multipath-descs.mediawiki&quot;&gt;proposed BIP&lt;/a&gt; to the Bitcoin-Dev mailing
+list for allowing a single descriptor to specify two related &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki&quot;&gt;BIP32&lt;/a&gt;
+paths for &lt;a href=&quot;/en/topics/hd-key-generation/&quot;&gt;HD key generation&lt;/a&gt;.  The first path would be
+for generating addresses to which incoming payments could be received.
+The second address would be for internal payments within the wallet,
+namely returning change back to the wallet after spending a UTXO.&lt;/p&gt;
+
+    &lt;p&gt;As &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#specification-wallet-structure&quot;&gt;specified&lt;/a&gt; in BIP32, most wallets use
+  separate paths for generating external versus internal addresses in
+  order to enhance privacy.  An external path used for receiving
+  payments might be shared with less-trusted devices, e.g. uploading
+  it to a webserver to receive payments.  The internal path used only
+  for change might only be needed at times when the private key is
+  also needed, so it could receive the same security.  If the example
+  webserver were compromised and the external addresses were leaked,
+  the attacker would learn about each time the user received money,
+  how much they received, and when they initially spent the money—but
+  they wouldn’t necessarily learn how much money was sent in the
+  initial spend, and they also might not learn about any spends that
+  entirely consisted of spending change.&lt;/p&gt;
+
+    &lt;p&gt;Replies from &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020792.html&quot;&gt;Pavol Rusnak&lt;/a&gt; and &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020799.html&quot;&gt;Craig Raw&lt;/a&gt;
+  indicated that Trezor Wallet and Sparrow Wallet already supported
+  the scheme Chow proposed.  Rusnak also asked whether a single
+  descriptor should be able to describe more than two related paths.
+  Dmitry Petukhov &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020804.html&quot;&gt;noted&lt;/a&gt; that only internal and
+  external paths are widely used today and that any additional paths
+  wouldn’t have a clear meaning to existing wallets.  That could
+  create interoperability issues.  He suggested limiting the BIP to
+  just two paths and waiting for anyone needing additional paths to
+  write their own BIP.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;core-lightning-5441&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#core-lightning-5441&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/ElementsProject/lightning/issues/5441&quot;&gt;Core Lightning #5441&lt;/a&gt; updates &lt;code class=&quot;highlighter-rouge&quot;&gt;hsmtool&lt;/code&gt; to make it easier to check
+a &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki&quot;&gt;BIP39&lt;/a&gt; passphrase against the &lt;a href=&quot;/en/topics/hd-key-generation/&quot;&gt;HD seed&lt;/a&gt; used by
+CLN’s internal wallet.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;eclair-2253&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#eclair-2253&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/ACINQ/eclair/issues/2253&quot;&gt;Eclair #2253&lt;/a&gt; adds support for relaying &lt;a href=&quot;/en/topics/rendez-vous-routing/&quot;&gt;blinded payments&lt;/a&gt; as specified in &lt;a href=&quot;https://github.com/lightning/bolts/issues/765&quot;&gt;BOLTs #765&lt;/a&gt; (see &lt;a href=&quot;/en/newsletters/2021/12/08/#eclair-2061&quot;&gt;Newsletter #187&lt;/a&gt;).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;ldk-1519&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#ldk-1519&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/issues/1519&quot;&gt;LDK #1519&lt;/a&gt; always includes the &lt;code class=&quot;highlighter-rouge&quot;&gt;htlc_maximum_msat&lt;/code&gt; field in
+&lt;code class=&quot;highlighter-rouge&quot;&gt;channel_update&lt;/code&gt; messages as will be required if &lt;a href=&quot;https://github.com/lightning/bolts/issues/996&quot;&gt;BOLTs #996&lt;/a&gt; is
+merged into the LN specification.  The reason given in the pull
+request for the change is to simplify message parsing.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;rust-bitcoin-994&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#rust-bitcoin-994&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin/issues/994&quot;&gt;Rust Bitcoin #994&lt;/a&gt; adds a &lt;code class=&quot;highlighter-rouge&quot;&gt;LockTime&lt;/code&gt; type that can be used with
+nLockTime and &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki&quot;&gt;BIP65&lt;/a&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;OP_CHECKLOCKTIME&lt;/code&gt; fields.  Locktime fields in
+Bitcoin can contain either a block height or a &lt;a href=&quot;https://en.wikipedia.org/wiki/Unix_time&quot;&gt;Unix epoch time&lt;/a&gt;
+value.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;rust-bitcoin-1088&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#rust-bitcoin-1088&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin/issues/1088&quot;&gt;Rust Bitcoin #1088&lt;/a&gt; adds the structures needed for &lt;a href=&quot;/en/topics/compact-block-relay/&quot;&gt;compact
+blocks&lt;/a&gt; as specified in &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki&quot;&gt;BIP152&lt;/a&gt;, as well
+as a method for creating a compact block from a regular block.
+Compact blocks allow a node to tell its peers which transactions a
+block contains without sending complete copies of those transactions.
+If a peer has previously received and stored those transactions from
+when they were unconfirmed, it doesn’t need to download them again,
+saving bandwidth and speeding up the relay of new blocks.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter describes a proposal to allow multiple derivation paths in a single output script descriptor and includes our regular section with summaries of notable changes to popular Bitcoin infrastructure projects.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #210</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/07/27/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #210" />
+      <published>2022-07-27T00:00:00+00:00</published>
+      <updated>2022-07-27T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/07/2022-07-27-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/07/27/">&lt;p&gt;This week’s newsletter describes a proposed BIP for creating signed
+messages for non-legacy addresses and summarizes a discussion about
+provably burning small amounts of bitcoin for denial of service
+protection.  Also included are our regular sections with popular
+questions and answers from the Bitcoin Stack Exchange, announcements of
+new releases and releases candidates, and summaries of notable changes
+to popular Bitcoin infrastructure software.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;multiformat-single-sig-message-signing&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#multiformat-single-sig-message-signing&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Multiformat single-sig message signing:&lt;/strong&gt; Bitcoin Core and many
+other wallets have long included support for signing and verifying
+arbitrary messages when the key used to sign them corresponds to a
+P2PKH address.  Bitcoin Core doesn’t support signing or verifying
+arbitrary messages for any other address type, including addresses
+covering single-sig P2SH-P2WPKH, native P2WPKH, and P2TR outputs.  A
+previous proposal, &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0322.mediawiki&quot;&gt;BIP322&lt;/a&gt;, to provide &lt;a href=&quot;/en/topics/generic-signmessage/&quot;&gt;fully generic message
+signing&lt;/a&gt; that could work with any script
+has not yet &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/24058&quot;&gt;been merged&lt;/a&gt; into Bitcoin Core or
+added to any other popular wallet of which we’re aware.&lt;/p&gt;
+
+    &lt;p&gt;This week, Ali Sherief &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020759.html&quot;&gt;proposed&lt;/a&gt; that the same message
+  signing algorithm used for P2WPKH also be used for other output
+  types.  For verification, programs should infer how to derive the
+  key (if necessary) and verify the signature using the address type.
+  E.g., when provided a &lt;a href=&quot;/en/topics/bech32/&quot;&gt;bech32&lt;/a&gt; address with a 20 byte
+  data element, assume it’s for a P2WPKH output.&lt;/p&gt;
+
+    &lt;p&gt;Developer Peter Gray &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020762.html&quot;&gt;noted&lt;/a&gt; that ColdCard
+  wallets already create signatures in this way and developer Craig
+  Raw &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020766.html&quot;&gt;said&lt;/a&gt; Sparrow Wallet that wallet is able to
+  validate them in addition to also following the &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0137.mediawiki&quot;&gt;BIP137&lt;/a&gt;
+  validation rules and a slightly different set of rules implemented
+  in Electrum.&lt;/p&gt;
+
+    &lt;p&gt;Sherief is planning to write a BIP specifying the behavior.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;proof-of-micro-burn&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#proof-of-micro-burn&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Proof of micro-burn:&lt;/strong&gt; several developers &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020745.html&quot;&gt;discussed&lt;/a&gt;
+use cases and designs of onchain transactions that destroy bitcoins
+(“burn” bitcoins) in small increments as a proof of resource
+consumption. To extend an example use case by Ruben
+Somsen &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020746.html&quot;&gt;from the thread&lt;/a&gt;, the idea would be to
+allow 100 users to each attach to their emails a proof that $1 of
+bitcoins had been burned, providing the type of anti-spam protection
+originally envisioned as a benefit of &lt;a href=&quot;https://en.wikipedia.org/wiki/Hashcash&quot;&gt;hashcash&lt;/a&gt;.&lt;/p&gt;
+
+    &lt;p&gt;Several solutions were discussed using merkle trees, although one
+  respondent suggested that the small amounts involved suggest that
+  having participants trust (or partially trust) a centralized third
+  party may be a reasonable way to avoid unnecessary complexity.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;selected-qa-from-bitcoin-stack-exchange&quot;&gt;Selected Q&amp;amp;A from Bitcoin Stack Exchange&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;a href=&quot;https://bitcoin.stackexchange.com/&quot;&gt;Bitcoin Stack Exchange&lt;/a&gt; is one of the first places Optech
+contributors look for answers to their questions—or when we have a
+few spare moments to help curious or confused users.  In
+this monthly feature, we highlight some of the top-voted questions and
+answers posted since our last update.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;why-do-invalid-signatures-in-op-checksigadd-not-push-to-the-stack&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#why-do-invalid-signatures-in-op-checksigadd-not-push-to-the-stack&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114446&quot;&gt;Why do invalid signatures in &lt;code class=&quot;highlighter-rouge&quot;&gt;OP_CHECKSIGADD&lt;/code&gt; not push to the stack?&lt;/a&gt;
+Chris Stewart asks why “if an invalid signature is found, the interpreter fails
+execution rather than continuing”. Pieter Wuille explains that this behavior,
+defined in BIP340-342, is designed to support batch validation of
+&lt;a href=&quot;/en/topics/schnorr-signatures/&quot;&gt;schnorr signatures&lt;/a&gt; in the future.
+Andrew Chow gives an additional reason for the behavior, noting that
+certain malleability concerns are also mitigated by this approach.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;what-are-packages-in-bitcoin-core-and-what-is-their-use-case&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#what-are-packages-in-bitcoin-core-and-what-is-their-use-case&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114305&quot;&gt;What are packages in Bitcoin Core and what is their use case?&lt;/a&gt;
+Antoine Poinsot explains &lt;a href=&quot;https://github.com/bitcoin/bitcoin/blob/53b1a2426c58f709b5cc0281ef67c0d29fc78a93/doc/policy/packages.md#definitions&quot;&gt;packages&lt;/a&gt; (a grouping of
+related transactions), their relation to &lt;a href=&quot;/en/topics/package-relay/&quot;&gt;package relay&lt;/a&gt;,
+and a recent &lt;a href=&quot;/en/newsletters/2022/05/25/#package-relay-proposal&quot;&gt;package relay BIP proposal&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;how-much-blockspace-would-it-take-to-spend-the-complete-utxo-set&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#how-much-blockspace-would-it-take-to-spend-the-complete-utxo-set&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114043&quot;&gt;How much blockspace would it take to spend the complete UTXO set?&lt;/a&gt;
+Murch explores a hypothetical scenario of consolidating all existing UTXOs. He
+provides blockspace calculations for each output type and concludes the process would
+take about 11,500 blocks.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;does-an-uneconomical-output-need-to-be-kept-in-the-utxo-set&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#does-an-uneconomical-output-need-to-be-kept-in-the-utxo-set&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114493&quot;&gt;Does an uneconomical output need to be kept in the UTXO set?&lt;/a&gt;
+Stickies-v notes that while provably unspendable UTXOs including &lt;code class=&quot;highlighter-rouge&quot;&gt;OP_RETURN&lt;/code&gt;
+or scripts larger than the max script size are removed from the UTXO
+set, removing &lt;a href=&quot;/en/topics/uneconomical-outputs/&quot;&gt;uneconomical outputs&lt;/a&gt; could cause
+issues, including a hard fork as Pieter Wuille points out, if those outputs are spent.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;is-there-code-in-libsecp256k1-that-should-be-moved-to-the-bitcoin-core-codebase&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#is-there-code-in-libsecp256k1-that-should-be-moved-to-the-bitcoin-core-codebase&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114467&quot;&gt;Is there code in libsecp256k1 that should be moved to the Bitcoin Core codebase?&lt;/a&gt;
+Similar to other efforts to modularize areas of the Bitcoin Core codebase like
+&lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/24303&quot;&gt;libbitcoinkernel&lt;/a&gt; or &lt;a href=&quot;https://github.com/bitcoin-core/bitcoin-devwiki/wiki/Process-Separation&quot;&gt;process separation&lt;/a&gt;, Pieter Wuille notes a clear area of responsibility of the
+&lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt; project: everything that involves operations on private or public keys.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;mining-stale-low-difficulty-blocks-as-a-dos-attack&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#mining-stale-low-difficulty-blocks-as-a-dos-attack&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114241&quot;&gt;Mining stale low-difficulty blocks as a DoS attack&lt;/a&gt;
+Andrew Chow explains that &lt;a href=&quot;https://bitcoincore.org/en/2017/03/08/release-0.14.0/#assumed-valid-blocks&quot;&gt;assumevalid&lt;/a&gt; and more recently
+&lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/9053&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;nMinimumChainWork&lt;/code&gt;&lt;/a&gt; help filter out low-difficulty chain attacks.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;releases-and-release-candidates&quot;&gt;Releases and release candidates&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;New releases and release candidates for popular Bitcoin infrastructure
+projects.  Please consider upgrading to new releases or helping to test
+release candidates.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;btcpay-server-1-6-3&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#btcpay-server-1-6-3&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/releases/tag/v1.6.3&quot;&gt;BTCPay Server 1.6.3&lt;/a&gt; adds new features, improvements, and bug fixes
+to this popular self-hosted payment processor.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;ldk-0-0-110&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#ldk-0-0-110&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/releases/tag/v0.0.110&quot;&gt;LDK 0.0.110&lt;/a&gt; adds a variety of new features (many covered in
+previous newsletters) to this library for building LN-enabled
+applications.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;bitcoin-core-25351&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-25351&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/25351&quot;&gt;Bitcoin Core #25351&lt;/a&gt; ensures that after an import of addresses,
+keys, or descriptors to a wallet, the subsequent rescan will not only
+scan the blockchain but also evaluate whether transactions in the
+mempool are relevant to the wallet.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;core-lightning-5370&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#core-lightning-5370&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/ElementsProject/lightning/issues/5370&quot;&gt;Core Lightning #5370&lt;/a&gt; reimplements the &lt;code class=&quot;highlighter-rouge&quot;&gt;commando&lt;/code&gt; plugin and makes
+it a built-in part of CLN.  Commando allows a node to receive commands
+from authorized peers using LN messages.  Peers are authorized using
+&lt;em&gt;runes&lt;/em&gt;, which is a custom CLN protocol based on a simplified version
+of &lt;a href=&quot;https://en.wikipedia.org/wiki/Macaroons_(computer_science)&quot;&gt;macaroons&lt;/a&gt;.  Although Commando is now built into CLN, it’s only
+operable if a user creates rune authentication tokens.  For additional
+information, see CLN’s manual pages for &lt;a href=&quot;https://github.com/rustyrussell/lightning/blob/2e13b72f55080be07ea68de77976eb990a043f5d/doc/lightning-commando.7.md&quot;&gt;commando&lt;/a&gt; and &lt;a href=&quot;https://github.com/rustyrussell/lightning/blob/2e13b72f55080be07ea68de77976eb990a043f5d/doc/lightning-commando-rune.7.md&quot;&gt;commando-rune&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bolts-1001&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bolts-1001&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightning/bolts/issues/1001&quot;&gt;BOLTs #1001&lt;/a&gt; recommends that nodes who advertise a change to their
+payment forwarding policies continue accepting payments received
+using the old policies for about 10 minutes.  This prevents payments
+from failing just because the sender hasn’t heard about a recent
+policy update.  See &lt;a href=&quot;/en/newsletters/2021/10/06/#c-lightning-4806&quot;&gt;Newsletter #169&lt;/a&gt; for the example
+of an implementation adopting a rule like this.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter describes a proposed BIP for creating signed messages for non-legacy addresses and summarizes a discussion about provably burning small amounts of bitcoin for denial of service protection. Also included are our regular sections with popular questions and answers from the Bitcoin Stack Exchange, announcements of new releases and releases candidates, and summaries of notable changes to popular Bitcoin infrastructure software.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #209</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/07/20/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #209" />
+      <published>2022-07-20T00:00:00+00:00</published>
+      <updated>2022-07-20T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/07/2022-07-20-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/07/20/">&lt;p&gt;This week’s newsletter summarizes several related discussions about providing
+a sustainable long term block reward for Bitcoin.  Also included are our
+regular sections with descriptions of new features for clients and
+services, announcements of new releases and release candidates, and
+summaries of notable changes to popular Bitcoin infrastructure software.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;long-term-block-reward-ongoing-discussion&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#long-term-block-reward-ongoing-discussion&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Long-term block reward ongoing discussion:&lt;/strong&gt; continuing the
+discussion about reliably paying for Proof of Work (PoW) as Bitcoin’s
+subsidy declines, two new threads were started on the Bitcoin-Dev
+mailing list:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li id=&quot;tail-emission-is-not-inflationary&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#tail-emission-is-not-inflationary&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020665.html&quot;&gt;Tail emission is not inflationary&lt;/a&gt; starts with an argument by
+Peter Todd that perpetually paying miners with newly created
+bitcoins will not lead to the number of bitcoins in circulation
+increasing forever.  Instead, he believes some bitcoins will be lost
+every year and, eventually, the rate at which bitcoins are lost will
+converge on the rate at which new bitcoins are produced, resulting in
+a roughly stable number of coins in circulation.  He also notes
+that adding a perpetual block subsidy to Bitcoin would be a hard
+fork.  Quite a few people replied to his post and on a &lt;a href=&quot;https://bitcointalk.org/index.php?topic=5405755.0&quot;&gt;thread
+about it&lt;/a&gt; on BitcoinTalk; we will only attempt to summarize a
+few replies we found most notable.&lt;/p&gt;
+
+        &lt;ul&gt;
+          &lt;li id=&quot;hard-fork-not-required&quot; class=&quot;anchor-list&quot;&gt;
+            &lt;p&gt;&lt;a href=&quot;#hard-fork-not-required&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Hard fork not required:&lt;/em&gt; Vjudeu &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020684.html&quot;&gt;suggests&lt;/a&gt; that a soft fork
+can create new bitcoins by imbuing transaction outputs paying
+zero satoshis with special meaning.  For example, when a node
+opting into the fork sees a zero-sat output, it looks at
+another part of the transaction for the actual value
+transferred.  This creates two classes of bitcoins, but
+presumably the soft fork would provide a mechanism to convert
+legacy-bitcoins to modified-bitcoins.  Vjudeu notes the same
+mechanism could also be used for privacy-enhancing bitcoin
+amount blinding (e.g. using &lt;a href=&quot;https://en.bitcoin.it/wiki/Confidential_transactions&quot;&gt;confidential transactions&lt;/a&gt;).&lt;/p&gt;
+          &lt;/li&gt;
+          &lt;li id=&quot;no-reason-to-believe-perpetual-issuance-is-sufficient&quot; class=&quot;anchor-list&quot;&gt;
+            &lt;p&gt;&lt;a href=&quot;#no-reason-to-believe-perpetual-issuance-is-sufficient&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;No reason to believe perpetual issuance is sufficient&lt;/em&gt;:
+Anthony Towns &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020693.html&quot;&gt;posts&lt;/a&gt; to the mailing list and Gregory
+Maxwell &lt;a href=&quot;https://bitcointalk.org/index.php?topic=5405755.0&quot;&gt;posts&lt;/a&gt; to BitcoinTalk that there’s no reason to
+believe that paying miners an amount of coins equal to the
+average rate of lost coins will provide sufficient PoW
+security, and that there are cases where it could overpay for
+PoW security.  If a perpetual issuance can’t guarantee security
+and if it has a significant likelihood of producing additional
+problems, it seems preferable to stick with a finite subsidy
+that—while it also can’t guarantee security—at least it
+doesn’t produce additional problems and is already
+accepted by all Bitcoiners (implicitly or explicitly).&lt;/p&gt;
+
+            &lt;p&gt;Maxwell further notes that Bitcoin miners on average collect
+  significantly more value through just transaction fees than
+  many altcoins pay their miners through the combination of
+  subsidies, fees, and other incentives.  Those altcoins are not
+  suffering fundamental PoW attacks, implying that it &lt;em&gt;might&lt;/em&gt;
+  be the case that enough value is being paid through
+  transaction fees alone to keep Bitcoin secure.  In short,
+  Bitcoin may already be past the point where it needs its
+  subsidy to obtain sufficient PoW security.  (Though the
+  subsidy also provides other benefits at present, as
+  discussed in the summary below for Bram Cohen’s thread.)&lt;/p&gt;
+
+            &lt;p&gt;Towns points out that Peter Todd’s results depend on a
+  constant average rate of bitcoins being lost each year, but
+  this conflicts with what Towns thinks should be a
+  system-wide goal to minimize lost bitcoins.  Relatedly,
+  Maxwell describes how coin loss could be almost entirely
+  eliminated by allowing anyone to automatically opt-in to
+  using a script that would donate any of their coins which
+  hadn’t moved for, say, 120 years—well past the expected
+  lifetime of the original owner and their heirs.&lt;/p&gt;
+          &lt;/li&gt;
+          &lt;li id=&quot;censorship-resistance&quot; class=&quot;anchor-list&quot;&gt;
+            &lt;p&gt;&lt;a href=&quot;#censorship-resistance&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Censorship resistance:&lt;/em&gt; developer ZmnSCPxj &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020678.html&quot;&gt;expanded&lt;/a&gt; an
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020676.html&quot;&gt;argument&lt;/a&gt; by Eric Voskuil that transaction fees enhance
+Bitcoin’s censorship resistance.  For example, if 90% of the
+block reward comes from subsidy and 10% from transaction fees,
+then the most revenue a censoring miner can lose directly is
+10%.  But if 90% comes from fees and 10% from subsidy, the
+miner could directly lose up to 90%—a much stronger
+incentive to avoid censorship.&lt;/p&gt;
+
+            &lt;p&gt;Peter Todd &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020688.html&quot;&gt;countered&lt;/a&gt; with the opinion that a perpetual
+  issuance would raise more money for PoW security than
+  “piddling transaction fees”, and that a higher block reward
+  would increase the cost an attacker would have to pay miners
+  to censor transactions.&lt;/p&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;fee-sniping&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#fee-sniping&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020702.html&quot;&gt;Fee sniping&lt;/a&gt;: Bram Cohen posted about the problem of &lt;a href=&quot;/en/topics/fee-sniping/&quot;&gt;fee sniping&lt;/a&gt;
+and suggests keeping transaction fees at about 10% of total block
+rewards (the remainder being subsidy) as a possible solution.  He
+briefly mentions some other possible solutions, but others
+provided additional suggestions in more detail.&lt;/p&gt;
+
+        &lt;ul&gt;
+          &lt;li id=&quot;paying-fees-forward&quot; class=&quot;anchor-list&quot;&gt;
+            &lt;p&gt;&lt;a href=&quot;#paying-fees-forward&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Paying fees forward:&lt;/em&gt; Russell O’Connor &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020704.html&quot;&gt;put forward&lt;/a&gt; an old
+idea that miners could calculate the maximum amount of fees
+they could collect from the top transactions in their mempool
+without incentivizing fee sniping.  They could then offer any
+additional fees they collected as a bribe to the next miner
+for building the next block cooperatively rather than
+competitively.  Discussion participants went through
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020719.html&quot;&gt;several&lt;/a&gt; iterations of &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020735.html&quot;&gt;this&lt;/a&gt; idea but Peter Todd
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020705.html&quot;&gt;noted&lt;/a&gt; that a fundamental concern with this technique is
+that smaller miners would need to pay higher bribes than
+larger miners, creating economies of scale that could further
+centralize Bitcoin mining.&lt;/p&gt;
+          &lt;/li&gt;
+          &lt;li id=&quot;improving-market-design&quot; class=&quot;anchor-list&quot;&gt;
+            &lt;p&gt;&lt;a href=&quot;#improving-market-design&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Improving market design:&lt;/em&gt; Anthony Towns &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020716.html&quot;&gt;suggests&lt;/a&gt; that
+improvements in Bitcoin software and user processes could
+significantly even out fees, making fee sniping less likely.
+But he further notes that it doesn’t seem like a major
+priority today just for “refuting some FUD”.&lt;/p&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;changes-to-services-and-client-software&quot;&gt;Changes to services and client software&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;In this monthly feature, we highlight interesting updates to Bitcoin
+wallets and services.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;lnp-bp-release-storm-beta-software&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#lnp-bp-release-storm-beta-software&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;LNP/BP release Storm beta software:&lt;/strong&gt;
+The LNP/BP Standards Association &lt;a href=&quot;https://twitter.com/lnp_bp/status/1545366480593846275&quot;&gt;released&lt;/a&gt; beta software for &lt;a href=&quot;https://github.com/Storm-WG&quot;&gt;Storm&lt;/a&gt;, a messaging and storage protocol using LN.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;robinhood-supports-bech32&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#robinhood-supports-bech32&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Robinhood supports bech32:&lt;/strong&gt;
+Exchange Robinhood enables &lt;a href=&quot;https://robinhood.com/us/en/support/articles/cryptocurrency-wallets/#Supportedaddressformatsforcryptowithdrawals&quot;&gt;withdrawal (send) support&lt;/a&gt;
+for &lt;a href=&quot;/en/topics/bech32/&quot;&gt;bech32&lt;/a&gt; addresses.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;sphinx-announces-vls-signing-device&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#sphinx-announces-vls-signing-device&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Sphinx announces VLS signing device:&lt;/strong&gt;
+The Sphinx team &lt;a href=&quot;https://sphinx.chat/2022/06/27/a-lightning-nodes-problem-with-hats/&quot;&gt;announced&lt;/a&gt; a hardware signing device
+interfacing with &lt;a href=&quot;https://gitlab.com/lightning-signer/docs&quot;&gt;Validating Lightning Signer (VLS)&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;releases-and-release-candidates&quot;&gt;Releases and release candidates&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;New releases and release candidates for popular Bitcoin infrastructure
+projects.  Please consider upgrading to new releases or helping to test
+release candidates.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;bdk-0-20-0&quot; class=&quot;anchor-list&quot;&gt;&lt;a href=&quot;#bdk-0-20-0&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoindevkit/bdk/releases/tag/v0.20.0&quot;&gt;BDK 0.20.0&lt;/a&gt; is the newest release of this library for building
+Bitcoin wallets.  It includes “bug fixes for the &lt;code class=&quot;highlighter-rouge&quot;&gt;ElectrumBlockchain&lt;/code&gt;
+and descriptor templates, a new transaction building feature to
+discourage fee sniping, and new transaction signing options.”&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;bitcoin-core-24148&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-24148&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/24148&quot;&gt;Bitcoin Core #24148&lt;/a&gt; adds &lt;em&gt;watch-only&lt;/em&gt; support for &lt;a href=&quot;/en/topics/output-script-descriptors/&quot;&gt;output script
+descriptors&lt;/a&gt; written in &lt;a href=&quot;/en/topics/miniscript/&quot;&gt;miniscript&lt;/a&gt;.  For example, a user can import
+&lt;code class=&quot;highlighter-rouge&quot;&gt;wsh(and_v(v:pk(key_A),pk(key_B)))&lt;/code&gt;
+to begin watching for any bitcoins received to the P2WSH output
+corresponding to that script.  A future PR is expected to add support
+for signing for miniscript-based descriptors.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bitcoin-core-gui-471&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-gui-471&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin-core/gui/issues/471&quot;&gt;Bitcoin Core GUI #471&lt;/a&gt; updates the GUI with the ability to restore
+from a wallet backup.  Restoring was previously only possible either
+using the CLI or by copying files into particular directories.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;lnd-6722&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#lnd-6722&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningnetwork/lnd/issues/6722&quot;&gt;LND #6722&lt;/a&gt; adds support for signing arbitrary messages with
+&lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki&quot;&gt;BIP340&lt;/a&gt;-compatible &lt;a href=&quot;/en/topics/schnorr-signatures/&quot;&gt;schnorr signatures&lt;/a&gt;.
+Messages with schnorr signatures may also now be verified.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;rust-bitcoin-1084&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#rust-bitcoin-1084&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin/issues/1084&quot;&gt;Rust Bitcoin #1084&lt;/a&gt; adds a method which can be used for sorting a
+list of public keys in the order specified by &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0383.mediawiki&quot;&gt;BIP383&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter summarizes several related discussions about providing a sustainable long term block reward for Bitcoin. Also included are our regular sections with descriptions of new features for clients and services, announcements of new releases and release candidates, and summaries of notable changes to popular Bitcoin infrastructure software.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #208</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/07/13/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #208" />
+      <published>2022-07-13T00:00:00+00:00</published>
+      <updated>2022-07-13T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/07/2022-07-13-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/07/13/">&lt;p&gt;This week’s newsletter summarizes discussions about half aggregation of
+schnorr signatures, a workaround for protocols that can’t reliably use
+x-only pubkeys, and allowing deliberately slow LN payment forwarding.
+Also included are our regular sections with the summary of a Bitcoin
+Core PR Review Club, announcements of releases and relase candidates,
+and descriptions of notable changes to popular Bitcoin infrastructure
+projects.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;half-aggregation-of-bip340-signatures&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#half-aggregation-of-bip340-signatures&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Half aggregation of BIP340 signatures:&lt;/strong&gt; Jonas Nick &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020662.html&quot;&gt;posted&lt;/a&gt; to the Bitcoin-Dev mailing list a &lt;a href=&quot;https://github.com/ElementsProject/cross-input-aggregation/blob/master/half-aggregation.mediawiki&quot;&gt;draft BIP&lt;/a&gt; and &lt;a href=&quot;https://blog.blockstream.com/half-aggregation-of-bip-340-signatures/&quot;&gt;blog
+post&lt;/a&gt; about half aggregation of Bitcoin’s &lt;a href=&quot;/en/topics/schnorr-signatures/&quot;&gt;schnorr
+signatures&lt;/a&gt;.  As mentioned in the blog post,
+the proposal “allows aggregating multiple schnorr signatures into a
+single signature that is about half as long as the sum of the
+individual signatures.  Importantly, this scheme is non-interactive,
+which means that a set of signatures can be half-aggregated by a third
+party without any involvement from the signers.”&lt;/p&gt;
+
+    &lt;p&gt;A &lt;a href=&quot;https://github.com/ElementsProject/cross-input-aggregation&quot;&gt;separate document&lt;/a&gt; provides examples of how half
+  aggregation could benefit the operators of Bitcoin and LN nodes, plus
+  several concerns that would need to be considered in the design of a
+  soft fork adding half aggregation to the consensus protocol.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;x-only-workaround&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#x-only-workaround&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;X-only workaround:&lt;/strong&gt; Bitcoin public keys are points on a
+two-dimensional graph which are referenced by the intersection of an
+&lt;em&gt;x&lt;/em&gt; coordinate and a &lt;em&gt;y&lt;/em&gt; coordinate.  For any given &lt;em&gt;x&lt;/em&gt; coordinate,
+there are only two valid &lt;em&gt;y&lt;/em&gt; coordinates and these can be calculated
+from the &lt;em&gt;x&lt;/em&gt; value.  This allowed an optimization in the design of
+&lt;a href=&quot;/en/topics/taproot/&quot;&gt;taproot&lt;/a&gt; to require all public keys used with
+&lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki&quot;&gt;BIP340&lt;/a&gt;-style schnorr signatures to only use a certain one of these
+&lt;em&gt;y&lt;/em&gt; coordinates, allowing any public keys included in transactions to
+omit including the &lt;em&gt;y&lt;/em&gt; point entirely, saving one vbyte per signature
+over the original taproot design.&lt;/p&gt;
+
+    &lt;p&gt;At the time, this technique (called &lt;em&gt;x-only public keys&lt;/em&gt;) was thought
+  to be an optimization with no significant tradeoffs, but later
+  design work on OP_TAPLEAF_UPDATE_VERIFY (&lt;a href=&quot;/en/newsletters/2021/09/15/#covenant-opcode-proposal&quot;&gt;TLUV&lt;/a&gt;)
+  revealed that x-only pubkeys required either computationally
+  limiting the proposal or storing extra data in the block chain or
+  UTXO set.  The problem may affect other advanced uses of pubkeys as
+  well.&lt;/p&gt;
+
+    &lt;p&gt;This week, Tim Ruffing &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-July/020663.html&quot;&gt;posted&lt;/a&gt; to the Bitcoin-Dev
+  mailing list a potential workaround that only requires a slight bit
+  of additional computation by signers—an amount that even a
+  resource-constrained hardware signing device can probably perform
+  without making its user wait too long.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;allowing-deliberately-slow-ln-payment-forwarding&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#allowing-deliberately-slow-ln-payment-forwarding&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Allowing deliberately slow LN payment forwarding:&lt;/strong&gt; in a reply to a
+thread about recursive/nested &lt;a href=&quot;/en/topics/musig/&quot;&gt;MuSig2&lt;/a&gt; (see &lt;a href=&quot;/en/newsletters/2022/06/15/#recursive-musig2&quot;&gt;Newsletter #204&lt;/a&gt;) and the latency that nodes using it would add when routing
+payments, developer Peter Todd &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003621.html&quot;&gt;asked&lt;/a&gt; on the
+Lightning-Dev mailing list whether it would “be worthwhile to allow
+people to opt-in to their payments happening more slowly for privacy?”
+For example, if Alice and Bob each sent forward-slowly payments around
+the same time through Carol’s forwarding node to Dan’s forwarding
+node, Carol would be able to forward both payments together, reducing
+the amount of privacy-leaking information about the participants that
+third parties could discover through &lt;a href=&quot;/en/topics/payment-probes/&quot;&gt;balance probing&lt;/a&gt;, network activity surveillance, or other techniques.  Developer
+Matt Corallo &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003641.html&quot;&gt;agreed&lt;/a&gt; it was an interesting idea.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;bitcoin-core-pr-review-club&quot;&gt;Bitcoin Core PR Review Club&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;In this monthly section, we summarize a recent &lt;a href=&quot;https://bitcoincore.reviews/&quot;&gt;Bitcoin Core PR Review Club&lt;/a&gt;
+meeting, highlighting some of the important questions and answers.  Click on a
+question below to see a summary of the answer from the meeting.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://bitcoincore.reviews/24170&quot;&gt;Manual block-relay-only connections with addnode&lt;/a&gt;
+is a PR by Martin Zumsande to allow users to manually create
+connections with nodes on which only blocks (not transactions or
+peer addresses) are relayed. This option is intended to help prevent
+&lt;a href=&quot;/en/topics/eclipse-attacks/&quot;&gt;eclipse attacks&lt;/a&gt;, particularly for nodes running on &lt;a href=&quot;/en/topics/anonymity-networks/&quot;&gt;privacy networks&lt;/a&gt;
+such as Tor.&lt;/p&gt;
+
+&lt;div class=&quot;qa_details development&quot;&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;details id=&quot;why-could-peers-that-are-only-active-on-privacy-networks-such-as-tor-be-more-susceptible-to-eclipse-attacks-compared-to-clearnet-only-peers&quot;&gt;
+        &lt;summary&gt;&lt;span&gt;Why could peers that are only active on privacy networks such as
+Tor be more susceptible to eclipse attacks compared to clearnet-only
+peers?&lt;/span&gt;&lt;/summary&gt;
+        &lt;p&gt;Nodes on clearnet can use information such as network groups of
+IP addresses to try to select ‘diverse’ peers. On the other hand, it’s
+difficult to tell whether a set of onion addresses all belong to a
+single attacker, so it’s harder to do so on Tor. Also, while the set
+of Bitcoin nodes running on Tor is quite large, a node using -onlynet
+on a privacy network with few Bitcoin nodes could be easily eclipsed,
+since there aren’t many options for peers. &lt;a href=&quot;https://bitcoincore.reviews/24170#l-42&quot; class=&quot;external&quot;&gt;➚&lt;/a&gt;&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;details id=&quot;what-is-the-difference-between-the-onetry-and-add-modes-in-the-addnode-rpc&quot;&gt;
+        &lt;summary&gt;&lt;span&gt;What is the difference between the &lt;code class=&quot;highlighter-rouge&quot;&gt;onetry&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;add&lt;/code&gt; modes in the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;addnode&lt;/code&gt; RPC?&lt;/span&gt;&lt;/summary&gt;
+        &lt;p&gt;As the name suggests, &lt;code class=&quot;highlighter-rouge&quot;&gt;onetry&lt;/code&gt; only tries to call
+&lt;code class=&quot;highlighter-rouge&quot;&gt;CConnman::OpenNetworkConnection()&lt;/code&gt; once. If it fails, the peer is not
+added. On the other hand, &lt;code class=&quot;highlighter-rouge&quot;&gt;addnode&lt;/code&gt; mode causes the node to repeatedly
+try to connect to the node until it succeeds. &lt;a href=&quot;https://bitcoincore.reviews/24170#l-72&quot; class=&quot;external&quot;&gt;➚&lt;/a&gt;&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;details id=&quot;the-pr-introduces-a-new-connection-type-manual-block-relay-that-combines-the-properties-of-manual-and-block-relay-peers-what-are-the-advantages-and-disadvantages-of-having-an-extra-connection-type-as-opposed-to-combining-the-logic-of-the-existing-ones&quot;&gt;
+        &lt;summary&gt;&lt;span&gt;The PR introduces a new connection type &lt;code class=&quot;highlighter-rouge&quot;&gt;MANUAL_BLOCK_RELAY&lt;/code&gt;
+that combines the properties of &lt;code class=&quot;highlighter-rouge&quot;&gt;MANUAL&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;BLOCK_RELAY&lt;/code&gt; peers. What
+are the advantages and disadvantages of having an extra connection
+type, as opposed to combining the logic of the existing ones?&lt;/span&gt;&lt;/summary&gt;
+        &lt;p&gt;As there are many attributes of p2p connections but few types,
+participants agreed that using flat, enumerated connection types is
+simpler. They also noted that describing connections using
+combinations of capabilities and permissions could lead to a
+combinatorial blowup of connection types and convoluted logic,
+including some which might not make sense. &lt;a href=&quot;https://bitcoincore.reviews/24170#l-97&quot; class=&quot;external&quot;&gt;➚&lt;/a&gt;&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;details id=&quot;what-types-of-attacks-that-this-pr-tries-to-mitigate-are-fixed-by-bip324-which-ones-aren-t&quot;&gt;
+        &lt;summary&gt;&lt;span&gt;What types of attacks that this PR tries to mitigate are fixed
+by BIP324? Which ones aren’t?&lt;/span&gt;&lt;/summary&gt;
+        &lt;p&gt;&lt;a href=&quot;https://gist.github.com/dhruv/5b1275751bc98f3b64bcafce7876b489&quot;&gt;BIP324&lt;/a&gt; enhances privacy by adding opportunistic encryption to
+prevent eavesdropping and network-wide surveillance, but isn’t
+intended to prevent eclipse attacks. Even with some mechanism of
+authentication, it does not help identify whether the peer is honest
+or a distinct entity from other peers. &lt;a href=&quot;https://bitcoincore.reviews/24170#l-110&quot; class=&quot;external&quot;&gt;➚&lt;/a&gt;&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+
+&lt;/div&gt;
+
+&lt;h2 id=&quot;releases-and-release-candidates&quot;&gt;Releases and release candidates&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;New releases and release candidates for popular Bitcoin infrastructure
+projects.  Please consider upgrading to new releases or helping to test
+release candidates.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;btcpay-server-1-6-1&quot; class=&quot;anchor-list&quot;&gt;&lt;a href=&quot;#btcpay-server-1-6-1&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/releases/tag/v1.6.1&quot;&gt;BTCPay Server 1.6.1&lt;/a&gt; is a release of the 1.6 branch of this popular
+self-hosted payment processor solution which includes multiple new
+features and bug fixes.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;bitcoin-core-25353&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-25353&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/25353&quot;&gt;Bitcoin Core #25353&lt;/a&gt; introduces the &lt;code class=&quot;highlighter-rouge&quot;&gt;mempoolfullrbf&lt;/code&gt; configuration
+option previously described in &lt;a href=&quot;/en/newsletters/2022/06/22/#full-replace-by-fee&quot;&gt;Newsletter #205&lt;/a&gt;.
+This option enables node operators to switch their node’s &lt;a href=&quot;/en/topics/replace-by-fee/&quot;&gt;transaction
+replacement behavior&lt;/a&gt; from the default &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki&quot;&gt;opt-in RBF
+(BIP125)&lt;/a&gt; to full RBF—permitting transaction replacement in
+the node’s mempool without enforcing the signaling requirement, but
+following the same economic rules as opt-in RBF.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bitcoin-core-25454&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-25454&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/25454&quot;&gt;Bitcoin Core #25454&lt;/a&gt; avoids multiple getheaders messages in flight
+to the same peer, which reduces bandwidth useage by waiting up to two
+minutes for a response to a prior getheaders message before issuing
+a new one.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;core-lightning-5239&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#core-lightning-5239&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/ElementsProject/lightning/issues/5239&quot;&gt;Core Lightning #5239&lt;/a&gt; improves the gossip handling code by updating
+CLN’s internal map of the payment relay network using all received
+announcements but continuing to only relay the announcements that
+satisfy CLN’s gossip rate limits.  Previously, CLN dropped incoming
+messages according to its rate limits.  The change can give CLN nodes
+a better view of the network when their peers have looser (or no) rate
+limits without affecting how much data CLN sends to its peers.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;core-lightning-5275&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#core-lightning-5275&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/ElementsProject/lightning/issues/5275&quot;&gt;Core Lightning #5275&lt;/a&gt; adds support for &lt;a href=&quot;/en/topics/zero-conf-channels/&quot;&gt;zero-conf channel
+opens&lt;/a&gt; and the related Short Channel
+IDentifier (SCID) aliases (see
+&lt;a href=&quot;/en/newsletters/2022/06/08/#bolts-910&quot;&gt;Newsletter #203&lt;/a&gt;).  This includes updates to the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;listpeers&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;fundchannel&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;multifundchannel&lt;/code&gt; RPCs.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;lnd-5955&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#lnd-5955&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningnetwork/lnd/issues/5955&quot;&gt;LND #5955&lt;/a&gt;, like the merge listed above, also adds support for
+zero-conf channel opens and the related SCID aliases.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;ldk-1567&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#ldk-1567&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/issues/1567&quot;&gt;LDK #1567&lt;/a&gt; adds support for a basic &lt;a href=&quot;/en/topics/payment-probes/&quot;&gt;payment probing&lt;/a&gt;
+API that can be used by an application to test which payment
+routes will be more likely to succeed if a payment is sent through
+them in the near future.  It includes support for constructing the
+&lt;a href=&quot;/en/topics/htlc/&quot;&gt;HTLCs&lt;/a&gt; in a way that allows the sending node to separate
+them from actual payment HTLCs when they come back without storing any
+extra state.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;ldk-1589&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#ldk-1589&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/issues/1589&quot;&gt;LDK #1589&lt;/a&gt; adds a &lt;a href=&quot;https://github.com/TheBlueMatt/rust-lightning/blob/92919c8f375311e4f9a596d64a026a172839dd0f/SECURITY.md&quot;&gt;security policy&lt;/a&gt; that can
+be used for safely reporting security vulnerabilities to the LDK
+maintainers.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;btcpay-server-3922&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#btcpay-server-3922&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/issues/3922&quot;&gt;BTCPay Server #3922&lt;/a&gt; adds the basic UI for &lt;em&gt;custodian
+accounts&lt;/em&gt;—accounts tied into a BTCPay instance where the funds are
+managed by a custodian, such as a Bitcoin exchange (rather than by the
+local user controlling their own private keys).  BTCPay instances may
+have both local wallets and custodian accounts, which can make it
+easy to manage funds between them, e.g. allowing a merchant to receive
+funds privately and securely to their wallet but also quickly transfer
+amounts to an exchange to be sold.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bdk-634&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bdk-634&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoindevkit/bdk/issues/634&quot;&gt;BDK #634&lt;/a&gt; adds a &lt;code class=&quot;highlighter-rouge&quot;&gt;get_block_hash&lt;/code&gt; method that returns a header
+hash for a block on the best block chain at a particular height.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bdk-614&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bdk-614&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoindevkit/bdk/issues/614&quot;&gt;BDK #614&lt;/a&gt; avoids creating transactions that spend from immature
+coinbase outputs—outputs to a miner’s coinbase transaction which
+have less than 100 confirmations (blocks built on top of that block).&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter summarizes discussions about half aggregation of schnorr signatures, a workaround for protocols that can’t reliably use x-only pubkeys, and allowing deliberately slow LN payment forwarding. Also included are our regular sections with the summary of a Bitcoin Core PR Review Club, announcements of releases and relase candidates, and descriptions of notable changes to popular Bitcoin infrastructure projects.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #207</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/07/06/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #207" />
+      <published>2022-07-06T00:00:00+00:00</published>
+      <updated>2022-07-06T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/07/2022-07-06-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/07/06/">&lt;p&gt;This week’s newsletter summarizes discussions about long-term
+block reward funding, alternatives to BIP47 reusable payment
+codes, options for announcing LN channel splices, LN routing fee
+collection strategies, and onion message rate limiting.  Also included
+are our regular sections with announcements of new software releases and
+release candidates, plus summaries of notable changes to popular Bitcoin
+infrastructure software.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;long-term-block-reward-funding&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#long-term-block-reward-funding&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Long-term block reward funding:&lt;/strong&gt; in a thread on the Bitcoin-Dev
+mailing list ostensibly about &lt;a href=&quot;/en/topics/covenants/&quot;&gt;covenants&lt;/a&gt;, it was
+noted that Bitcoin’s long term security currently depends on
+demand for block space.   That demand must generate transaction
+fees to pay for Proof of Work (PoW) in excess of what an attacker
+would be willing to purchase to disrupt Bitcoin users.  Developer
+Peter Todd &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-June/020551.html&quot;&gt;pointed out&lt;/a&gt; that this dependency could be
+removed if the Bitcoin protocol were modified to include a perpetual
+subsidy.  Several respondents indicated that they thought the system
+is better off without a perpetual subsidy, while others looked for
+alternatives or apparent equivalencies such as &lt;a href=&quot;https://en.wikipedia.org/wiki/Demurrage_%28currency%29&quot;&gt;demurrage&lt;/a&gt;.&lt;/p&gt;
+
+    &lt;p&gt;As of this writing, the thread appears to consist of casual
+  conversation rather than advocacy for any particular proposal to
+  change Bitcoin in the near future.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;updated-alternative-to-bip47-reusable-payment-codes&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#updated-alternative-to-bip47-reusable-payment-codes&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Updated alternative to BIP47 reusable payment codes:&lt;/strong&gt; developer
+Alfred Hodler &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-June/020605.html&quot;&gt;posted&lt;/a&gt; to the Bitcoin-Dev mailing
+list a proposal for an alternative to &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0047.mediawiki&quot;&gt;BIP47&lt;/a&gt; that attempts to
+address some of the issues found during its use in production.  BIP47
+allows Alice to publish a payment code that anyone can use in
+combination with their own keys to create an unlimited number of
+private addresses for Alice that only they and Alice will know belong
+to her, avoiding the worst problems of &lt;a href=&quot;/en/topics/output-linking/&quot;&gt;address reuse&lt;/a&gt;.&lt;/p&gt;
+
+    &lt;p&gt;However, one of the problems with BIP47 is that the first
+  transaction from spender Bob to receiver Alice is a &lt;em&gt;notification
+  transaction&lt;/em&gt; that uses a special address associated with the payment
+  code.  This definitely leaks to third parties who know Alice’s
+  payment code that someone is planning to start paying her.  If Bob’s
+  wallet isn’t carefully designed to segregate funds used for
+  notification transactions, the transaction may also leak that Bob is
+  planning to pay Alice—reducing or possibly even eliminating the
+  benefits of BIP47.&lt;/p&gt;
+
+    &lt;p&gt;Hodler’s scheme would be less likely to leak this information but it
+  would increase the amount of data a client implementing the protocol
+  would need to learn from the block chain, making it less suitable
+  for light clients.  Ruben Somsen indicated several alternatives
+  that could also be investigated, including Somsen’s silent
+  payments idea (see &lt;a href=&quot;/en/newsletters/2022/04/06/#delinked-reusable-addresses&quot;&gt;Newsletter #194&lt;/a&gt;),
+  Robin Linus’s &lt;a href=&quot;https://gist.github.com/RobinLinus/4e7467abaf0a0f8a521d5b512dca4833&quot;&gt;2022 stealth addresses&lt;/a&gt; idea, and &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-June/020549.html&quot;&gt;previous
+  discussion&lt;/a&gt; posted to the mailing list about improving
+  upon BIP47.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;announcing-splices&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#announcing-splices&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Announcing splices:&lt;/strong&gt; in a &lt;a href=&quot;https://github.com/lightning/bolts/issues/1004&quot;&gt;PR&lt;/a&gt; and a
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003616.html&quot;&gt;discussion&lt;/a&gt; on the Lightning-Dev mailing list,
+developers discussed the best way to communicate that a channel that
+was seemingly being closed onchain was in fact a &lt;a href=&quot;/en/topics/splicing/&quot;&gt;splice&lt;/a&gt; where funds were being added to the channel or removed from
+it.&lt;/p&gt;
+
+    &lt;p&gt;One proposal was for nodes to simply not consider a channel closed
+  until some amount of time after its onchain closing transaction was
+  seen.  This would give time for the announcement of the new
+  (post-splice) channel to propagate.  In the interim, nodes would
+  still attempt to route payments through the seemingly-closed
+  channel, as a spliced channel would still be able to forward
+  payments with full LN security even before its new channel open
+  transaction received a suitable number of confirmations.&lt;/p&gt;
+
+    &lt;p&gt;Another proposal was to include a signal onchain as part of the
+  closing transaction that a splice was in progress, telling nodes
+  that they could continue trying to forward payments through it.&lt;/p&gt;
+
+    &lt;p&gt;The discussion had not come to a clear conclusion at the time this
+  summary was being written.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;fundamental-fee-collection-strategies-for-ln-forwarding-nodes&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#fundamental-fee-collection-strategies-for-ln-forwarding-nodes&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Fundamental fee-collection strategies for LN forwarding nodes:&lt;/strong&gt;
+developer ZmnSCPxj &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003617.html&quot;&gt;summarized&lt;/a&gt; three strategies
+LN forwarding nodes can use in collecting fees for routing payments
+(including the strategy of not collecting fees).  ZmnSCPxj then
+analyzes possible outcomes of the different strategies.  This seems
+related to his proposal for nodes to use routing fees to improve
+payment success rates, see &lt;a href=&quot;/en/newsletters/2022/06/15/#using-routing-fees-to-signal-liquidity&quot;&gt;Newsletter #204&lt;/a&gt;,
+which also received significant &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003624.html&quot;&gt;additional commentary&lt;/a&gt; in the past week from Anthony Towns.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;onion-message-rate-limiting&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#onion-message-rate-limiting&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Onion message rate limiting:&lt;/strong&gt; Bastien Teinturier
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003623.html&quot;&gt;posted&lt;/a&gt; a summary of an idea he attributes to
+Rusty Russell for rate limiting &lt;a href=&quot;/en/topics/onion-messages/&quot;&gt;onion messages&lt;/a&gt;.  The proposal has each node store just an extra 32 bytes of
+information for each of their peers that allows them to
+Probabilistically punish peers who send too much traffic.  The
+suggested penalty is to just halve the rate limit for a peer relaying
+too much traffic for about 30 seconds.  It’s acceptable if this
+lightweight penalty is occasionally enforced against the wrong peer,
+as may happen with this idea.  The proposal also allows the originator
+of a message to learn which downstream nodes are rate limiting their
+messages (again probabilistically), giving them a chance to resend the
+message by a different route.&lt;/p&gt;
+
+    &lt;p&gt;Olaoluwa Osuntokun &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003631.html&quot;&gt;suggested&lt;/a&gt; reconsideration
+  of his previous proposal for preventing abuse of onion messages by
+  charging for data relay, see &lt;a href=&quot;/en/newsletters/2022/03/09/#paying-for-onion-messages&quot;&gt;Newsletter #190&lt;/a&gt;.
+  Replies from other developers as of this writing seemed to indicate
+  they first try the lightweight rate limiting to see if it works
+  before adding the complexity of payments for onion messages.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;releases-and-release-candidates&quot;&gt;Releases and release candidates&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;New releases and release candidates for popular Bitcoin infrastructure
+projects.  Please consider upgrading to new releases or helping to test
+release candidates.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;ldk-0-0-109&quot; class=&quot;anchor-list&quot;&gt;&lt;a href=&quot;#ldk-0-0-109&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/releases/tag/v0.0.109&quot;&gt;LDK 0.0.109&lt;/a&gt; is a new release of this LN node library, which
+includes both of the new features described for LDK in the &lt;em&gt;notable
+changes&lt;/em&gt; section below.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;bitcoin-core-24836&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-24836&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/24836&quot;&gt;Bitcoin Core #24836&lt;/a&gt; adds a regtest-only RPC, &lt;code class=&quot;highlighter-rouge&quot;&gt;submitpackage&lt;/code&gt;, to
+help L2 protocol and application developers who intend to use
+&lt;a href=&quot;/en/topics/package-relay/&quot;&gt;package relay&lt;/a&gt; in the future test their transactions against the
+Bitcoin Core default package policy.  The current policy is outlined
+&lt;a href=&quot;https://github.com/bitcoin/bitcoin/blob/09f32cffa6c3e8b2d77281a5983ffe8f482a5945/doc/policy/packages.md&quot;&gt;here&lt;/a&gt;. This RPC can also be used to test future
+additions and changes, such as the proposed package RBF rules.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bitcoin-core-22558&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-22558&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/22558&quot;&gt;Bitcoin Core #22558&lt;/a&gt; adds support for &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0371.mediawiki&quot;&gt;BIP371&lt;/a&gt;’s additional &lt;a href=&quot;/en/topics/psbt/&quot;&gt;PSBT&lt;/a&gt; fields (see &lt;a href=&quot;/en/newsletters/2021/06/30/#psbt-extensions-for-taproot&quot;&gt;Newsletter #155&lt;/a&gt;) for &lt;a href=&quot;/en/topics/taproot/&quot;&gt;taproot&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;core-lightning-5281&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#core-lightning-5281&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/ElementsProject/lightning/issues/5281&quot;&gt;Core Lightning #5281&lt;/a&gt; adds support for specifying the &lt;code class=&quot;highlighter-rouge&quot;&gt;log-file&lt;/code&gt;
+configuration option multiple times to write to multiple log files.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;ldk-1555&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#ldk-1555&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/issues/1555&quot;&gt;LDK #1555&lt;/a&gt; updates its pathfinding code to slightly prefer routing
+through channels which advertise that they won’t accept payments
+larger than half the amount of money committed to the channel.  This
+is believed to provide a slight privacy improvement by limiting the
+amount of balance information a third party can discover by probing a
+channel (sending a payment (&lt;a href=&quot;/en/topics/htlc/&quot;&gt;HTLC&lt;/a&gt;) they don’t intend to
+settle).  If a set of payments up to the total amount of a channel can
+be sent, then a prober can learn nearly the exact balance of the
+channel by just trying different sets of payments until all parts are
+accepted.  However, if the set of payments which can be sent is limited to
+half the channel balance, it’s harder for the prober to determine
+whether payments are being rejected because of a lack of funds on one
+side of the channel or because of the self-imposed limit (the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;max_htlc_in_flight_msat&lt;/code&gt; limit).  The &lt;a href=&quot;https://github.com/lightningnetwork/lightning-rfc/blob/master/02-peer-protocol.md&quot;&gt;BOLT2&lt;/a&gt;
+&lt;code class=&quot;highlighter-rouge&quot;&gt;max_htlc_in_flight_msat&lt;/code&gt; limit isn’t gossiped, so LDK instead uses
+each channel’s gossiped &lt;a href=&quot;https://github.com/lightningnetwork/lightning-rfc/blob/master/07-routing-gossip.md&quot;&gt;BOLT7&lt;/a&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;htlc_maximum_msat&lt;/code&gt; value as a proxy
+value.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;ldk-1550&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#ldk-1550&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/issues/1550&quot;&gt;LDK #1550&lt;/a&gt; provides the ability for users to add a list of nodes to
+a local banlist which will prevent pathfinding from routing payments
+through those nodes.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;lnd-6592&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#lnd-6592&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningnetwork/lnd/issues/6592&quot;&gt;LND #6592&lt;/a&gt; adds a new &lt;code class=&quot;highlighter-rouge&quot;&gt;requiredreserve&lt;/code&gt; RPC to the wallet subserver
+that prints the number of satoshis the wallet is reserving in UTXOs it
+unilaterally controls to fee bump &lt;a href=&quot;/en/topics/anchor-outputs/&quot;&gt;anchor outputs&lt;/a&gt; if necessary.  An additional &lt;code class=&quot;highlighter-rouge&quot;&gt;--additionalChannels&lt;/code&gt; RPC
+parameter, which takes an integer argument, reports the number of
+satoshis the wallet will reserve if that number of additional channels
+are opened.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;rust-bitcoin-1024&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#rust-bitcoin-1024&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin/issues/1024&quot;&gt;Rust Bitcoin #1024&lt;/a&gt; adds additional code for helping developers
+work around the &lt;a href=&quot;https://www.coinspect.com/capture-coins-challenge-1-sighashsingle/&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SIGHASH_SINGLE&lt;/code&gt; “bug”&lt;/a&gt; where the Bitcoin protocol
+expects a value of &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt; to be signed when the input containing the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;SIGHASH_SINGLE&lt;/code&gt; signature has an index number higher than the index
+number of any output in the transaction.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;btcpay-server-3709&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#btcpay-server-3709&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/issues/3709&quot;&gt;BTCPay Server #3709&lt;/a&gt; adds support for pull payments to be received
+via a &lt;a href=&quot;https://github.com/fiatjaf/lnurl-rfc/blob/luds/03.md&quot;&gt;LNURL withdraw&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bdk-611&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bdk-611&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoindevkit/bdk/issues/611&quot;&gt;BDK #611&lt;/a&gt; begins setting the nLockTime of new transactions to the
+height of the most recent block by default, enabling &lt;a href=&quot;/en/topics/fee-sniping/&quot;&gt;anti fee
+sniping&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter summarizes discussions about long-term block reward funding, alternatives to BIP47 reusable payment codes, options for announcing LN channel splices, LN routing fee collection strategies, and onion message rate limiting. Also included are our regular sections with announcements of new software releases and release candidates, plus summaries of notable changes to popular Bitcoin infrastructure software.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #206</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/06/29/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #206" />
+      <published>2022-06-29T00:00:00+00:00</published>
+      <updated>2022-06-29T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/06/2022-06-29-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/06/29/">&lt;p&gt;This week’s newsletter includes our regular sections summarizing
+popular questions and answers from Bitcoin Stack Exchange, announcing
+new software releases and release candidates, and describing recent
+changes to Bitcoin infrastructure software.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;No significant news this week was found on the Bitcoin-Dev or
+Lightning-Dev mailing lists.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;selected-qa-from-bitcoin-stack-exchange&quot;&gt;Selected Q&amp;amp;A from Bitcoin Stack Exchange&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;a href=&quot;https://bitcoin.stackexchange.com/&quot;&gt;Bitcoin Stack Exchange&lt;/a&gt; is one of the first places Optech
+contributors look for answers to their questions—or when we have a
+few spare moments to help curious or confused users.  In
+this monthly feature, we highlight some of the top-voted questions and
+answers posted since our last update.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;what-is-the-purpose-of-indexing-the-mempool-by-these-five-criteria&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#what-is-the-purpose-of-indexing-the-mempool-by-these-five-criteria&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114216&quot;&gt;What is the purpose of indexing the mempool by these five criteria?&lt;/a&gt;
+Murch and glozow explain the different mempool transaction indexes (txid,
+wtxid, time in mempool, ancestor feerate, and descendant feerate) in Bitcoin
+Core as well as their usages.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bip-341-should-key-path-only-p2tr-be-eschewed-altogether&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bip-341-should-key-path-only-p2tr-be-eschewed-altogether&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/113989&quot;&gt;BIP-341: Should key-path-only P2TR be eschewed altogether?&lt;/a&gt;
+Pieter Wuille defines 4 &lt;a href=&quot;/en/topics/taproot/&quot;&gt;taproot&lt;/a&gt; keypath spend options,
+outlines why &lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki#user-content-constructing_and_spending_taproot_outputs&quot;&gt;BIP341 recommends&lt;/a&gt; the “noscript” option, and notes scenarios
+where other options might be preferred.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;was-the-addition-of-op-nop-codes-in-bitcoin-0-3-6-a-hard-or-soft-fork&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#was-the-addition-of-op-nop-codes-in-bitcoin-0-3-6-a-hard-or-soft-fork&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/113994&quot;&gt;Was the addition of OP_NOP codes in Bitcoin 0.3.6 a hard or soft fork?&lt;/a&gt;
+Pieter Wuille explains that the addition of &lt;a href=&quot;https://en.bitcoin.it/wiki/Script#Reserved_words&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;OP_NOP&lt;/code&gt; codes&lt;/a&gt; in Bitcoin Core
+0.3.6 was a backward incompatible consensus change since older software versions would
+see transactions with the newly valid &lt;code class=&quot;highlighter-rouge&quot;&gt;OP_NOP&lt;/code&gt; codes as invalid. However, since no
+transactions using these &lt;code class=&quot;highlighter-rouge&quot;&gt;OP_NOP&lt;/code&gt; codes were previously mined, there was no actual fork.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;what-is-the-largest-multisig-quorum-currently-possible&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#what-is-the-largest-multisig-quorum-currently-possible&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114048&quot;&gt;What is the largest multisig quorum currently possible?&lt;/a&gt;
+Andrew Chow lists the different possible multisig types (bare script, P2SH, P2WSH,
+P2TR, P2TR + &lt;a href=&quot;/en/topics/musig/&quot;&gt;MuSig&lt;/a&gt;) and the multisig quorum restrictions for each.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;what-is-the-difference-between-blocksonly-and-block-relay-only-in-bitcoin-core&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#what-is-the-difference-between-blocksonly-and-block-relay-only-in-bitcoin-core&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114081&quot;&gt;What is the difference between blocksonly and block-relay-only in Bitcoin Core?&lt;/a&gt;
+Lightlike lists the differences between block-relay-only connections and a
+node running in &lt;code class=&quot;highlighter-rouge&quot;&gt;-blocksonly&lt;/code&gt; mode.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;where-are-bips-40-and-41&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#where-are-bips-40-and-41&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114168&quot;&gt;Where are BIPs 40 and 41?&lt;/a&gt;
+User andrewz asks why &lt;a href=&quot;https://github.com/bitcoin/bips#readme&quot;&gt;assigned BIP numbers&lt;/a&gt; BIP40 for Stratum wire protocol and
+BIP41 for Stratum mining protocol have no content. In a &lt;a href=&quot;https://bitcoin.stackexchange.com/a/114179/87121&quot;&gt;separate answer&lt;/a&gt;,
+Michael Folkson links to some work-in-progress Stratum documentation links.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;releases-and-release-candidates&quot;&gt;Releases and release candidates&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;New releases and release candidates for popular Bitcoin infrastructure
+projects.  Please consider upgrading to new releases or helping to test
+release candidates.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;lnd-0-15-0-beta&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#lnd-0-15-0-beta&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningnetwork/lnd/releases/tag/v0.15.0-beta&quot;&gt;LND 0.15.0-beta&lt;/a&gt; is a release for the next major version of this
+popular LN node.  It adds for invoice metadata which can be used by
+other programs (and potentially future versions of LND) for &lt;a href=&quot;/en/topics/stateless-invoices/&quot;&gt;stateless
+invoices&lt;/a&gt; and adds support to the internal
+wallet for receiving and spending bitcoins to &lt;a href=&quot;/en/topics/taproot/&quot;&gt;P2TR&lt;/a&gt;
+keyspend outputs, along with experimental &lt;a href=&quot;/en/topics/musig/&quot;&gt;MuSig2&lt;/a&gt;
+support.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;core-lightning-0-11-2&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#core-lightning-0-11-2&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/ElementsProject/lightning/releases/tag/v0.11.2&quot;&gt;Core Lightning 0.11.2&lt;/a&gt; is a bug fix release of the LN node.
+Upgrading is “highly recommended” by the Core Lightning developers.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;core-lightning-5306&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#core-lightning-5306&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/ElementsProject/lightning/issues/5306&quot;&gt;Core Lightning #5306&lt;/a&gt; updates multiple APIs to consistently use the
+name “msat” for millisatoshis and also returns JSON values in those
+fields as numbers.  Some fields are renamed to provide consistencies
+with other fields.  The old behavior is deprecated and so will remain
+available temporarily.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;ldk-1531&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#ldk-1531&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/issues/1531&quot;&gt;LDK #1531&lt;/a&gt; begins using &lt;a href=&quot;/en/topics/fee-sniping/&quot;&gt;anti fee sniping&lt;/a&gt;
+for LN funding transactions.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter includes our regular sections summarizing popular questions and answers from Bitcoin Stack Exchange, announcing new software releases and release candidates, and describing recent changes to Bitcoin infrastructure software.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #205</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/06/22/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #205" />
+      <published>2022-06-22T00:00:00+00:00</published>
+      <updated>2022-06-22T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/06/2022-06-22-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/06/22/">&lt;p&gt;This week’s newsletter describes a proposed option for Bitcoin Core that
+would make it easier to enable transaction replacement even for
+transactions that don’t opt-in to BIP125, links to information about the
+Hertzbleed sidechannel vulnerability, summarizes the conclusion of a
+discussion about time stamping system design, and examines a new
+anti-sybil protocol that uses Bitcoin UTXOs.  Also included are our
+regular sections with descriptions of interesting new features in Bitcoin
+clients and services, announcements of new releases and release
+candidates, and summaries of notable changes to popular Bitcoin
+infrastructure software.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;full-replace-by-fee&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#full-replace-by-fee&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Full replace by fee:&lt;/strong&gt; &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/25353&quot;&gt;two&lt;/a&gt; pull
+&lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/25373&quot;&gt;requests&lt;/a&gt; have been opened to add support to
+Bitcoin Core for full Replace By Fee (&lt;a href=&quot;/en/topics/replace-by-fee/&quot;&gt;RBF&lt;/a&gt;) as an option
+that is off by default.  If enabled, any unconfirmed transaction in
+that node’s mempool could be replaced by an alternative version of
+that transaction which pays a higher feerate (among other rules).&lt;/p&gt;
+
+    &lt;p&gt;Currently Bitcoin Core only allows RBF if the version of the
+transaction to be replaced has a signaling bit enabled, as defined in
+&lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki&quot;&gt;BIP125&lt;/a&gt;.  This creates a challenge for multiparty contract
+protocols, such as LN and &lt;a href=&quot;/en/topics/discreet-log-contracts/&quot;&gt;DLCs&lt;/a&gt;, where it is sometimes
+possible for one party to remove the BIP125 signal from a transaction
+in order to prevent other parties from using transaction replacement.
+This can lead to delays, and in the worst case it may lead to a loss
+of funds in protocols that depend on timely confirmation (such as for
+&lt;a href=&quot;/en/topics/htlc/&quot;&gt;HTLCs&lt;/a&gt;).&lt;/p&gt;
+
+    &lt;p&gt;&lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/25353&quot;&gt;One of the PRs&lt;/a&gt; quickly received significant
+developer support.  Because it only adds the ability to enable full
+RBF—but does not enable it by default—it does not change Bitcoin
+Core’s current default behavior.  In the long-term, some developers
+will likely advocate for enabling full RBF by default, so a thread was
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-June/020557.html&quot;&gt;started&lt;/a&gt; on the Bitcoin-Dev mailing list this week to
+give developers of services, applications, and alternative full node
+software a chance to argue against the direction of providing a full
+RBF option and perhaps eventually enabling it by default.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;hertzbleed&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#hertzbleed&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Hertzbleed:&lt;/strong&gt; a recently &lt;a href=&quot;https://www.hertzbleed.com/&quot;&gt;disclosed&lt;/a&gt; security
+vulnerability affecting many (perhaps all) popular laptop, desktop,
+and server CPU processors may allow attackers to discover private keys
+when those keys are being used to create signatures for Bitcoin
+transactions (or perform other similar operations).  The noteworthy
+aspect of this attack is that it may affect signature generation code
+that was specifically written to always use the same type and number
+of CPU operations in order to prevent leaking information to
+attackers.&lt;/p&gt;
+
+    &lt;p&gt;Exploiting the vulnerability would require an attacker to measure
+either the power consumption of a CPU chip or measure the duration
+of parts of the signing operation.  Ideally for an attacker, they
+would be able to take measurements while a user creates many
+signatures using the same private key.  As such, the vulnerability is
+more likely to affect frequently used hot wallets, such as those used
+by hosted services and LN routing nodes, and cases of &lt;a href=&quot;/en/topics/output-linking/&quot;&gt;address
+reuse&lt;/a&gt;.  Mostly or entirely offline
+wallets that are used in secure environments would be much more
+resistant to attacks.&lt;/p&gt;
+
+    &lt;p&gt;As of this writing, it isn’t entirely clear how significant the
+vulnerability is for Bitcoin users.  Many wallets today, including
+several popular hardware signing devices, are already known to use
+signature generation code that’s vulnerable to power and timing
+analysis, so perhaps nothing is changed for those users.  For users of
+more secure code, it is possible that developers will implement
+additional protections.  If you have any questions or concerns about
+the software you use, please contact its developers through the
+appropriate support channels (such as &lt;a href=&quot;https://bitcoin.stackexchange.com/&quot;&gt;Bitcoin Stack Exchange&lt;/a&gt; for
+many free and open source software Bitcoin projects).&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;timestamping-design&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#timestamping-design&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Timestamping design:&lt;/strong&gt; A protracted debate on the Bitcoin-Dev
+mailing list about the design of the Bitcoin-based &lt;a href=&quot;https://opentimestamps.org/&quot;&gt;Open Timestamps&lt;/a&gt;
+(OTS) system seemed to &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-June/020569.html&quot;&gt;conclude&lt;/a&gt; this week.
+The source of the debate appears to have been the existence of two
+different designs for time stamping systems:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li id=&quot;time-stamped-proofs-of-existence-tspoe&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#time-stamped-proofs-of-existence-tspoe&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Time Stamped Proofs of Existence (TSPoE):&lt;/em&gt; a Bitcoin transaction
+commits to a hash digest which commits to a document.  When the
+transaction is confirmed in a block, it’s possible for the creator
+of the commitment to prove to third parties that the document
+existed at the time the block was created.  Notably, each time
+stamping transaction can be completely independent from other time
+stamping transactions, meaning it’s possible to timestamp the same
+document multiple times with no connection between the time
+stamps.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;event-ordering-eo&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#event-ordering-eo&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Event Ordering (EO):&lt;/em&gt; a series of transactions all related to
+each other in a specified manner each commits to documents in a
+way that allows any user of the system to see all the commitments.
+For any document that is timestamped two or more times under this
+system, it is possible to determine when it was first timestamped.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;The TSPoE system as implemented by OTS is essentially perfectly
+efficient.  It uses the same amount of global storage space to time
+stamp an unlimited number of documents, with each person who requests
+a timestamp being responsible for storing their time stamp proofs.
+This system also has the advantage of being simple both in concept and
+implementation.&lt;/p&gt;
+
+    &lt;p&gt;The EO system requires all full participants store the commitments to
+every document.  This can be much less efficient and adds complexity.
+The tradeoff is that it does allow participants to verify when a
+document was first published to the system.&lt;/p&gt;
+
+    &lt;p&gt;The discussion did not lead to any announced changes in any system or
+proposal, such as Open Timestamps or transaction sponsorship (the
+original topic of discussion, see &lt;a href=&quot;/en/newsletters/2020/09/23/#transaction-fee-sponsorship&quot;&gt;Newsletter #116&lt;/a&gt;).  It did seem to surprise several discussion
+participants that they could each have different concepts of what
+“time stamping” implied.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;new-riddle-anti-sybil-method&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#new-riddle-anti-sybil-method&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;New RIDDLE anti-sybil method:&lt;/strong&gt; Adam “Waxwing” Gibson
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-June/020555.html&quot;&gt;posted&lt;/a&gt; to the Bitcoin-Dev mailing list a
+&lt;a href=&quot;https://gist.github.com/AdamISZ/51349418be08be22aa2b4b469e3be92f&quot;&gt;proposal&lt;/a&gt; for an &lt;a href=&quot;https://en.wikipedia.org/wiki/Sybil_attack&quot;&gt;anti-sybil&lt;/a&gt; mechanism
+that uses the Bitcoin UTXO set and which can provide reasonably good
+privacy.  A user can generate a list of UTXOs where one of the UTXOs
+belongs to the user and the rest belong to other users.  The user then
+creates a signature which provably came from an owner
+of one of the listed UTXOs but does not reveal which owner created it.&lt;/p&gt;
+
+    &lt;p&gt;A malicious user could generate many such proofs but only a finite
+number of them before they exhaust the pool of options, restricting
+their ability to overconsume scarce network resources.  The malicious
+user could also use a UTXO for as long as possible and then spend it
+to obtain a new UTXO, but this would incur a transaction fee.  That
+costliness also deters abuse.  Services could further limit
+sybils by limiting which UTXOs the user could select.  For example, a
+service might only accept a signature over UTXOs that are 1 BTC in
+value and which have remained unspent for a year.&lt;/p&gt;
+
+    &lt;p&gt;Gibson proposes that membership proofs could come in two forms: a
+global proof and a local proofs.  Global proofs would be shared
+between verifiers so that, under ideal conditions, a user could only
+create one proof per UTXO in the global context.  For example, the
+user would only be able to sign up for one account for each year-old
+UTXO worth 1 BTC.&lt;/p&gt;
+
+    &lt;p&gt;Local contexts would be specific to a single verifier (or a group of
+associated verifiers, such as on a decentralized exchange).  For
+example, a user could use a UTXO to access APIs on service A and then
+reuse the same UTXO for service B.&lt;/p&gt;
+
+    &lt;p&gt;Additionally, high value UTXOs could be treated as multiple UTXOs of a
+lower value, so a 10 BTC UTXO could allow a user to sign up for 10
+different accounts at different services each requiring 1 BTC of
+capital in the global context.&lt;/p&gt;
+
+    &lt;p&gt;Although the RIDDLE protocol does provide privacy advantages over
+other anti-sybil mechanisms, Gibson does warn that information from
+use of the system can be combined with other available information to
+potentially reduce the user’s privacy.  He writes, “there is no
+possibility that this kind of system can provide iron-clad privacy
+guarantees. If protecting the location of the real signing utxo is a
+matter of life and death, on no account use a system like this!”&lt;/p&gt;
+
+    &lt;p&gt;On the Lightning-Dev mailing list, developer ZmnSCPxj
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003607.html&quot;&gt;suggested&lt;/a&gt; RIDDLE might be an option for separating
+LN’s anti-sybil mechanism from UTXO-based channel identifiers which,
+in the era of &lt;a href=&quot;/en/topics/taproot/&quot;&gt;taproot&lt;/a&gt; and &lt;a href=&quot;/en/topics/musig/&quot;&gt;signature
+aggregation&lt;/a&gt;, unnecessarily disclose which onchain
+transactions are LN channel opens and mutual closes.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;changes-to-services-and-client-software&quot;&gt;Changes to services and client software&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;In this monthly feature, we highlight interesting updates to Bitcoin
+wallets and services.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;zeus-adds-taproot-support&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#zeus-adds-taproot-support&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Zeus adds taproot support:&lt;/strong&gt;
+&lt;a href=&quot;https://github.com/ZeusLN/zeus/releases/tag/v0.6.5-rc1&quot;&gt;Zeus v0.6.5-rc1&lt;/a&gt; adds &lt;a href=&quot;/en/topics/taproot/&quot;&gt;taproot&lt;/a&gt; send and receive support for LND v0.15+ backends.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;wasabi-wallet-2-0-released&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#wasabi-wallet-2-0-released&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Wasabi Wallet 2.0 released:&lt;/strong&gt;
+This &lt;a href=&quot;/en/topics/coinjoin/&quot;&gt;coinjoin&lt;/a&gt; software &lt;a href=&quot;https://github.com/zkSNACKs/WalletWasabi/releases/tag/v2.0.0.0&quot;&gt;release&lt;/a&gt; implements the
+&lt;a href=&quot;/en/newsletters/2022/04/06/#wabisabi-alternative-to-payjoin&quot;&gt;WabiSabi protocol&lt;/a&gt; among other improvements.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;sparrow-adds-taproot-hardware-signing&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#sparrow-adds-taproot-hardware-signing&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Sparrow adds taproot hardware signing:&lt;/strong&gt;
+By upgrading to &lt;a href=&quot;/en/newsletters/2022/03/23/#hwi-2-1-0-rc-1&quot;&gt;HWI 2.1.0&lt;/a&gt;, Sparrow &lt;a href=&quot;https://github.com/sparrowwallet/sparrow/releases/tag/1.6.4&quot;&gt;1.6.4&lt;/a&gt; adds taproot
+signing support for certain hardware signing devices.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;releases-and-release-candidates&quot;&gt;Releases and release candidates&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;New releases and release candidates for popular Bitcoin infrastructure
+projects.  Please consider upgrading to new releases or helping to test
+release candidates.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;lnd-0-15-0-beta-rc6&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#lnd-0-15-0-beta-rc6&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningnetwork/lnd/releases/tag/v0.15.0-beta.rc6&quot;&gt;LND 0.15.0-beta.rc6&lt;/a&gt; is a release candidate for the next major
+version of this popular LN node.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;ldk-0-0-108&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#ldk-0-0-108&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/releases/tag/v0.0.108&quot;&gt;LDK 0.0.108&lt;/a&gt; and 0.0.107 are releases that add support for &lt;a href=&quot;/en/topics/large-channels/&quot;&gt;large
+channels&lt;/a&gt; and &lt;a href=&quot;/en/topics/zero-conf-channels/&quot;&gt;zero-conf channels&lt;/a&gt; in addition to providing code that allows mobile
+clients to sync network routing information (&lt;em&gt;gossip&lt;/em&gt;) from a server,
+plus other features and bug fixes.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bdk-0-19-0&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bdk-0-19-0&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoindevkit/bdk/releases/tag/v0.19.0&quot;&gt;BDK 0.19.0&lt;/a&gt; adds experimental support for &lt;a href=&quot;/en/topics/taproot/&quot;&gt;taproot&lt;/a&gt;
+through &lt;a href=&quot;/en/topics/output-script-descriptors/&quot;&gt;descriptors&lt;/a&gt;, &lt;a href=&quot;/en/topics/psbt/&quot;&gt;PSBTs&lt;/a&gt;, and
+other sub-systems.  It also adds a new &lt;a href=&quot;/en/topics/coin-selection/&quot;&gt;coin selection
+algorithm&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;bitcoin-core-gui-602&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-gui-602&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin-core/gui/issues/602&quot;&gt;Bitcoin Core GUI #602&lt;/a&gt; writes settings changed in the GUI to a file
+also loaded by the headless daemon (&lt;code class=&quot;highlighter-rouge&quot;&gt;bitcoind&lt;/code&gt;) so the changed
+settings are used no matter how the user starts Bitcoin Core.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;eclair-2224&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#eclair-2224&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/ACINQ/eclair/issues/2224&quot;&gt;Eclair #2224&lt;/a&gt; adds support Short Channel Identifier (scid) aliases
+and the &lt;a href=&quot;/en/topics/zero-conf-channels/&quot;&gt;zero-conf channel&lt;/a&gt; type.  The scid
+aliases can improve privacy and also make it possible for nodes to
+easily refer to a channel before it has been sufficiently confirmed.
+Zero-conf channels allow two nodes to agree to use a channel for
+routing payments before it has been sufficiently confirmed, which can
+be secure under certain restraints.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;hwi-611&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#hwi-611&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin-core/HWI/issues/611&quot;&gt;HWI #611&lt;/a&gt; adds single-sig support for &lt;a href=&quot;/en/topics/bech32/&quot;&gt;bech32m addresses&lt;/a&gt; with the BitBox02 hardware signing device.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter describes a proposed option for Bitcoin Core that would make it easier to enable transaction replacement even for transactions that don’t opt-in to BIP125, links to information about the Hertzbleed sidechannel vulnerability, summarizes the conclusion of a discussion about time stamping system design, and examines a new anti-sybil protocol that uses Bitcoin UTXOs. Also included are our regular sections with descriptions of interesting new features in Bitcoin clients and services, announcements of new releases and release candidates, and summaries of notable changes to popular Bitcoin infrastructure software.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #204</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/06/15/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #204" />
+      <published>2022-06-15T00:00:00+00:00</published>
+      <updated>2022-06-15T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/06/2022-06-15-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/06/15/">&lt;p&gt;This week’s newsletter summarizes continued discussion about adding
+package relay to the Bitcoin P2P network, shares a summary of the recent
+LN developers meeting, and describes an argument for how spenders and
+routing nodes on LN can optimize for both reliability and low fees in a
+way that benefits both groups.  Also included are our regular sections
+with summaries of recent releases and release candidates plus notable
+changes to popular Bitcoin infrastructure software.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;continued-package-relay-bip-discussion&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#continued-package-relay-bip-discussion&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Continued package relay BIP discussion:&lt;/strong&gt; a recent draft BIP for
+&lt;a href=&quot;/en/topics/package-relay/&quot;&gt;package relay&lt;/a&gt; (see &lt;a href=&quot;/en/newsletters/2022/05/25/#package-relay-proposal&quot;&gt;Newsletter #201&lt;/a&gt;) has received additional comments in the past several weeks:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li id=&quot;policy-limits&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#policy-limits&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Policy limits:&lt;/em&gt; Anthony Towns &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020496.html&quot;&gt;asked&lt;/a&gt; if the
+negotiation between two peers to support package relay should
+include information about each peer’s package maximum size and
+depth limits, otherwise nodes with non-default settings could
+receive repeated notifications about packages they did not
+want, wasting bandwidth.  BIP author Gloria Zhao &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020512.html&quot;&gt;suggests&lt;/a&gt; using the first version of the package relay
+protocol should imply a maximum package size of 25 transactions
+and 101,000 vbytes.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;package-graph-announcement-only&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#package-graph-announcement-only&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Package graph announcement only:&lt;/em&gt; Eric Voskuil
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020518.html&quot;&gt;recommends&lt;/a&gt; that a peer who learns about a
+high-feerate descendant of a low-feerate ancestor should simply
+inform its peers of the relationships between those two
+transactions, called the package graph.  A receiving peer can then
+request any transactions it doesn’t have.  In a separate part of
+the thread, Towns &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020520.html&quot;&gt;notes&lt;/a&gt; that a graph can’t be
+validated until all transactions have been received, so care must
+be taken to ensure a peer can’t lie about a graph in order to
+prevent a transaction from being relayed by other peers.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;using-short-ids&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#using-short-ids&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Using short ids:&lt;/em&gt; several developers suggested using
+&lt;a href=&quot;https://github.com/bitcoin/bips/blob/master/bip-0152.mediawiki&quot;&gt;BIP152&lt;/a&gt;-style short identifiers (ids).  Zhao &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-June/020539.html&quot;&gt;explained&lt;/a&gt; that short ids make sense for block relay where nodes first
+validate a new block’s proof of work (which is expensive to
+create), so it would be expensive for an attacker to abuse the
+mechanism to waste node resources.  But, for relay of data that is
+cheap to create, short ids can be abused over and
+over again to potentially create a denial-of-service attack.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;non-standard-parents&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#non-standard-parents&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Non-standard parents:&lt;/em&gt; Suhas Daftuar &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-June/020542.html&quot;&gt;describes&lt;/a&gt;
+a scenario where a node implementing package relay can end up
+repeatedly requesting the same data.  This would be
+especially likely to happen when relay policy differs between
+older and newer nodes, such as after a soft fork is activated.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;challenges-of-a-block-hash-beacon&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#challenges-of-a-block-hash-beacon&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Challenges of a block hash beacon:&lt;/em&gt; Daftuar also notes that one
+feature of the proposal may cause problems for other software.
+The current draft BIP includes the node’s current hash of the
+latest block on the block chain in each package annoucement.  This
+allows the receiving
+peer to ignore a package if it’s from an earlier block (or
+alternative chain), in which case the package may not work with
+the receiving peer’s current mempool.  However, Daftuar notes that
+there’s probably a lot of software that sends transactions—and
+which may eventually like to send packages—which doesn’t keep
+track of the current chain tip hash.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;summary-of-ln-developer-meeting&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#summary-of-ln-developer-meeting&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Summary of LN developer meeting:&lt;/strong&gt; Olaoluwa Osuntokun provided a
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003600.html&quot;&gt;detailed summary&lt;/a&gt; of the LN dev meeting in Oakland
+last week.  Topics covered included:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li id=&quot;taproot-based-ln-channels&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#taproot-based-ln-channels&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Taproot-based LN channels:&lt;/em&gt; participants discussed the first
+steps for moving LN to full use of &lt;a href=&quot;/en/topics/taproot/&quot;&gt;taproot’s&lt;/a&gt;
+features.  Later steps will likely include support for
+&lt;a href=&quot;/en/topics/ptlc/&quot;&gt;PTLCs&lt;/a&gt; (see also
+&lt;a href=&quot;/en/newsletters/2021/09/01/#preparing-for-taproot-11-ln-with-taproot&quot;&gt;Newsletter #164&lt;/a&gt;).&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;tapscript-and-musig2&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#tapscript-and-musig2&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Tapscript and MuSig2:&lt;/em&gt; as part of the switch to taproot-based
+channels, there is a need to convert existing scripts to tapscript
+in the way that makes the most efficient use of block space.
+There’s also a desire to use &lt;a href=&quot;/en/topics/musig/&quot;&gt;MuSig2&lt;/a&gt; for creating
+signatures in all the places where both signers are expected to
+act cooperatively.  Both of these need to be implemented and
+tested to ensure they work as expected.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;recursive-musig2&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#recursive-musig2&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Recursive MuSig2:&lt;/em&gt; a simple implementation of MuSig2 can allow
+Alice and Bob to jointly create a single signature.  Recursive
+MuSig2 would allow, for example, Alice to create her part of the
+signature using both her hot wallet and a hardware signing
+device without Bob performing any special steps or even knowing
+that Alice was signing with more than one key.
+It was discussed how to design LN’s use of MuSig2 to
+ensure recursive MuSig2 was available.  Also the security of
+recursive MuSig2 was discussed.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;extension-bolts&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#extension-bolts&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Extension BOLTs:&lt;/em&gt; an alternate way to specify changes to the LN
+protocol specification.  Currently, changes to the specification
+are made as a patch (diff) to the existing specification.
+However, some developers prefer the method used for BIPs where
+major changes to the protocol are specified in one or more
+documents specific to those changes.  Those developers believe
+separate documents are easier to write and read, and so may
+simplify and speed up development.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;gossip-network-updates&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#gossip-network-updates&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Gossip network updates:&lt;/em&gt; the meeting continued the existing
+discussion about updating LN gossip (see &lt;a href=&quot;/en/newsletters/2022/02/23/#updated-ln-gossip-proposal&quot;&gt;Newsletter #188&lt;/a&gt;), which is used to relay announcements about new and
+updated channels.  According to the summary, participants would
+prefer to focus in the short term on a small upgrade to the
+protocol to support MuSig2-based taproot channels and also upgrade
+the protocol to fully use &lt;a href=&quot;/en/newsletters/2019/07/17/#bolts-607&quot;&gt;TLV&lt;/a&gt; semantics.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;minisketch-based-efficient-gossip&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#minisketch-based-efficient-gossip&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Minisketch-based efficient gossip:&lt;/em&gt; as mentioned in
+&lt;a href=&quot;/en/newsletters/2022/05/04/#ln-gossip-rate-limiting&quot;&gt;Newsletter #198&lt;/a&gt;, research is continuing into
+using &lt;a href=&quot;/en/topics/minisketch/&quot;&gt;minisketch&lt;/a&gt; to reduce the amount of
+bandwidth used to sync LN gossip between nodes, which may also
+allow for reducing the minimum allowed time between updates.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;onion-message-dos&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#onion-message-dos&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Onion message DoS:&lt;/em&gt; several LN implementations already support
+&lt;a href=&quot;/en/topics/onion-messages/&quot;&gt;onion messages&lt;/a&gt; as both an alternative to
+using &lt;a href=&quot;/en/topics/spontaneous-payments/&quot;&gt;keysend&lt;/a&gt; payments for messaging
+and as a communications layer for the proposed &lt;a href=&quot;/en/topics/offers/&quot;&gt;BOLT12 offers
+protocol&lt;/a&gt;.  However, as mentioned in &lt;a href=&quot;/en/newsletters/2022/03/09/#paying-for-onion-messages&quot;&gt;Newsletter
+#190&lt;/a&gt;, some developers remain concerned that onion
+messages may be vulnerable to several different types of
+denial-of-service attacks.  Several methods of preventing DoS
+attacks were discussed.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;blinded-paths&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#blinded-paths&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Blinded paths:&lt;/em&gt; a technique proposed several years ago (see
+&lt;a href=&quot;/en/newsletters/2020/02/19/#decoy-nodes-and-lightweight-rendez-vous-routing&quot;&gt;Newsletter #85&lt;/a&gt;) and now used for onion messages
+is also seeing experimentation for use with regular payments to
+allow users to receive payments without disclosing the identity of
+their LN node.  A challenge faced by this approach is that it
+requires communicating more routing information, so larger
+invoices are required.  That may make effective implementation of
+blinded paths dependent on newer invoice-management protocols such
+as BOLT12 offers or &lt;a href=&quot;https://github.com/fiatjaf/lnurl-rfc&quot;&gt;LNURL&lt;/a&gt;.  Several other concerns were also
+discussed.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;probing-and-balance-sharing&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#probing-and-balance-sharing&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Probing and balance sharing:&lt;/em&gt; using a variety of techniques, it’s
+possible for a node to &lt;em&gt;probe&lt;/em&gt; the balance of channels on the
+network.  Such probing is effectively free for the node performing
+the probing but it can cause problems for regular users of the
+network in addition to reducing privacy.  Mitigations for the
+separate &lt;a href=&quot;/en/topics/channel-jamming-attacks/&quot;&gt;channel jamming attack&lt;/a&gt;
+may help limit probing, but it remains a concern at the present
+time, so participants discussed some quick changes to node
+settings that could make probing more difficult.&lt;/p&gt;
+
+        &lt;p&gt;Additionally, one previously-discussed thought experiment is to
+take the information that a probing node would learn and have
+nodes share it freely without requiring any probing.  If that was
+done by every node, the bandwidth requirements and loss of
+privacy would negate LN’s key advantages—but it would also make
+routing payments much more efficient.  Nobody is proposing that
+idea, but a previous research topic was discussed of each node
+sharing with only its direct channel peers some of the information
+they could learn through probing.  It was claimed that this could
+significantly improve payment routing success, such as by
+supplementing &lt;a href=&quot;/en/topics/jit-routing/&quot;&gt;Just-In-Time (JIT) channel rebalancing&lt;/a&gt;.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;trampoline-routing-and-mobile-payments&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#trampoline-routing-and-mobile-payments&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;Trampoline routing and mobile payments:&lt;/em&gt;
+&lt;a href=&quot;/en/topics/trampoline-payments/&quot;&gt;trampoline routing&lt;/a&gt; allows a spender
+to outsource pathfinding to another node on the network,
+optionally in a way that maintains LN’s usual privacy of
+preventing any intermediate node from learning the network
+identity of either the spender or receiver.  This outsourcing is
+especially useful for mobile LN clients who aren’t attempting to
+route other payments for other nodes.  As mentioned in the meeting summary,
+trampoline payments can be combined with &lt;em&gt;first hop payment holds&lt;/em&gt;
+(see &lt;a href=&quot;/en/newsletters/2021/10/20/#paying-offline-ln-nodes&quot;&gt;Newsletter #171&lt;/a&gt;) where a payment is
+held by a spender’s direct channel peer until the receiving node
+is next online, allowing an often-offline mobile node to reliably
+receive payments from other often-offline mobile nodes.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li id=&quot;lnurl-plus-bolt12&quot; class=&quot;anchor-list&quot;&gt;
+        &lt;p&gt;&lt;a href=&quot;#lnurl-plus-bolt12&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;em&gt;LNURL plus BOLT12:&lt;/em&gt; the LNURL protocol allows a node to request a
+&lt;a href=&quot;https://github.com/lightningnetwork/lightning-rfc/blob/master/11-payment-encoding.md&quot;&gt;BOLT11&lt;/a&gt; invoice from a webserver; the BOLT12 &lt;a href=&quot;/en/topics/offers/&quot;&gt;offers&lt;/a&gt; protocol allows requesting an invoice from a node on the
+network.  Among other aspects of these protocols, participants
+discussed how the two protocols could be made compatible with each other so
+that nodes could use either or both of them.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;using-routing-fees-to-signal-liquidity&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#using-routing-fees-to-signal-liquidity&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Using routing fees to signal liquidity:&lt;/strong&gt; developer ZmnSCPxj
+&lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/lightning-dev/2022-June/003598.html&quot;&gt;posted&lt;/a&gt; to the Lightning-Dev mailing list an
+argument for how optimally cheap and reliable payments could be
+obtained through game theoretic behavior between spenders and routing
+nodes:&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;p&gt;Spenders should choose paths that charge less in routing fees.&lt;/p&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;p&gt;Routing nodes should charge more to use a channel as its capacity
+decreases.  E.g., if most of the balance in a channel is owned by
+Alice, she can reliably forward payments to Bob and so she
+shouldn’t charge much; but, as more balance is forwarded towards
+Bob, Alice’s ability to forward additional payments decreases, so
+she should charge higher fees.&lt;/p&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+
+    &lt;p&gt;ZmnSCPxj frames this argument using supply and demand economics—as
+demand increases for routing payments in one direction, e.g. from
+Alice to Bob, the supply of additional satoshis which can be routed in
+that direction naturally decreases.  Raising the price of routing fees
+can lower demand until the supply again increases through people
+routing payments in the other direction (e.g. from Bob to Alice).&lt;/p&gt;
+
+    &lt;p&gt;Spenders are already naturally incentivized to use lower fees (all
+other things being equal), so ZmnSCPxj argues that any routing node
+that adopts the strategy of high-supply/low-fees and
+low-supply/high-fees will automatically keep its channels reasonably
+balanced and so be able to process a greater number of successful
+payments over its channel lifetime than nodes which do not adopt this
+strategy.  Because routing nodes only get paid for successful payment
+routing, this could make nodes adopting the high-low/low-high strategy
+more competitive.&lt;/p&gt;
+
+    &lt;p&gt;A key benefit of this approach is that it makes pathfinding for
+spenders very easy—they just attempt paying along the cheapest
+routes, within capacity limits.  A drawback is that each change to a routing
+nodes fee under the high-low/low-high strategy implies a corresponding
+change to channel’s balance, disclosing information about the size of
+payments which may have flowed across that channel recently.  For
+example, if the channels Alice→Bob, Bob→Carol, and Carol→Dan have
+all recently decreased in capacity by about 1 BTC, it’s reasonable to
+infer that either Alice or one of her channel partners routed a 1 BTC
+payment to Dan or one of his channel partners.  An additional problem
+is that each change to a channel’s fees needs to be gossiped across
+the network, which increases bandwidth requirements and which can also
+cause spurious routing failures (e.g. because spender Sally hasn’t
+heard about Alice’s new higher feerate and so attempts routing a
+payment across the channel from Alice to Bob using an older and lower
+fee that Alice rejects).&lt;/p&gt;
+
+    &lt;p&gt;ZmnSCPxj addresses these issues by describing several mitigation
+strategies, some of which can be implemented by nodes now with no
+changes to the LN protocol, and some of which would require seemingly
+minor updates to the LN gossip protocol.  The mitigation strategies
+described have not received any discussion on the mailing list as of
+this writing, although they appear to be mentioned in Olaoluwa
+Osuntokun’s summary of the LN developer’s meeting (as further
+summarized by Optech in the previous bullet point).&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;releases-and-release-candidates&quot;&gt;Releases and release candidates&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;New releases and release candidates for popular Bitcoin infrastructure
+projects.  Please consider upgrading to new releases or helping to test
+release candidates.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;lnd-0-15-0-beta-rc6&quot; class=&quot;anchor-list&quot;&gt;&lt;a href=&quot;#lnd-0-15-0-beta-rc6&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningnetwork/lnd/releases/tag/v0.15.0-beta.rc6&quot;&gt;LND 0.15.0-beta.rc6&lt;/a&gt; is a release candidate for the next major
+version of this popular LN node.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;bitcoin-core-24171&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-24171&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/24171&quot;&gt;Bitcoin Core #24171&lt;/a&gt; amends the Initial Block Download (IBD) behavior to request block data from
+inbound peers if no outbound peer is serving block data. Previously, a node
+would only request data from inbound peers if it did not have any outbound
+peers at all. This behavior could cause a stall if a node had only outbound
+peers that did not serve blocks. Nodes still request data only from outbound
+peers as soon as any outbound peer serves blocks.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bdk-593&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bdk-593&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoindevkit/bdk/issues/593&quot;&gt;BDK #593&lt;/a&gt; begins using &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;rust bitcoin&lt;/a&gt; 0.28,
+which includes support for &lt;a href=&quot;/en/topics/taproot/&quot;&gt;taproot&lt;/a&gt; and taproot
+&lt;a href=&quot;/en/topics/output-script-descriptors/&quot;&gt;output script descriptors&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter summarizes continued discussion about adding package relay to the Bitcoin P2P network, shares a summary of the recent LN developers meeting, and describes an argument for how spenders and routing nodes on LN can optimize for both reliability and low fees in a way that benefits both groups. Also included are our regular sections with summaries of recent releases and release candidates plus notable changes to popular Bitcoin infrastructure software.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #203</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/06/08/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #203" />
+      <published>2022-06-08T00:00:00+00:00</published>
+      <updated>2022-06-08T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/06/2022-06-08-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/06/08/">&lt;p&gt;This week’s newsletter includes our regular sections with the summary of
+a Bitcoin Core PR Review Club meeting, a list of new software releases
+and release candidates, and descriptions of notable changes to popular
+Bitcoin infrastructure software.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;No significant news this week.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;bitcoin-core-pr-review-club&quot;&gt;Bitcoin Core PR Review Club&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;In this monthly section, we summarize a recent &lt;a href=&quot;https://bitcoincore.reviews/&quot;&gt;Bitcoin Core PR Review Club&lt;/a&gt;
+meeting, highlighting some of the important questions and answers.  Click on a
+question below to see a summary of the answer from the meeting.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://bitcoincore.reviews/24148&quot;&gt;Miniscript support in Output Descriptors&lt;/a&gt; is a PR authored by
+Antoine Poinsot and Pieter Wuille to introduce watch-only support for
+&lt;a href=&quot;/en/topics/miniscript/&quot;&gt;Miniscript&lt;/a&gt; in &lt;a href=&quot;/en/topics/output-script-descriptors/&quot;&gt;descriptors&lt;/a&gt;.
+Participants reviewed the PR over two meetings. Topics of discussion included
+the uses of Miniscript, considerations for malleability, and the implementation
+of the descriptor parser.&lt;/p&gt;
+
+&lt;div class=&quot;qa_details development&quot;&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;details id=&quot;which-types-of-analysis-enabled-by-miniscript-would-be-helpful-for-which-use-cases-or-applications&quot;&gt;
+        &lt;summary&gt;&lt;span&gt;Which types of analysis enabled by Miniscript would be helpful for which
+  use cases or applications?&lt;/span&gt;&lt;/summary&gt;
+        &lt;p&gt;Several use cases and types of analysis were discussed. Miniscript enables
+  analysis of the maximum witness size and thus the ‘worst case’ cost to spend the
+  output at a given feerate. Predictable transaction weights help L2 protocol
+  developers write more reliable fee-bumping mechanisms. Additionally, given some
+  policy, the compiler generates a minimal Miniscript script (not necessarily the
+  smallest possible, since Miniscript only encodes a subset of all scripts), which
+  may be smaller than a hand-crafted one. Participants noted that Miniscript has
+  helped optimize LN templates in the past. Finally, composition allows multiple
+  parties to combine complex spending conditions and guarantee the resulting
+  script’s correctness without fully understanding all of them. &lt;a href=&quot;https://bitcoincore.reviews/24148#l-41&quot; class=&quot;external&quot;&gt;➚&lt;/a&gt;&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;details id=&quot;miniscript-expressions-can-be-represented-as-trees-of-nodes-where-each-node-represents-a-fragment-what-does-it-mean-when-a-node-is-sane-or-valid-do-they-mean-the-same-thing&quot;&gt;
+        &lt;summary&gt;&lt;span&gt;Miniscript expressions can be represented as trees of nodes, where each
+  node represents a fragment. What does it mean when a node is “sane” or “valid”?
+  Do they mean the same thing?&lt;/span&gt;&lt;/summary&gt;
+        &lt;p&gt;Each node has a fragment type (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;and_v&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;thresh&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;multi&lt;/code&gt;, etc.) and
+  arguments. A valid node’s arguments match what the fragment type expects. A sane
+  node must be valid and its script semantics must match its policy, be
+  consensus-valid and standardness-compliant, only have non-malleable solutions,
+  not mix timelock units (i.e. use both block height and time), and not have
+  duplicate keys. As defined, these two properties are not identical; every sane
+  node is valid, but not every valid node is sane. &lt;a href=&quot;https://bitcoincore.reviews/24148#l-107&quot; class=&quot;external&quot;&gt;➚&lt;/a&gt;&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;details id=&quot;what-does-it-mean-for-an-expression-to-be-non-malleably-satisfiable-after-segwit-why-do-we-still-need-to-worry-about-malleability&quot;&gt;
+        &lt;summary&gt;&lt;span&gt;What does it mean for an expression to be non-malleably satisfiable? After
+  segwit, why do we still need to worry about malleability?&lt;/span&gt;&lt;/summary&gt;
+        &lt;p&gt;A script is malleable if a third party (i.e. someone who doesn’t have
+  access to the corresponding private keys, among other assumptions) can modify it
+  and still satisfy the spending condition(s). Segwit didn’t remove the
+  possibility of transaction malleation; it ensured that transaction malleation
+  wouldn’t break the validity of unconfirmed descendants, but malleability can
+  still be problematic for other reasons. For example, if an attacker can stuff
+  extra data into the witness and still satisfy the spending conditions, they can
+  lower the transaction’s feerate and negatively impact its propagation. A
+  ‘non-malleably satisfiable expression’ does not give third parties such options
+  to modify an existing satisfaction into another valid satisfaction. A more
+  complete answer can be found &lt;a href=&quot;https://bitcoin.sipa.be/miniscript&quot;&gt;here&lt;/a&gt;. &lt;a href=&quot;https://bitcoincore.reviews/24148#l-170&quot; class=&quot;external&quot;&gt;➚&lt;/a&gt;&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;details id=&quot;which-function-is-responsible-for-parsing-the-output-descriptor-strings-how-does-it-determine-whether-the-string-represents-a-miniscriptdescriptor-how-does-it-resolve-a-descriptor-that-can-be-parsed-in-multiple-ways&quot;&gt;
+        &lt;summary&gt;&lt;span&gt;Which function is responsible for parsing the output descriptor strings?
+  How does it determine whether the string represents a &lt;code class=&quot;highlighter-rouge&quot;&gt;MiniscriptDescriptor&lt;/code&gt;?
+  How does it resolve a descriptor that can be parsed in multiple ways?&lt;/span&gt;&lt;/summary&gt;
+        &lt;p&gt;The function &lt;code class=&quot;highlighter-rouge&quot;&gt;ParseScript&lt;/code&gt; in script/descriptor.cpp is responsible for
+  parsing output descriptor strings. It tries all other descriptor types first,
+  and then calls &lt;code class=&quot;highlighter-rouge&quot;&gt;miniscript::FromString&lt;/code&gt; to see if the string is a valid
+  Miniscript expression. Due to this order of operations, descriptors that can be
+  interpreted as both miniscript and non-miniscript (e.g. &lt;code class=&quot;highlighter-rouge&quot;&gt;wsh(pk(...))&lt;/code&gt;) are
+  parsed as non-miniscript. &lt;a href=&quot;https://bitcoincore.reviews/24148-2#l-30&quot; class=&quot;external&quot;&gt;➚&lt;/a&gt;&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;details id=&quot;when-choosing-between-two-available-satisfactions-why-should-the-one-that-involves-fewer-signatures-rather-than-the-one-which-results-in-a-smaller-script-be-preferred&quot;&gt;
+        &lt;summary&gt;&lt;span&gt;When choosing between two available satisfactions, why should the one that
+  involves fewer signatures, rather than the one which results in a smaller
+  script, be preferred?&lt;/span&gt;&lt;/summary&gt;
+        &lt;p&gt;Third parties attempting to malleate a transaction (i.e. without access to
+  private keys) can remove signatures, but not create new ones. Choosing the
+  satisfaction with additional signatures leaves the option for a third
+  party to malleate the script and still satisfy the spending conditions.  For
+  example, the policy &lt;code class=&quot;highlighter-rouge&quot;&gt;or(and(older(21), pk(B)), thresh(2, pk(A), pk(B)))&lt;/code&gt; has two
+  spending paths: it can always be spent when both A and B sign, or after 21
+  blocks when just B signs. After 21 blocks, both satisfactions are available, but
+  if a transaction with both A and B’s signatures is broadcast, a third party
+  could remove A’s signature and still satisfy the other spending path. On the
+  other hand, if the broadcasted transaction only contains B’s signature, the
+  attacker cannot satisfy the other spending condition unless it forges A’s
+  signature. &lt;a href=&quot;https://bitcoincore.reviews/24148-2#l-106&quot; class=&quot;external&quot;&gt;➚&lt;/a&gt;&lt;/p&gt;
+      &lt;/details&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+
+&lt;/div&gt;
+
+&lt;h2 id=&quot;releases-and-release-candidates&quot;&gt;Releases and release candidates&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;New releases and release candidates for popular Bitcoin infrastructure
+projects.  Please consider upgrading to new releases or helping to test
+release candidates.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;lnd-0-15-0-beta-rc4&quot; class=&quot;anchor-list&quot;&gt;&lt;a href=&quot;#lnd-0-15-0-beta-rc4&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningnetwork/lnd/releases/tag/v0.15.0-beta.rc4&quot;&gt;LND 0.15.0-beta.rc4&lt;/a&gt; is a release candidate for the next major
+version of this popular LN node.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;bitcoin-core-24408&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bitcoin-core-24408&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/24408&quot;&gt;Bitcoin Core #24408&lt;/a&gt; adds an RPC to fetch mempool transactions
+spending from a given outpoint, streamlining the search for
+outpoints by selecting transactions individually rather than from
+a list of txids retrieved from &lt;code class=&quot;highlighter-rouge&quot;&gt;getrawmempool&lt;/code&gt;. This is useful in
+Lightning when locating a spending transaction after a channel
+funding transaction has been spent or examining why an &lt;a href=&quot;/en/topics/replace-by-fee/&quot;&gt;RBF&lt;/a&gt;
+transaction failed to broadcast by fetching the conflicting
+transaction.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;ldk-1401&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#ldk-1401&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning/issues/1401&quot;&gt;LDK #1401&lt;/a&gt; adds support for zero-conf channel opens.  For related
+information, please see the summary of BOLTs #910 below.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bolts-910&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bolts-910&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightning/bolts/issues/910&quot;&gt;BOLTs #910&lt;/a&gt; updates the LN specification with two changes.  The
+first allows Short Channel Identifier (SCID) aliases which can improve
+privacy and also allow referencing a channel even when its txid is
+unstable (i.e., before its deposit transaction has received a reliable
+number of confirmations).  The second specification change adds an
+&lt;code class=&quot;highlighter-rouge&quot;&gt;option_zeroconf&lt;/code&gt; feature bit that may be set when a node is willing
+to use &lt;a href=&quot;/en/topics/zero-conf-channels/&quot;&gt;zero-conf channels&lt;/a&gt;.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter includes our regular sections with the summary of a Bitcoin Core PR Review Club meeting, a list of new software releases and release candidates, and descriptions of notable changes to popular Bitcoin infrastructure software.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+    <entry xml:lang="en">
+      <title type="html">Bitcoin Optech Newsletter #202</title>
+      <link href="https://bitcoinops.org/en/newsletters/2022/06/01/" rel="alternate" type="text/html" title="Bitcoin Optech Newsletter #202" />
+      <published>2022-06-01T00:00:00+00:00</published>
+      <updated>2022-06-01T00:00:00+00:00</updated>
+      <id>https://bitcoinops.org/en/newsletters/2022/06/2022-06-01-newsletter</id>
+      <content type="html" xml:base="https://bitcoinops.org/en/newsletters/2022/06/01/">&lt;p&gt;This week’s newsletter describes experimentation by developers working
+on silent payments and includes our regular sections with summaries of
+new releases and release candidates plus notable changes to popular
+Bitcoin infrastructure software.&lt;/p&gt;
+
+&lt;h2 id=&quot;news&quot;&gt;News&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;experimentation-with-silent-payments&quot; class=&quot;anchor-list&quot;&gt;&lt;a href=&quot;#experimentation-with-silent-payments&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;strong&gt;Experimentation with silent payments:&lt;/strong&gt; as described in &lt;a href=&quot;/en/newsletters/2022/04/06/#delinked-reusable-addresses&quot;&gt;Newsletter
+#194&lt;/a&gt;, &lt;em&gt;silent payments&lt;/em&gt; make it possible to pay a
+public identifier (“address”) without creating a public record of that
+address being paid.  This week, developer w0xlt &lt;a href=&quot;https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2022-May/020513.html&quot;&gt;posted&lt;/a&gt;
+to the Bitcoin-Dev mailing list a &lt;a href=&quot;https://gist.github.com/w0xlt/72390ded95dd797594f80baba5d2e6ee&quot;&gt;tutorial&lt;/a&gt; for creating
+silent payments for the default &lt;a href=&quot;/en/topics/signet/&quot;&gt;signet&lt;/a&gt; using a
+proof-of-concept &lt;a href=&quot;https://github.com/bitcoin/bitcoin/issues/24897&quot;&gt;implementation&lt;/a&gt; for Bitcoin
+Core.  Several other developers, including authors of popular wallets,
+have been discussing other details of the proposal, including
+&lt;a href=&quot;https://gist.github.com/RubenSomsen/c43b79517e7cb701ebf77eec6dbb46b8?permalink_comment_id=4177027#gistcomment-4177027&quot;&gt;creating an address format&lt;/a&gt; for it.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;releases-and-release-candidates&quot;&gt;Releases and release candidates&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;New releases and release candidates for popular Bitcoin infrastructure
+projects.  Please consider upgrading to new releases or helping to test
+release candidates.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;hwi-2-1-1&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#hwi-2-1-1&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/bitcoin-core/HWI/releases/tag/2.1.1&quot;&gt;HWI 2.1.1&lt;/a&gt; fixes two minor bugs affecting Ledger and Trezor devices
+and adds support for the Ledger Nano S Plus.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;lnd-0-15-0-beta-rc3&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#lnd-0-15-0-beta-rc3&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightningnetwork/lnd/releases/tag/v0.15.0-beta.rc3&quot;&gt;LND 0.15.0-beta.rc3&lt;/a&gt; is a release candidate for the next major
+version of this popular LN node.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;notable-code-and-documentation-changes&quot;&gt;Notable code and documentation changes&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Notable changes this week in &lt;a href=&quot;https://github.com/bitcoin/bitcoin&quot;&gt;Bitcoin Core&lt;/a&gt;, &lt;a href=&quot;https://github.com/ElementsProject/lightning&quot;&gt;Core
+Lightning&lt;/a&gt;, &lt;a href=&quot;https://github.com/ACINQ/eclair&quot;&gt;Eclair&lt;/a&gt;, &lt;a href=&quot;https://github.com/lightningdevkit/rust-lightning&quot;&gt;LDK&lt;/a&gt;,
+&lt;a href=&quot;https://github.com/lightningnetwork/lnd/&quot;&gt;LND&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/secp256k1&quot;&gt;libsecp256k1&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin-core/HWI&quot;&gt;Hardware Wallet
+Interface (HWI)&lt;/a&gt;, &lt;a href=&quot;https://github.com/rust-bitcoin/rust-bitcoin&quot;&gt;Rust Bitcoin&lt;/a&gt;, &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/&quot;&gt;BTCPay
+Server&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoindevkit/bdk&quot;&gt;BDK&lt;/a&gt;, &lt;a href=&quot;https://github.com/bitcoin/bips/&quot;&gt;Bitcoin Improvement
+Proposals (BIPs)&lt;/a&gt;, and &lt;a href=&quot;https://github.com/lightning/bolts&quot;&gt;Lightning BOLTs&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li id=&quot;btcpay-server-3772&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#btcpay-server-3772&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/issues/3772&quot;&gt;BTCPay Server #3772&lt;/a&gt; allows users to turn on experimental features
+for live-testing before release.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;btcpay-server-3744&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#btcpay-server-3744&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/btcpayserver/btcpayserver/issues/3744&quot;&gt;BTCPay Server #3744&lt;/a&gt; adds a feature to export the wallet’s transactions
+either in CSV or JSON format.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li id=&quot;bolts-968&quot; class=&quot;anchor-list&quot;&gt;
+    &lt;p&gt;&lt;a href=&quot;#bolts-968&quot; class=&quot;anchor-list-link&quot;&gt;●&lt;/a&gt; &lt;a href=&quot;https://github.com/lightning/bolts/issues/968&quot;&gt;BOLTs #968&lt;/a&gt; adds default TCP ports for nodes using Bitcoin testnet and
+signet.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Bitcoin Optech</name>
+        
+        
+      </author>
+
+      
+
+      
+
+      
+        <summary type="html">This week’s newsletter describes experimentation by developers working on silent payments and includes our regular sections with summaries of new releases and release candidates plus notable changes to popular Bitcoin infrastructure software.</summary>
+      
+
+      
+      
+        
+        <media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://bitcoinops.org/img/logos/optech-notext.png" />
+      
+    </entry>
+  
+</feed>

@@ -1,0 +1,13 @@
+{
+  "maritime": { "checked": false },
+  "work": { "checked": false },
+  "science": { "checked": true },
+  "bitcoin": { "checked": true },
+  "local": { "checked": true },
+  "business": { "checked": false },
+  "world": { "checked": true },
+  "politics": { "checked": false },
+  "technology": { "checked": true },
+  "variety": { "checked": false },
+  "us": { "checked": false }
+}

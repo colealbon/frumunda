@@ -2,4 +2,4 @@
   directory = "dist/apps/axios-fetch"
   
 [build]
-  publish = "dist/apps/news-train"
+  publish = "dist/apps/cafe-society.news"

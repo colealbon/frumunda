@@ -2,11 +2,11 @@
 # netlify dev netlify deploy triggered by file save.
 
 # open screen 1
-#  cd ~/cafe-society
-#  nx build news-train --watch --verbose --configuration=development
+#  cd ~/albondigas
+#  nx build cafe-society.news --watch --verbose --configuration=development
 # open screen 2
-#  cd ~/cafe-society
-#  fswatch -o ./dist/apps/news-train | xargs -n1 -I{} ./restartdev.sh
+#  cd ~/albondigas
+#  ./restartdev.sh; fswatch -o ./dist/apps/cafe-society.news | xargs -n1 -I{} ./restartdev.sh
  
 echo restart
 # killall node

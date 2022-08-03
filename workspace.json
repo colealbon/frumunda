@@ -3,7 +3,7 @@
   "version": 2,
   "projects": {
     "axios-fetch": "apps/axios-fetch",
-    "news-train": "apps/news-train",
+    "cafe-society.news": "apps/cafe-society.news",
     "news-train-e2e": "apps/news-train-e2e"
   }
 }
