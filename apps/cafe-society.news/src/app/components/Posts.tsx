@@ -157,7 +157,7 @@ const Posts: FunctionComponent = () => {
           );
         }
         return (
-          <Box style={{ maxWidth: '300px' }}>
+          <Box key={feedLink} style={{ maxWidth: '300px' }}>
             <Fragment key={feedLink}>
               <Divider />
               <Typography
