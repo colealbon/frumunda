@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { removePunctuation, shortUrl } from '../utils';
 import { PostContext } from './Posts';
 import { ParsedFeedContentContext } from './Feed';
-import { CategoryContext } from './Category';
+import { CategoryContext } from './CheckedCategory';
 import { useStacks } from '../react-hooks/useStacks';
 
 import { ThumbDown, ThumbUp } from '@mui/icons-material';
@@ -41,7 +41,7 @@ const Post: FunctionComponent = () => {
   );
 
   let classifier = bayes();
-  const { data: classifierdata } = useSWR(`classifier_${category}`, () =>
+  const { data: classifierdata } = useSWR(`classifier_${category}`.replace(/_$/, ''), () =>
     fetchFile(`classifier_${category}`, JSON.parse(classifier.toJson()))
   );
   const defaultProcessedPosts = JSON.parse(

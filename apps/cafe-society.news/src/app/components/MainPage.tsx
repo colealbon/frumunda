@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
 
 import Contribute from './Contribute';
+import Classifier from './Classifier';
+import CheckedCategory from './CheckedCategory';
 import Category from './Category';
 import Feed from './Feed';
 import Posts from './Posts';
@@ -31,11 +33,11 @@ export function MainPage() {
         fallback={<>error fetching posts</>}
       >
         <Suspense fallback={`loading and processing posts (be patient...)`}>
-          <Category>
+          <CheckedCategory>
             <Feed>
               <Posts />
             </Feed>
-          </Category>
+          </CheckedCategory>
         </Suspense>
       </ErrorBoundary>
     );
@@ -148,6 +150,28 @@ export function MainPage() {
             >
               <Suspense fallback={<>...fetching corsproxies </>}>
                 <CorsProxiesEdit key="corsproxies" />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        })}
+        {[selectedPage]
+        .flat()
+        .filter(() => {
+          return selectedPage === 'classifiers';
+        })
+        .filter(
+          () => selectedCategory === '' || selectedCategory === 'allCategories'
+        )
+        .map(() => {
+          return (
+            <ErrorBoundary
+              key={'errorBoundaryClassifiers'}
+              fallback={<>error fetching classifiers</>}
+            >
+              <Suspense fallback={<>...fetching classifiers </>}>
+                <Category key="classifier">
+                  <Classifier/>
+                </Category>
               </Suspense>
             </ErrorBoundary>
           );

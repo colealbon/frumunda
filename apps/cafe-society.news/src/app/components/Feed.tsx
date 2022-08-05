@@ -16,7 +16,7 @@ import { useStacks } from '../react-hooks/useStacks';
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
 
-import { CategoryContext } from './Category';
+import { CategoryContext } from './CheckedCategory';
 
 // import VisibilitySensor from 'react-visibility-sensor';
 
@@ -182,7 +182,7 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
 
                   const channelTitle = channelObj?.title?.toString();
                   const channelDescription = channelObj?.description;
-                  const channelContentItem = [result.rss?.channel]
+                  const channelContentItem = [result?.rss?.channel]
                     .flat()
                     .filter((channel) => !!channel?.item)
                     .map((channel) => {
@@ -209,7 +209,7 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
 
                   // atom feeds have entry instead of item
 
-                  const channelContentEntry = [result.feed]
+                  const channelContentEntry = [result?.feed]
                     .flat()
                     .filter((feed) => !!feed?.entry)
                     .map((feed) =>
