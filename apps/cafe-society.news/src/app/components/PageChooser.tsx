@@ -139,6 +139,27 @@ const PageChooser: FunctionComponent = () => {
                 <ListItemText primary={`${labelOrEcho('corsproxies')}`} />
               </ListItemButton>
             </ListItem>
+
+            <ListItem key={'pageAppSettings'} disablePadding>
+              <ListItemButton
+                sx={{ pl: 4 }}
+                disabled={'appsettings' === `${selectedPage}`}
+                onClick={() => {
+                  mutate(
+                    'selectedPage',
+                    persistLocal('selectedPage', 'appsettings'),
+                    { optimisticData: 'appsettings' }
+                  );
+                  mutate(
+                    'selectedCategory',
+                    persistLocal('selectedCategory', ''),
+                    { optimisticData: '' }
+                  );
+                }}
+              >
+                <ListItemText primary={`${labelOrEcho('appsettings')}`} />
+              </ListItemButton>
+            </ListItem>
           </List>
         </Collapse>
       </List>

@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 
 import Contribute from './Contribute';
+import AppSettings from './AppSettings';
 import Classifier from './Classifier';
 import CheckedCategory from './CheckedCategory';
 import Category from './Category';
@@ -176,6 +177,28 @@ export function MainPage() {
             </ErrorBoundary>
           );
         })}
+
+        {[selectedPage]
+        .flat()
+        .filter(() => {
+          return selectedPage === 'appsettings';
+        })
+        .filter(
+          () => selectedCategory === '' || selectedCategory === 'allCategories'
+        )
+        .map(() => {
+          return (
+            <ErrorBoundary
+              key={'errorBoundaryCorsProxies'}
+              fallback={<>error fetching app settings</>}
+            >
+              <Suspense fallback={<>...fetching app settings </>}>
+                <AppSettings key="appsettings" />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        })}
+
     </>
   );
 }
