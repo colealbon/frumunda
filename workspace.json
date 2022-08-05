@@ -2,6 +2,7 @@
   "$schema": "./node_modules/nx/schemas/workspace-schema.json",
   "version": 2,
   "projects": {
+    "albondigas-fungible-token": "apps/albondigas-fungible-token",
     "axios-fetch": "apps/axios-fetch",
     "cafe-society.news": "apps/cafe-society.news",
     "news-train-e2e": "apps/news-train-e2e"

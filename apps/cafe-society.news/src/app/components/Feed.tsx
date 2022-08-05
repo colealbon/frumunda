@@ -1,4 +1,10 @@
-import { FunctionComponent, createContext, useContext, ReactNode, useEffect } from 'react';
+import {
+  FunctionComponent,
+  createContext,
+  useContext,
+  ReactNode,
+  useEffect,
+} from 'react';
 import useSWR from 'swr';
 import { Grid } from '@mui/material';
 import localforage from 'localforage';
@@ -18,20 +24,17 @@ export const ParsedFeedContentContext = createContext({});
 
 type Props = { children: ReactNode };
 const Feed: FunctionComponent<Props> = ({ children }: Props) => {
-
   const categoryContext = useContext(CategoryContext);
   const category = `${categoryContext}`;
 
   useEffect(() => {
     // reload Mainpage?
-  }, [category])
+  }, [category]);
 
   const { fetchFileLocal } = useStacks();
-  const { data: feedsdata } = useSWR(
-    'feeds',
-    fetchFileLocal('feeds', {}),
-    { fallbackData: defaultFeeds }
-  );
+  const { data: feedsdata } = useSWR('feeds', fetchFileLocal('feeds', {}), {
+    fallbackData: defaultFeeds,
+  });
   const feeds = { ...(feedsdata as object) };
 
   const { data: corsProxiesdata } = useSWR(
@@ -163,18 +166,21 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
                       }[];
                     };
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    feed?: { entry?: object; title: any};
+                    feed?: { entry?: object; title: any };
                   }
                 ) {
                   if (error) {
                     return;
                   }
-                  const feedTitle = `${result?.feed?.title[0][`_`].toString() || result?.feed?.title[0]}`;
+                  const feedTitle = `${
+                    result?.feed?.title[0][`_`].toString() ||
+                    result?.feed?.title[0]
+                  }`;
                   const channelObj = [result?.rss?.channel]
                     .flat()
                     .find(() => true);
 
-                  const channelTitle = channelObj?.title?.toString()
+                  const channelTitle = channelObj?.title?.toString();
                   const channelDescription = channelObj?.description;
                   const channelContentItem = [result.rss?.channel]
                     .flat()
@@ -234,7 +240,8 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
                             attribute[0] === 'href'
                         );
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        const hrefVal: unknown = Object.values(Object.fromEntries(hrefEntry as [PropertyKey, any])
+                        const hrefVal: unknown = Object.values(
+                          Object.fromEntries(hrefEntry as [PropertyKey, any])
                         ).find(() => true);
                         const rawTitle: unknown = [
                           Object.entries(feedEntry as object).find(
