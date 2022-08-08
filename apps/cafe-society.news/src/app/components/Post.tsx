@@ -18,6 +18,7 @@ import {
   Type as ListType,
 } from 'react-swipeable-list';
 import 'react-swipeable-list/dist/styles.css';
+import { flexbox } from '@mui/system';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bayes = require('classificator');
@@ -201,12 +202,16 @@ const Post: FunctionComponent = () => {
             >
               {postItem.description}
             </div>
+          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <div style={{
             display:'flex', 
             flexDirection: 'row', 
             alignItems: 'center',
-            justifyContent:'space-around'}}
+            justifyContent:'space-between',
+            maxWidth:'300px'
+          }}
           >
+            <div />
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <div>
                 <IconButton onClick={(event) => {
@@ -225,8 +230,10 @@ const Post: FunctionComponent = () => {
               </div>
               <div>{`${Math.round(predictionGood * 100)}%`}</div>
             </div>
-        </div> 
-      </div>         
+            <div/>
+        </div>
+      </div> 
+      </div>        
     </div>
 
       </div>
