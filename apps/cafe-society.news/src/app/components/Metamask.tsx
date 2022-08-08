@@ -1,5 +1,6 @@
 import { useMetaMask } from "metamask-react";
 export function Metamask() {
+  
   const { status, connect, account, chainId, ethereum } = useMetaMask();
   
   if (status === "initializing") return <div>Synchronisation with MetaMask ongoing...</div>
