@@ -2,6 +2,7 @@ import Dashboard from './Dashboard';
 import MainPage from './MainPage';
 import { mutate } from 'swr';
 import { useStacks } from '../react-hooks/useStacks';
+import { MetaMaskProvider } from "metamask-react";
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
 import defaultCategories from '../react-hooks/defaultCategories.json';
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
@@ -19,9 +20,11 @@ export function App() {
   );
 
   return (
-    <Dashboard>
-      <MainPage />
-    </Dashboard>
+    <MetaMaskProvider>
+      <Dashboard>
+        <MainPage />
+      </Dashboard>
+    </MetaMaskProvider>
   );
 }
 export default App;

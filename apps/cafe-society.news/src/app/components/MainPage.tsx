@@ -7,6 +7,7 @@ import CheckedCategory from './CheckedCategory';
 import Category from './Category';
 import Feed from './Feed';
 import Posts from './Posts';
+import Metamask from './Metamask';
 import Stacks from './Stacks';
 import CategoriesEdit from './CategoriesEdit';
 import CorsProxiesEdit from './CorsProxiesEdit';
@@ -135,6 +136,28 @@ export function MainPage() {
             </ErrorBoundary>
           );
         })}
+
+      {[selectedPage]
+        .flat()
+        .filter(() => {
+          return selectedPage === 'metamask';
+        })
+        .filter(
+          () => selectedCategory === '' || selectedCategory === 'allCategories'
+        )
+        .map(() => {
+          return (
+            <ErrorBoundary
+              key={'errorBoundaryMetamask'}
+              fallback={<>error fetching metamask session</>}
+            >
+              <Suspense fallback={<>updating latest from metamask</>}>
+                <Metamask key="metamask" />
+              </Suspense>
+            </ErrorBoundary>
+          );
+        })}
+
       {[selectedPage]
         .flat()
         .filter(() => {

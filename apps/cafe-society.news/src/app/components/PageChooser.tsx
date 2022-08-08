@@ -99,6 +99,7 @@ const PageChooser: FunctionComponent = () => {
                 <ListItemText primary={`${labelOrEcho('categories')}`} />
               </ListItemButton>
             </ListItem>
+
             <ListItem key={'pageChooserStacks'} disablePadding>
               <ListItemButton
                 sx={{ pl: 4 }}
@@ -119,6 +120,29 @@ const PageChooser: FunctionComponent = () => {
                 <ListItemText primary={`${labelOrEcho('stacks')}`} />
               </ListItemButton>
             </ListItem>
+
+            <ListItem key={'pageChooserMetamask'} disablePadding>
+              <ListItemButton
+                sx={{ pl: 4 }}
+                disabled={'metamask' === `${selectedPage}`}
+                onClick={() => {
+                  mutate(
+                    'selectedPage',
+                    persistLocal('selectedPage', 'metamask'),
+                    { optimisticData: 'metamask' }
+                  );
+                  mutate(
+                    'selectedCategory',
+                    persistLocal('selectedCategory', ''),
+                    { optimisticData: '' }
+                  );
+                }}
+              >
+                <ListItemText primary={`${labelOrEcho('metamask')}`} />
+              </ListItemButton>
+            </ListItem>
+
+
             <ListItem key={'pageChooserCorsProxies'} disablePadding>
               <ListItemButton
                 sx={{ pl: 4 }}

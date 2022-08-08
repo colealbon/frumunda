@@ -27,6 +27,7 @@
     "debounce-by-key": "^0.1.1",
     "html-to-text": "^8.2.0",
     "localforage": "^1.10.0",
+    "metamask-react": "^2.4.0",
     "natural": "^5.2.3",
     "netlify-cli": "^10.5.1",
     "promise-retry": "^2.0.1",

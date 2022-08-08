@@ -69,6 +69,7 @@ export const labelOrEcho = (index: string) => {
     posts: 'posts',
     feeds: 'feeds',
     stacks: 'stacks',
+    metamask: 'metamask',
     corsproxies: 'cors proxies',
     appsettings: 'app settings'
   })
