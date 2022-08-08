@@ -147,7 +147,7 @@ const Posts: FunctionComponent = () => {
               <Divider />
               <Typography
                 variant="h3"
-                style={{ maxWidth: '300px', justifyContent: 'center' }}
+                style={{ justifyContent: 'center' }}
               >
                 <Link href={feedLink} component="button">
                   {`${feedLabel || feedTitle || feedLink}`}
@@ -157,14 +157,13 @@ const Posts: FunctionComponent = () => {
           );
         }
         return (
-          <Box key={feedLink} style={{ maxWidth: '300px' }}>
+          <Box key={feedLink}>
             <Fragment key={feedLink}>
               <Divider />
               <Typography
                 style={{
                   display: 'flex',
-                  flexDirection: 'column',
-                  maxWidth: '300px',
+                  flexDirection: 'column'
                 }}
               >
                 <Link href={`${feedLink}`} component="button">

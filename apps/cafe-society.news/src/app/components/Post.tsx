@@ -8,7 +8,7 @@ import { CategoryContext } from './CheckedCategory';
 import { useStacks } from '../react-hooks/useStacks';
 
 import { ThumbDown, ThumbUp } from '@mui/icons-material';
-import { Link } from '@mui/material';
+import { Link, Box, IconButton} from '@mui/material';
 import {
   LeadingActions,
   SwipeableList,
@@ -133,6 +133,7 @@ const Post: FunctionComponent = () => {
   }
 
   const leadingActions = () => (
+
     <LeadingActions>
       <SwipeAction onClick={() => handleTrain('good')} destructive={true}>
         <ActionContent>
@@ -165,47 +166,125 @@ const Post: FunctionComponent = () => {
   );
 
   return (
-    <div
-      style={{ width: '100%' }}
-      className="basic-swipeable-list__container"
-      key={postItem.link}
-    >
-      <SwipeableList fullSwipe={true} threshold={0.5} type={ListType.IOS}>
-        <SwipeableListItem
-          key={id}
-          leadingActions={leadingActions()}
-          trailingActions={trailingActions()}
-          onClick={handleOnClick()}
+    <>
+
+
+      <Box
+        sx={{
+          display: { xs: 'none', sm: 'block' }
+        }}
+      >
+      <div
+        style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
+        key={postItem.link}
+      >
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'centered',
+            paddingBottom: '25px',
+          }}
         >
           <div
             style={{
               display: 'flex',
-              justifyContent: 'centered',
-              paddingBottom: '25px',
+              flexDirection: 'column',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                maxWidth: '300px',
-              }}
-            >
-              <div>
-                <Link href={`${postItem.link}`} target="cafe-society">
-                  {postItem.title}
-                </Link>
-              </div>
-              <div
-                style={{ display: 'block', width: '100%', overflow: 'wrap' }}
-              >
-                {postItem.description}
-              </div>
+            <div>
+              <Link href={`${postItem.link}`} target="cafe-society">
+                {postItem.title}
+              </Link>
             </div>
-          </div>
-        </SwipeableListItem>
-      </SwipeableList>
+            <div
+              style={{ display: 'block', width: '100%', overflow: 'wrap' }}
+            >
+              {postItem.description}
+            </div>
+          <div style={{
+            display:'flex', 
+            flexDirection: 'row', 
+            alignItems: 'center',
+            justifyContent:'space-around'}}
+          >
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div>
+                <IconButton onClick={(event) => {
+                  handleTrain('notgood')
+                }}>
+                <ThumbDown /></IconButton>
+              </div>
+              <div>{`${Math.round(predictionNotGood * 100)}%`}</div>
+            </div>
+            <div style={{justifyContent: 'center'}}>{`${category}`}</div>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+              <div>
+                <IconButton onClick={(event) => handleTrain('good')}>
+                  <ThumbUp />
+                </IconButton>
+              </div>
+              <div>{`${Math.round(predictionGood * 100)}%`}</div>
+            </div>
+        </div> 
+      </div>         
     </div>
+
+      </div>
+    </Box>
+
+
+
+
+
+
+      <Box
+      sx={{
+        display: { xs: 'block', sm: 'none' }
+      }}
+      >
+        <div
+          style={{ width: '100%' }}
+          className="basic-swipeable-list__container"
+          key={postItem.link}
+        >
+          <SwipeableList fullSwipe={true} threshold={0.5} type={ListType.IOS}>
+            <SwipeableListItem
+              key={id}
+              leadingActions={leadingActions()}
+              trailingActions={trailingActions()}
+              onClick={handleOnClick()}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'centered',
+                  paddingBottom: '25px',
+                }}
+              >
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    maxWidth: '300px',
+                  }}
+                >
+                  <div>
+                    <Link href={`${postItem.link}`} target="cafe-society">
+                      {postItem.title}
+                    </Link>
+                  </div>
+                  <div
+                    style={{ display: 'block', width: '100%', overflow: 'wrap' }}
+                  >
+                    {postItem.description}
+                  </div>
+                </div>
+              </div>
+            </SwipeableListItem>
+          </SwipeableList>
+        </div>
+      </Box>
+    </>
   );
 };
 
