@@ -1,11 +1,11 @@
 # albondigas
 
-### WARNING !!!  
+### WARNING !!!
 this project is under heavy development.  
 
 albondigas is the name of the monorepo. 
 
-news-train is the code behind [cafe-society.news](https://cafe-society.news), a web based RSS reader with machine learning.
+cafe-society.news is the code behind [cafe-society.news](https://cafe-society.news), a web based RSS reader with machine learning.
 
 ### stack:
 react, blockstack, netlify
