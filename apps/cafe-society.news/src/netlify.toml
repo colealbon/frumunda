@@ -3,13 +3,20 @@
   functions = "functions"
   publish = "build"
 
-[dev]
-  command = "npm start"
-  functions = "functions" 
-  publish = "dist"
-  port=8000 # destination port to use in browser. Lambda dev server is started on same port
-  targetPort=3000 # port that local rollup server is running on
-  autoLaunch = false
+[[redirects]]
+  from = "/media/*"
+  to = "/media/:splat"
+
+[[redirects]]
+  from = "/proxy/*"
+  to = "https://:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  status = 200
+  to = "/index.html"
 
 [[headers]]
   for = "/"
@@ -37,8 +44,3 @@
     Access-Control-Allow-Methods = "POST, GET, OPTIONS, DELETE, PUT"
     "Can't-Be-Evil" = "true"
     Cache-Control = "no-store, no-cache"
-
-[[redirects]]
-  from = "/*"
-  status = 200
-  to = "/index.html"

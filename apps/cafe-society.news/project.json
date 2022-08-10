@@ -17,9 +17,20 @@
         "tsConfig": "apps/cafe-society.news/tsconfig.app.json",
         "assets": [
           "apps/cafe-society.news/src/favicon.ico",
-          "apps/cafe-society.news/src/assets"
+          "apps/cafe-society.news/src/_headers",
+          "apps/cafe-society.news/src/_redirects",
+          "apps/cafe-society.news/src/albondigas",
+          "apps/cafe-society.news/src/appicon.png",
+          "apps/cafe-society.news/src/ft-sip10-token.json",
+          "apps/cafe-society.news/src/logo192.png",
+          "apps/cafe-society.news/src/logo512.png",
+          "apps/cafe-society.news/src/logo512.svg",
+          "apps/cafe-society.news/src/manifest.json",
+          "apps/cafe-society.news/src/redirect.html",
+          "apps/cafe-society.news/src/screenshot.png",
+          "apps/cafe-society.news/src/stx.png",
+          "apps/cafe-society.news/src/stx.svg"
         ],
-        "styles": ["apps/cafe-society.news/src/styles.css"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
       },
