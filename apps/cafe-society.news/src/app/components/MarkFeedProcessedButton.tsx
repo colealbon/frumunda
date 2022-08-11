@@ -2,19 +2,21 @@ import { useContext, FunctionComponent, useState } from 'react';
 import { mutate } from 'swr';
 import { IconButton, Typography } from '@mui/material';
 import { RemoveDone } from '@mui/icons-material';
-import { cleanPostItem, removePunctuation, shortUrl } from '../utils';
+import { cleanPostItem, removePunctuation, shortUrl, hashStr } from '../utils';
 import { cleanPostItemType } from './Posts';
 import { ParsedFeedContentContext } from './Feed';
 import { useStacks } from '../react-hooks/useStacks';
+import { CategoryContext } from './CheckedCategory';
 
 const MarkFeedProcessedButton: FunctionComponent = () => {
   const [inFlight, setInFlight] = useState(false);
   const { persist } = useStacks();
-
+  const categoryContext = useContext(CategoryContext);
+  const category = `${categoryContext}`;
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
   const keyForFeed = Object.keys(parsedFeedContent)[0];
-  const filenameForFeed = `processed_${shortUrl(keyForFeed)}`;
+  const filenameForFeed = hashStr(`processed_${category}_${shortUrl(keyForFeed)}`);
 
   const markFeedComplete = (newProcessedPostsForFeed: string[]) => {
     setInFlight(true);

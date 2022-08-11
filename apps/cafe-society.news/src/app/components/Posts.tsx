@@ -6,8 +6,9 @@ import { Link, Typography, Divider, Box } from '@mui/material';
 import { useSettings } from '../react-hooks/useSettings';
 import { useStacks } from '../react-hooks/useStacks';
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
+import { CategoryContext } from './CheckedCategory';
 
-import { shortUrl, cleanPostItem, removePunctuation } from '../utils';
+import { shortUrl, cleanPostItem, removePunctuation, hashStr } from '../utils';
 import stringSimilarity from 'string-similarity';
 import MarkFeedProcessedButton from './MarkFeedProcessedButton';
 
@@ -22,10 +23,12 @@ export type cleanPostItemType = {
 
 export const PostContext = createContext({});
 const Posts: FunctionComponent = () => {
+  const categoryContext = useContext(CategoryContext);
+  const category = `${categoryContext}`;
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
   const keyForFeed = Object.keys(parsedFeedContent)[0];
-  const processedFilenameForFeed = `processed_${shortUrl(keyForFeed)}`;
+  const processedFilenameForFeed = hashStr(`processed_${category}_${shortUrl(keyForFeed)}`);
   const { settings } = useSettings();
   const {
     hideProcessedPosts,

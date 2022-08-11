@@ -1,7 +1,7 @@
 import { FunctionComponent, useContext } from 'react';
 import useSWR, { mutate } from 'swr';
 import styled from 'styled-components';
-import { removePunctuation, shortUrl } from '../utils';
+import { removePunctuation, shortUrl, hashStr } from '../utils';
 import { PostContext } from './Posts';
 import { ParsedFeedContentContext } from './Feed';
 import { CategoryContext } from './CheckedCategory';
@@ -18,7 +18,6 @@ import {
   Type as ListType,
 } from 'react-swipeable-list';
 import 'react-swipeable-list/dist/styles.css';
-import { flexbox } from '@mui/system';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bayes = require('classificator');
@@ -35,7 +34,7 @@ const Post: FunctionComponent = () => {
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = structuredClone(parsedFeedContentContext);
   const keyForFeed = Object.keys(parsedFeedContent)[0];
-  const processedFilenameForFeed = `processed_${shortUrl(keyForFeed)}`;
+  const processedFilenameForFeed = hashStr(`processed_${category}_${shortUrl(keyForFeed)}`);
 
   const mlText = removePunctuation(
     `${postItem.title} ${postItem.description} ${postItem.summary}`
