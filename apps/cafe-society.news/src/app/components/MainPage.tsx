@@ -13,6 +13,11 @@ import CategoriesEdit from './CategoriesEdit';
 import CorsProxiesEdit from './CorsProxiesEdit';
 import FeedsEdit from './FeedsEdit';
 import ErrorBoundary from './ErrorBoundary';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
+  } from '@mui/material';
 import { useStacks } from '../react-hooks/useStacks';
 
 import useSWR from 'swr';

@@ -5,7 +5,6 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
-  Collapse,
   Accordion,
   AccordionSummary,
   AccordionDetails
