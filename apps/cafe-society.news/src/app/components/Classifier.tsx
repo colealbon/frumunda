@@ -2,9 +2,7 @@ import {
   FunctionComponent,
   useContext,
   useState,
-  Suspense
 } from 'react';
-import ErrorBoundary from './ErrorBoundary';
 import useSWR from 'swr';
 import localforage from 'localforage';
 import { CategoryContext } from './Category';
