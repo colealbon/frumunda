@@ -7,6 +7,8 @@ albondigas is the name of the monorepo.
 
 cafe-society.news is the code behind [cafe-society.news](https://cafe-society.news), a web based RSS reader with machine learning.
 
+<p style="text-align: center;"><img src="https://cafe-society.news/screenshot.png" width="450"></p>
+
 ### stack:
 react, blockstack, netlify
 
