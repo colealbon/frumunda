@@ -20,7 +20,7 @@ import { labelOrEcho } from '../utils';
 import { useStacks } from '../react-hooks/useStacks';
 import localforage from 'localforage';
 
-const drawerWidth = 240;
+const drawerWidth = 180;
 
 type Props = { children: ReactNode };
 

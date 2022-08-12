@@ -21,7 +21,7 @@ import PageChooser from './PageChooser';
 import CategoryChooser from './CategoryChooser';
 import { labelOrEcho } from '../utils';
 
-const drawerWidth = 240;
+const drawerWidth = 180;
 
 type Props = { children: ReactNode };
 
