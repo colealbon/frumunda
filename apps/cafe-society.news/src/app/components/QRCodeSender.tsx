@@ -1,15 +1,29 @@
 import {
-  FunctionComponent
+  FunctionComponent,
+  useState
 } from 'react';
 import {hashStr} from '../utils'
 import {Box} from '@mui/material'
 import {QRCodeSVG} from 'qrcode.react';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  ListItemText
+} from '@mui/material'
 
 const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
+
+  const [expanded, setExpanded] = useState<string | false>(false);
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+      setExpanded(newExpanded ? panel : false);
+    };
+  
   const stringChop = (str: string, size: number) => {
     if (str == null)
        return [];
@@ -24,28 +38,40 @@ const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
   if (data.length > 500) {
     const chopped = stringChop(data, 500)
     return (
-      <Box style={{maxWidth:400}}>
-      <div />
-      <Carousel autoPlay={true} interval={500} infiniteLoop={true}>
-      {
-      (() => {
-        let count = 0
-        return chopped?.map(chunk => {
-          count = count + 1
-          const payload = JSON.stringify({
-            hash: hashStr(data),
-            chunkCount: chopped.length,
-            chunkNumber: count,
-            content: chunk
-          }, null, 2)
-          return <div key={`qrCode_${count}`}><QRCodeSVG value={payload}  size={300} /></div>
-        })})()
-      }
-      </Carousel>
-      </Box>
-    )
-  }
+  <Accordion 
+    style={{padding: '0px'}}
+    expanded={expanded === 'classifierPanel'}
+    onChange={handleChange('classifierPanel')}
+    TransitionProps={{ unmountOnExit: true }} 
+  >
+    <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
+      <ListItemText sx={{ pl: 2 }} primary={`show qr code`} />
+    </AccordionSummary>
+    <AccordionDetails>
+          <Box style={{maxWidth:400}}>
+          <div />
+          <Carousel autoPlay={true} interval={500} infiniteLoop={true} showThumbs={false}>
+          {
+          (() => {
+            let count = 0
+            return chopped?.map(chunk => {
+              count = count + 1
+              const payload = JSON.stringify({
+                hash: hashStr(data),
+                chunkCount: chopped.length,
+                chunkNumber: count,
+                content: chunk
+              }, null, 2)
+              return <div key={`qrCode_${count}`}><QRCodeSVG value={payload}  size={300} /></div>
+            })})()
+          }
+          </Carousel>
+          </Box>
 
+    </AccordionDetails>
+    </Accordion>
+            )
+    }
   return (
     <QRCodeSVG value={data} size={300} />
   )

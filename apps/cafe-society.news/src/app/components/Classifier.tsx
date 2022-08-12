@@ -117,6 +117,7 @@ const Classifier: FunctionComponent = () => {
         style={{padding: '0px'}}
         expanded={expanded === 'classifierPanel'}
         onChange={handleChange('classifierPanel')}
+        TransitionProps={{ unmountOnExit: true }} 
       >
         <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
           <ListItemText sx={{ pl: 2 }} primary={`${category}`} />
