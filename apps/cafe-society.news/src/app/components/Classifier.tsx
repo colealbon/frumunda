@@ -9,6 +9,7 @@ import {
 import useSWR, { mutate } from 'swr';
 import localforage from 'localforage';
 import { CategoryContext } from './Category';
+import QRCodeSender from './QRCodeSender';
 import { 
   TextField, 
   Divider, 
@@ -18,10 +19,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   Snackbar,
-  IconButton
 } from '@mui/material';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import {Close} from '@mui/icons-material';
 import { useStacks } from '../react-hooks/useStacks';
 
 
@@ -122,28 +121,28 @@ const Classifier: FunctionComponent = () => {
         <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
           <ListItemText sx={{ pl: 2 }} primary={`${category}`} />
         </AccordionSummary>
-            <AccordionDetails>
-              <form onSubmit={onSubmit}>
-                <br />
-                <TextField
-                  id={`edit-classifier-${category}`}
-                  label={`edit classifier: ${category}`}
-                  multiline
-                  maxRows={4}
-                  style={{ width: 500 }}
-                  defaultValue={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)}
-                  onChange={(
-                    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-                  ) => {
-                    setInputCallback(event.target.value);
-                  }}
-                />
-                <Divider />
-                <Button type="submit" variant="contained">
-                  submit
-                </Button>
-              </form>
-            </AccordionDetails>
+        <AccordionDetails>
+          <form onSubmit={onSubmit}>
+            <TextField
+              id={`edit-classifier-${category}`}
+              label={`edit classifier: ${category}`}
+              multiline
+              maxRows={20}
+              style={{ width: 500 }}
+              defaultValue={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)}
+              onChange={(
+                event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+              ) => {
+                setInputCallback(event.target.value);
+              }}
+            />
+            <Divider />
+            <Button type="submit" variant="contained">
+              submit
+            </Button>
+          </form>
+          <QRCodeSender text={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)} />
+        </AccordionDetails>
       </Accordion>
       <Snackbar
         open={snackbarOpen}
