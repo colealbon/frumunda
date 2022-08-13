@@ -38,19 +38,28 @@ const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
   if (data.length > 500) {
     const chopped = stringChop(data, 500)
     return (
+      <div>
   <Accordion 
     style={{padding: '0px'}}
     expanded={expanded === 'classifierPanel'}
     onChange={handleChange('classifierPanel')}
     TransitionProps={{ unmountOnExit: true }} 
+
   >
     <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
       <ListItemText sx={{ pl: 2 }} primary={`show qr code`} />
     </AccordionSummary>
-    <AccordionDetails>
-          <Box style={{maxWidth:400}}>
+    <AccordionDetails style={{padding: '0px'}}>
+          <Box style={{maxWidth:400, padding: '0px'}}>
           <div />
-          <Carousel autoPlay={true} interval={500} infiniteLoop={true} showThumbs={false}>
+          <Carousel 
+            autoPlay={true} 
+            interval={1000} 
+            infiniteLoop={true} 
+            showThumbs={false}
+            showIndicators={false}
+            showArrows={false}
+          >
           {
           (() => {
             let count = 0
@@ -70,6 +79,7 @@ const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
 
     </AccordionDetails>
     </Accordion>
+    </div>
             )
     }
   return (

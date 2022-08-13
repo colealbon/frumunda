@@ -10,6 +10,7 @@ import useSWR, { mutate } from 'swr';
 import localforage from 'localforage';
 import { CategoryContext } from './Category';
 import QRCodeSender from './QRCodeSender';
+import QRCodeReader from './QRCodeReader';
 import { 
   TextField, 
   Divider, 
@@ -123,13 +124,16 @@ const Classifier: FunctionComponent = () => {
           <ListItemText sx={{ pl: 2 }} primary={`${category}`} />
         </AccordionSummary>
         <AccordionDetails>
+          <QRCodeSender text={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)} />
+          <QRCodeReader />
+          <Divider />
+          <div/>
           <form onSubmit={onSubmit}>
             <TextField
               id={`edit-classifier-${category}`}
-              label={`edit classifier: ${category}`}
               multiline
-              maxRows={20}
-              style={{ width: 500 }}
+              maxRows={15}
+              style={{ width: 400 }}
               defaultValue={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)}
               onChange={(
                 event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -142,7 +146,6 @@ const Classifier: FunctionComponent = () => {
               submit
             </Button>
           </form>
-          <QRCodeSender text={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)} />
         </AccordionDetails>
       </Accordion>
       <Snackbar
