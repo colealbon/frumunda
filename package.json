@@ -39,6 +39,7 @@
     "react-dom": "18.1.0",
     "react-qr-reader": "^3.0.0-beta-1",
     "react-responsive-carousel": "^3.2.23",
+    "react-slideshow-image": "^4.0.4",
     "react-swipeable-list": "^1.5.1",
     "react-visibility-sensor": "^5.1.1",
     "regenerator-runtime": "0.13.7",

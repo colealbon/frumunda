@@ -41,8 +41,11 @@ const QRCodeReader: FunctionComponent = () => {
     <QrReader
         constraints={{ facingMode: 'user' }}
         onResult={(result, error) => {
-          console.log(result)
+          if (result !== undefined) {
+            console.log(result)
+          }
         }}
+        scanDelay={50}
       />
     </AccordionDetails>
     </Accordion>

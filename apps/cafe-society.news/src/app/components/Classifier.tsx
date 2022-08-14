@@ -71,6 +71,14 @@ const Classifier: FunctionComponent = () => {
 
   let classifier = bayes();
 
+  const [expandedQRCodeSender, setExpandedQRCodeSender] = useState<string | false>(false);
+  const handleChangeQRCodeSender =
+    (panel: string) => (event: React.SyntheticEvent, newExpandedQRCodeSender: boolean) => {
+      setExpandedQRCodeSender(newExpandedQRCodeSender ? panel : false);
+    };
+
+
+
   const filename = `classifier_${category}`.replace(/_$/, '')
 
   const { data: classifierdata } = useSWR(
@@ -124,7 +132,20 @@ const Classifier: FunctionComponent = () => {
           <ListItemText sx={{ pl: 2 }} primary={`${category}`} />
         </AccordionSummary>
         <AccordionDetails>
-          <QRCodeSender text={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)} />
+          <Accordion 
+            style={{padding: '0px'}}
+            expanded={expandedQRCodeSender === 'showQRCodePanel'}
+            onChange={handleChangeQRCodeSender('showQRCodePanel')}
+            TransitionProps={{ unmountOnExit: true }} 
+
+          >
+            <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
+              <ListItemText sx={{ pl: 2 }} primary={`show qr code`} />
+            </AccordionSummary>
+            <AccordionDetails style={{padding: '0px'}}>
+              <QRCodeSender text={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)} />
+            </AccordionDetails>
+          </Accordion>
           <QRCodeReader />
           <Divider />
           <div/>
