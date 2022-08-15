@@ -114,12 +114,11 @@ const Posts: FunctionComponent = () => {
                 structuredClone(postItem).description
               }`
             );
-            if (disableMachineLearning) {
+            if (disableMachineLearning === true) {
               return true;
             }
             if (
-              parseFloat(classifier.totalDocuments) <
-              parseFloat(mlThresholdDocuments)
+              parseInt(classifier.totalDocuments) < parseInt(mlThresholdDocuments.value)
             ) {
               return true;
             }
