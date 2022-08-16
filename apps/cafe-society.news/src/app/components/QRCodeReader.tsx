@@ -22,7 +22,13 @@ const QRCodeReader: FunctionComponent = () => {
     }
 
     const valueObj = JSON.parse(value)
+
+    if ( structuredClone(accumulator)[`${valueObj.chunkNumber}`] !== undefined) {
+      return
+    }
+
     const newAccumulator = Object.assign(accumulator)
+
     newAccumulator[valueObj.chunkNumber] = valueObj.content
     setFullString(`${Object.keys(newAccumulator).length} of ${valueObj.chunkCount}`)
     setAccumulator(newAccumulator)
@@ -31,14 +37,12 @@ const QRCodeReader: FunctionComponent = () => {
   return (
     <div>
       <QrReader
-        constraints={{ facingMode: 'user'}}
+        constraints={{ facingMode: 'environment'}}
         onResult={(result, error) => {
           if (result !== undefined) {
             setDataCallback(`${JSON.parse(JSON.stringify({...result})).text}`)
           }
         }}
-        scanDelay={100}
-
       />
       <pre>
         {fullString}
