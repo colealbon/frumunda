@@ -22,7 +22,7 @@ const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
   const [payload, setPayload] = useState('')
 
   const data = Buffer.from(props.text).toString('base64')
-  const chopped = stringChop(data, 1000)
+  const chopped = stringChop(data, 300)
 
   useEffect(() => {
     setTimeout(() => {
@@ -34,7 +34,7 @@ const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
       }, null, 2)
       setPayload(newPayload)
       setPosition((position + 1) % [chopped].flat().length)
-    }, 300)
+    }, 500)
   }, [position, chopped, data]);
 
 

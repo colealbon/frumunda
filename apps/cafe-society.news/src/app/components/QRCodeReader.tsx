@@ -1,10 +1,7 @@
 import {
   FunctionComponent,
-  useState,
-  useCallback,
-  useEffect
+  useState
 } from 'react';
-import {hashStr} from '../utils'
 import { QrReader } from 'react-qr-reader';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,16 +17,14 @@ const QRCodeReader: FunctionComponent = () => {
     if (Object.values(accumulator).length === JSON.parse(value).chunkCount) {
       const newString = Object.values(sortObjectByKey(accumulator)).join('')
       const decodedText = Buffer.from(newString, 'base64').toString('ascii')
-      console.log(JSON.parse(value).hash)
-      console.log(hashStr(newString))
-      console.log(decodedText)
       setFullString(decodedText)
+      navigator.clipboard.writeText(decodedText)
     }
 
     const valueObj = JSON.parse(value)
     const newAccumulator = Object.assign(accumulator)
     newAccumulator[valueObj.chunkNumber] = valueObj.content
-    console.log(Object.keys(newAccumulator).length)
+    setFullString(`${Object.keys(newAccumulator).length} of ${valueObj.chunkCount}`)
     setAccumulator(newAccumulator)
   }
 
@@ -42,7 +37,8 @@ const QRCodeReader: FunctionComponent = () => {
             setDataCallback(`${JSON.parse(JSON.stringify({...result})).text}`)
           }
         }}
-        scanDelay={50}
+        scanDelay={100}
+
       />
       <pre>
         {fullString}
