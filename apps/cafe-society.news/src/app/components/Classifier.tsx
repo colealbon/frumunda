@@ -7,7 +7,6 @@ import {
   forwardRef
 } from 'react';
 import useSWR, { mutate } from 'swr';
-import localforage from 'localforage';
 import { CategoryContext } from './Category';
 import QRCodeSender from './QRCodeSender';
 import QRCodeReader from './QRCodeReader';
@@ -43,7 +42,7 @@ const Classifier: FunctionComponent = () => {
   const category = `${categoryContext}`;
   const [inputValue, setInputValue] = useState('');
   const filenameForClassifier = `classifier_${category}`.replace(/_$/, '');
-  const { persist } = useStacks();
+  const { persist, fetchFile } = useStacks();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -84,9 +83,11 @@ const Classifier: FunctionComponent = () => {
   const filename = `classifier_${category}`.replace(/_$/, '')
 
   const { data: classifierdata } = useSWR(
-    filename, 
-    () => localforage.getItem(filename),
-    {suspense: true}
+    filename, () => fetchFile(filename, JSON.parse(JSON.stringify(classifier))),
+    {
+      suspense: true,
+      fallbackData: JSON.parse(JSON.stringify(classifier))
+    }
   );
 
   try {
@@ -157,12 +158,36 @@ const Classifier: FunctionComponent = () => {
               <ListItemText sx={{ pl: 2 }} primary={`read qr code`} />
             </AccordionSummary>
             <AccordionDetails>
-              <QRCodeReader />
+              <QRCodeReader onComplete={(text: string) => {
+                setInputCallback(text)
+                handleChangeQRCodeReader('showQRCodeReaderPanel')
+                let newClassifier = bayes();
+                try {
+                  newClassifier = bayes.fromJson(text);
+                } catch (error) {
+                  setSnackbarOpen(true);
+                  return
+                }
+                mutate(
+                  filenameForClassifier,
+                  persist(filenameForClassifier, JSON.parse(newClassifier.toJson())),
+                  {
+                    optimisticData: newClassifier,
+                    rollbackOnError: false,
+                    revalidate: false,
+                    populateCache: false,
+                  }
+                ).then(() => alert('new classifier persisted'))
+              }}/>
             </AccordionDetails>
           </Accordion>
           <Divider />
           <div/>
           <form onSubmit={onSubmit}>
+          <Button type="submit" variant="contained">
+              submit
+            </Button>
+            <Divider />
             <TextField
               id={`edit-classifier-${category}`}
               multiline
@@ -176,9 +201,6 @@ const Classifier: FunctionComponent = () => {
               }}
             />
             <Divider />
-            <Button type="submit" variant="contained">
-              submit
-            </Button>
           </form>
         </AccordionDetails>
       </Accordion>

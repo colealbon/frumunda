@@ -14,7 +14,6 @@ const stringChop = (str: string, size: number) => {
      return size > 0 ? str.match(new RegExp('.{1,' + size + '}', 'g')) : [str];
 }
 
-
 const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {

@@ -1,27 +1,42 @@
 import {
-  FunctionComponent,
-  useState
+  useState,
 } from 'react';
+
+import {
+  Typography
+} from '@mui/material'
+
 import { QrReader } from 'react-qr-reader';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const sortObjectByKey = (dict: any) => Object.keys(dict).sort().reduce((r, k) => Object.assign(r, { [k]: dict[k] }), {});
 
-const QRCodeReader: FunctionComponent = () => {
-  const [fullString, setFullString] = useState('')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const QRCodeReader: any = (props: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onComplete: any;
+  }) => {
   const [accumulator, setAccumulator] = useState({});
+  const [status, setStatus] = useState('')
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-  const setDataCallback = (value: string) => {
-    if (Object.values(accumulator).length === JSON.parse(value).chunkCount) {
-      const newString = Object.values(sortObjectByKey(accumulator)).join('')
-      const decodedText = Buffer.from(newString, 'base64').toString('ascii')
-      setFullString(decodedText)
-      navigator.clipboard.writeText(decodedText)
+  const setData = (value: string) => {
+    if (value === 'undefined' || value === undefined)  {
+      return
     }
 
-    const valueObj = JSON.parse(value)
+    if (value === '')  {
+      return
+    }
+
+    if (Object.values(accumulator).length === {...JSON.parse(`${value}`)}.chunkCount) {
+      const newString = Object.values(sortObjectByKey(accumulator)).join('')
+      const decodedText = Buffer.from(newString, 'base64').toString('ascii')
+      props.onComplete(decodedText)
+    }
+
+    const valueObj = JSON.parse(`${value}`)
 
     if ( structuredClone(accumulator)[`${valueObj.chunkNumber}`] !== undefined) {
       return
@@ -30,7 +45,7 @@ const QRCodeReader: FunctionComponent = () => {
     const newAccumulator = Object.assign(accumulator)
 
     newAccumulator[valueObj.chunkNumber] = valueObj.content
-    setFullString(`${Object.keys(newAccumulator).length} of ${valueObj.chunkCount}`)
+    setStatus(`${Object.keys(newAccumulator).length} of ${valueObj.chunkCount}`)
     setAccumulator(newAccumulator)
   }
 
@@ -40,13 +55,11 @@ const QRCodeReader: FunctionComponent = () => {
         constraints={{ facingMode: 'environment'}}
         onResult={(result, error) => {
           if (result !== undefined) {
-            setDataCallback(`${JSON.parse(JSON.stringify({...result})).text}`)
+            setData(`${JSON.parse(JSON.stringify({...result})).text}`)
           }
         }}
       />
-      <pre>
-        {fullString}
-      </pre>
+      <Typography variant='caption' >{status}</Typography>
     </div>
   )
 
