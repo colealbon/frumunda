@@ -52,10 +52,6 @@ const Classifier: FunctionComponent = () => {
     setSnackbarOpen(false);
   };
 
-  const snackbarAction = (
-    <Alert severity="error" sx={{ width: '100%' }} >invalid classifier JSON!</Alert>
-  );
-
   const [expanded, setExpanded] = useState<string | false>(false);
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
@@ -75,6 +71,12 @@ const Classifier: FunctionComponent = () => {
   const handleChangeQRCodeSender =
     (panel: string) => (event: React.SyntheticEvent, newExpandedQRCodeSender: boolean) => {
       setExpandedQRCodeSender(newExpandedQRCodeSender ? panel : false);
+    };
+
+  const [expandedQRCodeReader, setExpandedQRCodeReader] = useState<string | false>(false);
+  const handleChangeQRCodeReader =
+    (panel: string) => (event: React.SyntheticEvent, newExpandedQRCodeReader: boolean) => {
+      setExpandedQRCodeReader(newExpandedQRCodeReader ? panel : false);
     };
 
 
@@ -134,8 +136,8 @@ const Classifier: FunctionComponent = () => {
         <AccordionDetails>
           <Accordion 
             style={{padding: '0px'}}
-            expanded={expandedQRCodeSender === 'showQRCodePanel'}
-            onChange={handleChangeQRCodeSender('showQRCodePanel')}
+            expanded={expandedQRCodeSender === 'showQRCodeSenderPanel'}
+            onChange={handleChangeQRCodeSender('showQRCodeSenderPanel')}
             TransitionProps={{ unmountOnExit: true }} 
 
           >
@@ -146,7 +148,18 @@ const Classifier: FunctionComponent = () => {
               <QRCodeSender text={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)} />
             </AccordionDetails>
           </Accordion>
-          <QRCodeReader />
+          <Accordion 
+              style={{padding: '0px'}}
+              expanded={expandedQRCodeReader === 'showQRCodeReaderPanel'}
+              onChange={handleChangeQRCodeReader('showQRCodeReaderPanel')}
+            >
+            <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
+              <ListItemText sx={{ pl: 2 }} primary={`read qr code`} />
+            </AccordionSummary>
+            <AccordionDetails>
+              <QRCodeReader />
+            </AccordionDetails>
+          </Accordion>
           <Divider />
           <div/>
           <form onSubmit={onSubmit}>

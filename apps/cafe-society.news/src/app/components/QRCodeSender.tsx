@@ -4,7 +4,6 @@ import {
   useEffect
 } from 'react';
 import {hashStr} from '../utils'
-import {Box} from '@mui/material'
 import {QRCodeSVG} from 'qrcode.react';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
@@ -23,7 +22,7 @@ const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
   const [payload, setPayload] = useState('')
 
   const data = Buffer.from(props.text).toString('base64')
-  const chopped = stringChop(data, 500)
+  const chopped = stringChop(data, 1000)
 
   useEffect(() => {
     setTimeout(() => {
@@ -35,7 +34,7 @@ const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
       }, null, 2)
       setPayload(newPayload)
       setPosition((position + 1) % [chopped].flat().length)
-    }, 100)
+    }, 300)
   }, [position, chopped, data]);
 
 
@@ -46,7 +45,7 @@ const QRCodeSender: FunctionComponent<{ text: string }> = (props: {
       <QRCodeSVG value={payload} size={300} />
       </div>
       <div>
-        {`${position} of ${[chopped].flat().length}`}
+        {`${position + 1} of ${[chopped].flat().length}`}
       </div>
     </div>
   )

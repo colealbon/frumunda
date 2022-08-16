@@ -1,54 +1,52 @@
 import {
   FunctionComponent,
   useState,
-  useCallback
+  useCallback,
+  useEffect
 } from 'react';
+import {hashStr} from '../utils'
 import { QrReader } from 'react-qr-reader';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  ListItemText
-} from '@mui/material'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const sortObjectByKey = (dict: any) => Object.keys(dict).sort().reduce((r, k) => Object.assign(r, { [k]: dict[k] }), {});
 
 const QRCodeReader: FunctionComponent = () => {
-
-  const [expanded, setExpanded] = useState<string | false>(false);
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-      setExpanded(newExpanded ? panel : false);
-    };
-
-    const [data, setData] = useState('No result');
+  const [fullString, setFullString] = useState('')
+  const [accumulator, setAccumulator] = useState({});
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const setDataCallback = useCallback((value: any) => {
-    console.log(value)
-    setData(value)
-  }, [setData])
+
+  const setDataCallback = (value: string) => {
+    if (Object.values(accumulator).length === JSON.parse(value).chunkCount) {
+      const newString = Object.values(sortObjectByKey(accumulator)).join('')
+      const decodedText = Buffer.from(newString, 'base64').toString('ascii')
+      console.log(JSON.parse(value).hash)
+      console.log(hashStr(newString))
+      console.log(decodedText)
+      setFullString(decodedText)
+    }
+
+    const valueObj = JSON.parse(value)
+    const newAccumulator = Object.assign(accumulator)
+    newAccumulator[valueObj.chunkNumber] = valueObj.content
+    console.log(Object.keys(newAccumulator).length)
+    setAccumulator(newAccumulator)
+  }
 
   return (
     <div>
-      <Accordion 
-        style={{padding: '0px'}}
-        expanded={expanded === 'panel'}
-        onChange={handleChange('panel')}
-      >
-    <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
-      <ListItemText sx={{ pl: 2 }} primary={`read qr code`} />
-    </AccordionSummary>
-    <AccordionDetails>
-    <QrReader
-        constraints={{ facingMode: 'user' }}
+      <QrReader
+        constraints={{ facingMode: 'user'}}
         onResult={(result, error) => {
           if (result !== undefined) {
-            console.log(result)
+            setDataCallback(`${JSON.parse(JSON.stringify({...result})).text}`)
           }
         }}
         scanDelay={50}
       />
-    </AccordionDetails>
-    </Accordion>
+      <pre>
+        {fullString}
+      </pre>
     </div>
   )
 
