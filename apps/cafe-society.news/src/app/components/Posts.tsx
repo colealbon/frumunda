@@ -136,7 +136,7 @@ const Posts: FunctionComponent = () => {
                         likelihood &&
                         structuredClone(likelihood).category === 'notgood'
                     )?.proba || 0.0
-                ) > mlThresholdConfidence.value;
+                ) > parseFloat(mlThresholdConfidence.value)
               return !surpress;
             } catch (error) {
               return true;

@@ -129,7 +129,6 @@ const Classifier: FunctionComponent = () => {
         style={{padding: '0px'}}
         expanded={expanded === 'classifierPanel'}
         onChange={handleChange('classifierPanel')}
-        TransitionProps={{ unmountOnExit: true }} 
       >
         <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
           <ListItemText sx={{ pl: 2 }} primary={`${category}`} />
@@ -138,9 +137,7 @@ const Classifier: FunctionComponent = () => {
           <Accordion 
             style={{padding: '0px'}}
             expanded={expandedQRCodeSender === 'showQRCodeSenderPanel'}
-            onChange={handleChangeQRCodeSender('showQRCodeSenderPanel')}
-            TransitionProps={{ unmountOnExit: true }} 
-
+            onChange={handleChangeQRCodeSender('showQRCodeSenderPanel')} 
           >
             <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
               <ListItemText sx={{ pl: 2 }} primary={`show qr code`} />
@@ -153,6 +150,7 @@ const Classifier: FunctionComponent = () => {
               style={{padding: '0px'}}
               expanded={expandedQRCodeReader === 'showQRCodeReaderPanel'}
               onChange={handleChangeQRCodeReader('showQRCodeReaderPanel')}
+              TransitionProps={{ unmountOnExit: true }} 
             >
             <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
               <ListItemText sx={{ pl: 2 }} primary={`read qr code`} />
