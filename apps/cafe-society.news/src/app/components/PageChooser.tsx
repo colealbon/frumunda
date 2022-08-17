@@ -137,6 +137,27 @@ const PageChooser: FunctionComponent = () => {
                   </ListItemButton>
                 </ListItem>
 
+                <ListItem key={'pageChooserKeys'} disablePadding>
+                  <ListItemButton
+                    sx={{ pl: 2 }}
+                    disabled={'keys' === `${selectedPage}`}
+                    onClick={() => {
+                      mutate(
+                        'selectedPage',
+                        persistLocal('selectedPage', 'keys'),
+                        { optimisticData: 'keys' }
+                      );
+                      mutate(
+                        'selectedCategory',
+                        persistLocal('selectedCategory', ''),
+                        { optimisticData: '' }
+                      );
+                    }}
+                  >
+                    <ListItemText primary={`${labelOrEcho('keys')}`} />
+                  </ListItemButton>
+                </ListItem>
+
                 <ListItem key={'pageChooserMetamask'} disablePadding>
                   <ListItemButton
                     sx={{ pl: 2 }}

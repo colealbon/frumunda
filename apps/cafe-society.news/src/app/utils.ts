@@ -68,6 +68,7 @@ export const labelOrEcho = (index: string) => {
     commerce: 'commerce',
     posts: 'posts',
     feeds: 'feeds',
+    keys: 'encryption keys',
     stacks: 'stacks',
     metamask: 'metamask',
     corsproxies: 'cors proxies',

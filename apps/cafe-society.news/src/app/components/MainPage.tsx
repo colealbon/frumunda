@@ -7,17 +7,13 @@ import CheckedCategory from './CheckedCategory';
 import Category from './Category';
 import Feed from './Feed';
 import Posts from './Posts';
+import Keys from './Keys';
 import Metamask from './Metamask';
 import Stacks from './Stacks';
 import CategoriesEdit from './CategoriesEdit';
 import CorsProxiesEdit from './CorsProxiesEdit';
 import FeedsEdit from './FeedsEdit';
 import ErrorBoundary from './ErrorBoundary';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails
-  } from '@mui/material';
 import { useStacks } from '../react-hooks/useStacks';
 
 import useSWR from 'swr';
@@ -183,6 +179,8 @@ export function MainPage() {
             </ErrorBoundary>
           );
         })}
+
+
         {[selectedPage]
         .flat()
         .filter(() => {
@@ -201,6 +199,27 @@ export function MainPage() {
                 <Category key="classifier">
                   <Classifier/>
                 </Category>
+              </Suspense>
+            </ErrorBoundary>
+          );
+        })}
+
+        {[selectedPage]
+        .flat()
+        .filter(() => {
+          return selectedPage === 'keys';
+        })
+        .filter(
+          () => selectedCategory === '' || selectedCategory === 'allCategories'
+        )
+        .map(() => {
+          return (
+            <ErrorBoundary
+              key={'errorBoundaryKeys'}
+              fallback={<>error fetching keys</>}
+            >
+              <Suspense fallback={<>...fetching keys </>}>
+                <Keys/>
               </Suspense>
             </ErrorBoundary>
           );

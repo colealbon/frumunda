@@ -12,8 +12,6 @@ export function useStacks() {
   const storageOptions: StorageOptions = { userSession };
   const storage = new Storage(storageOptions);
 
-  //const { mutate } = useSWRConfig()
-
   const fetchStacksFilenames = () => {
     return new Promise((resolve, reject) => {
       const fetchedFilenames: string[] = [];

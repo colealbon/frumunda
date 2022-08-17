@@ -1,0 +1,79 @@
+import React, {
+  FunctionComponent,
+  useState
+} from 'react';
+var chloride = require('chloride')
+//var keypair = sodium.crypto_box_keypair
+
+const KeyEdit: FunctionComponent = () => {
+  const [buttonDisabled, setButtonDisabled] = useState(false)
+  const [newKey, setNewKey] = useState('')
+
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (newKey === undefined) {
+      return
+    }
+    console.log(newKey)
+  //   const deepCopyClassifiers: { [key: string]: object } = classifiers
+  //   deepCopyClassifiers[category] = newClassifier || {}
+  //   const newClassifierJSON = JSON.stringify(newClassifier)
+  //   setClassifiers(deepCopyClassifiers)
+  //   blockstackStorage
+  //   .putFile(`classifiers_${category}`, newClassifierJSON, {
+  //       encrypt: true,
+  //     })
+  //   .catch((e: any) => {
+  //     // not logged into blockstack?
+  //     console.log('error writing to blockstack')
+  //   })
+  //   .finally(() => setButtonDisabledCallback(false))
+  }
+
+  const handleInputChange = (event: any) => {
+    const newKeyObj = JSON.parse(event.target.value)
+    setNewKey(`${JSON.stringify({
+      publicKey: Buffer.from(`${newKeyObj.publicKey}`, 'base64'),
+      secretKey: Buffer.from(`${newKeyObj.secretKey}`, 'base64')
+    }, null, 2)}`)
+  }
+
+  const handleNewKeyButton = () => {
+    var rawKeypair = chloride.crypto_box_keypair()
+    const textKeypair = JSON.stringify({
+      publicKey: rawKeypair.publicKey.toString('base64'),
+      secretKey: rawKeypair.secretKey.toString('base64')
+    }, null, 2)
+    setNewKey(textKeypair)
+    setButtonDisabled(true)
+  }
+
+  return (
+      <form onSubmit={onSubmit}>
+        <button
+          onClick={() =>  navigator.clipboard.writeText(JSON.stringify(newKey))}
+        >
+          Copy
+        </button>
+        <button
+          onClick={() => {
+            handleNewKeyButton()
+          }}
+
+        >
+          New
+        </button>
+        <button type="submit" disabled={buttonDisabled}>Submit</button>
+        <br />
+        <textarea
+          rows={30}
+          cols={60}
+          value={newKey}
+          // defaultValue={JSON.stringify(key, null, 2)}
+          onChange={handleInputChange}
+        />
+      </form>
+  );
+};
+
+export default KeyEdit;

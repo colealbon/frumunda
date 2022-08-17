@@ -1,0 +1,13 @@
+import React, { FunctionComponent } from 'react';
+import Button from '@mui/material/Button';
+import { useKeys } from '../custom-hooks/useKeys';
+
+const KeysReset: FunctionComponent = () => {
+  const { factoryReset } = useKeys();
+  return (
+    <Button key="keysreset" onClick={() => factoryReset()}>
+      reset keys
+    </Button>
+  );
+};
+export default KeysReset;

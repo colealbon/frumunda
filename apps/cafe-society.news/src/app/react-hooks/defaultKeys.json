@@ -1,0 +1,22 @@
+{
+  "lucky-day": {
+    "publicKey": "Mch/dQpEmNEt8tY2v4zTHaHYDXiwKrTTtT9hI6lUblE=",
+    "secretKey": "ENv0yOC4uQHDUoRw8aW7Efdb2B5j5YPl7vk75fwZeU8=",
+    "checked": "true"
+  },
+  "dusty-bottoms": {
+    "publicKey": "ZAC9SiQr+5vqL19s5qDYnmdns5ClMQDyG887GE08aVA=",
+    "secretKey": "W9YmAe47iFB8vYrtYpnyXWmGtcoXS6hN3RCt/JVZb1s=",
+    "checked": "true"
+  },
+  "venus-flytrap": {
+    "publicKey": "hkDL0nk7Fxw1MpDcC3yk98BFW3GiL3CF3b4FwqX+UAM=",
+    "secretKey": "+Z30+P3Z1tixOQcKuPp6Xw7vreW3woJ5gWgL/t9YTeM=",
+    "checked": "true"
+  },
+  "ned-nederlander": {
+    "publicKey": "vZlmYIHe43zPAPVejLKq0J4yeGlGJluLPqRv+/4nZ3A=",
+    "secretKey": "OvNKnsGkK/sHbMeRwmeZEfdtIHL9r1TlnaDa5yAmRmc=",
+    "checked": "true"
+  }
+}
