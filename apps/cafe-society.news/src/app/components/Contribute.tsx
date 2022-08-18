@@ -17,7 +17,7 @@ const Contribute: FunctionComponent = () => {
       </div>
       <div>
         radicle:&nbsp;
-        <a href="https://app.radicle.network/seeds/pine.radicle.garden/rad:git:hnrkjbojk5arob57sdsspxsy3bsrzrfdj3o5o/tree/d2a366cd5a6f98e31d01df664fcad3066bc2dacd">
+        <a href="https://app.radicle.network/seeds/pine.radicle.garden/rad:git:hnrkjbojk5arob57sdsspxsy3bsrzrfdj3o5o/tree">
           albondigas
         </a>
       </div>
