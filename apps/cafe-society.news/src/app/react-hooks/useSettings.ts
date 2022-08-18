@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import useSWR from 'swr';
 import localforage from 'localforage';
-//import defaultSettings from './defaultSettings.json'
 
 export function useSettings() {
   const [inFlight, setInFlight] = useState(false);

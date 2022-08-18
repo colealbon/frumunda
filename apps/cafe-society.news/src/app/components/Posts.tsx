@@ -44,9 +44,8 @@ const Posts: FunctionComponent = () => {
     fetchFileLocal('feeds', defaultFeeds)
   );
   const feeds = { ...(feedsdata as object) };
-  const { data: selectedCategory } = useSWR('selectedCategory');
   const { data: classifierdata } = useSWR(
-    `classifier_${selectedCategory}`.replace(/_$/, '')
+    `classifier_${category}`.replace(/_$/, '')
   );
   const defaultProcessedPosts = JSON.parse(
     `{"${processedFilenameForFeed}":[]}`
