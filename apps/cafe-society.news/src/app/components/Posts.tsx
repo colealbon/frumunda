@@ -114,7 +114,8 @@ const Posts: FunctionComponent = () => {
                 structuredClone(postItem).description
               }`
             );
-            if (disableMachineLearning === true) {
+
+            if (disableMachineLearning.checked === true) {
               return true;
             }
             if (

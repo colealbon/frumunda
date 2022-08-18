@@ -4,6 +4,7 @@ import { Buffer } from 'buffer';
 import App from './app/components/app';
 
 Buffer.from('anything', 'base64');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 window.Buffer = window.Buffer || require('buffer').Buffer;
 
 const root = ReactDOM.createRoot(

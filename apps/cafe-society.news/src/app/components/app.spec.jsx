@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import app from './app'
+import App from './app'
 
 let container;
 
@@ -14,6 +14,6 @@ afterEach(() => {
 });
 
 it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<app />);
+    ReactDOM.createRoot(container).render(<App />);
 });
 

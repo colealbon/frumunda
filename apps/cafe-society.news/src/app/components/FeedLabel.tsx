@@ -41,7 +41,9 @@ const FeedLabelEdit: FunctionComponent<Props> = ({ text }: Props) => {
         ])
     );
     const newFeeds = { ...feeds, ...newFeed };
-    mutate('feeds', persist('feeds', newFeeds), { optimisticData: newFeeds });
+    setInFlight(true)
+    mutate('feeds', persist('feeds', newFeeds), { optimisticData: newFeeds })
+    .then(() => setInFlight(false))
   };
 
   return (

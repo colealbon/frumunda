@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import useSWR from 'swr';
 import localforage from 'localforage';
-// import defaultSettings from './defaultFeeds.json'
+//import defaultSettings from './defaultSettings.json'
 
 export function useSettings() {
   const [inFlight, setInFlight] = useState(false);
@@ -32,6 +32,7 @@ export function useSettings() {
   };
 
   const fetcher = () => {
+
     return new Promise((resolve, reject) => {
       localforage.getItem('settings').then((value: unknown) => {
         if (!value) {
@@ -66,7 +67,7 @@ export function useSettings() {
       };
       mutate(updateFn(newSettingsClone), options);
     },
-    [mutate]
+    [mutate, defaultSettings]
   );
 
   const factoryReset = () => {
