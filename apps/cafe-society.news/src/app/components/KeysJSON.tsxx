@@ -1,9 +1,0 @@
-import React, { FunctionComponent } from 'react';
-import { useFeeds } from '../custom-hooks/useFeeds';
-
-const FeedsJSON: FunctionComponent = () => {
-  const { feeds } = useFeeds();
-  return <pre>{JSON.stringify(feeds, null, 2)}</pre>;
-};
-
-export default FeedsJSON;

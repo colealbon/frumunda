@@ -1,9 +1,8 @@
 import { FunctionComponent } from 'react';
 import KeysAdd from './KeysAdd';
-// import KeysJSON from './KeysJSON';
-// import KeysReset from './KeysReset';
+import KeysReset from './KeysReset';
 import KeyToggle from './KeyToggle';
-// import KeyDelete from './KeyDelete';
+import KeyDelete from './KeyDelete';
 import {useStacks} from '../react-hooks/useStacks'
 import useSWR from 'swr'
 import defaultKeys from '../react-hooks/defaultKeys.json'
@@ -32,18 +31,17 @@ const Keys: FunctionComponent = () => {
                 <Box width="100%">
                   <KeyToggle text={key} />
                 </Box>
-                {/* <Box flexShrink={0}>
+                <Box flexShrink={0}>
                   <KeyDelete text={key} />
-                </Box> */}
+                </Box>
               </Box>
             </Box>
           );
         })}
       </Box>
-      {/* <Box p={1}>
+      <Box p={1}>
         <KeysReset />
-      </Box> */}
-      <pre>{JSON.stringify(keys, null, 2)}</pre>
+      </Box>
     </>
   );
 };
