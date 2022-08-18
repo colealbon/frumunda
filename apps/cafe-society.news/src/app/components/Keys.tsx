@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react';
-// import KeysAdd from './KeysAdd';
+import KeysAdd from './KeysAdd';
 // import KeysJSON from './KeysJSON';
 // import KeysReset from './KeysReset';
 import KeyToggle from './KeyToggle';
@@ -21,10 +21,9 @@ const Keys: FunctionComponent = () => {
 
   return (
     <>
-      {/* <Box p={1}>
+      <Box p={1}>
         <KeysAdd />
       </Box>
-      */}
       <Box p={1} maxWidth={600}>
         {Object.keys(JSON.parse(JSON.stringify(keys))).map(key => {
           return (

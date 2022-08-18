@@ -2,12 +2,11 @@ import { FunctionComponent, Fragment, useState } from 'react';
 import { Switch, FormControlLabel } from '@mui/material';
 import { useStacks } from '../react-hooks/useStacks';
 import useSWR, { mutate } from 'swr';
-import defaultKeys from '../react-hooks/defaultKeys.json';
 
 const KeyToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { fetchFile, persist } = useStacks();
+  const { persist } = useStacks();
   const [inFlight, setInFlight] = useState(false);
 
   const { data: keysdata } = useSWR(

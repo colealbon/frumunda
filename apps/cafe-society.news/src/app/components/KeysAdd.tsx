@@ -1,34 +1,21 @@
-import { ChangeEvent, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useStacks } from '../react-hooks/useStacks';
 import { TextField } from '@mui/material';
 import useSWR, { mutate } from 'swr';
-import defaultKeys from '../react-hooks/defaultKeys.json';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires, no-var
+var chloride = require('chloride')
 
 const KeysAdd = () => {
 
-  const { fetchFile, persist } = useStacks();
-  const { data: keysdata } = useSWR(
-    'keys',
-    () => fetchFile('keys', defaultKeys),
-    { fallbackData: defaultKeys }
-  );
-  const keys = { ...(keysdata as object) };
+  const { persist } = useStacks();
+  const { data: keysdata } = useSWR('keys');
 
   const [inFlight, setInFlight] = useState(false);
-  // const [inputValue, setInputValue] = useState('');
-
-  // const setInputCallback = useCallback(
-  //   (newInputValue: string) => {
-  //     setInputValue(newInputValue);
-  //   },
-  //   [setInputValue]
-  // );
-
 
   const [labelValue, setLabelValue] = useState('');
   const [publicKeyValue, setPublicKeyValue] = useState('');
   const [secretKeyValue, setSecretKeyValue] = useState('');
-//   // const { keys, setKeys } = useKeys();
 
   const setLabelValueCallback = useCallback(
     (newLabelValue: string) => {
@@ -44,7 +31,6 @@ const KeysAdd = () => {
     [setPublicKeyValue]
   );
   const setSecretKeyCallback = useCallback(
-
     (newSecretKey: string) => {
       console.log(newSecretKey)
       setSecretKeyValue(newSecretKey);
@@ -53,6 +39,14 @@ const KeysAdd = () => {
   );
 
   const addKeyCallback = useCallback(() => {
+
+    const keys = { ...(keysdata as object) };
+    const setKeys = (theKeys: object) => {
+      setInFlight(true)
+      mutate('keys', persist('keys', theKeys), {
+        optimisticData: theKeys,
+      }).then(() => setInFlight(false));
+    };
     return [
       ...[`${labelValue}`]
       .filter(() => `${labelValue}` !== '')
@@ -61,7 +55,6 @@ const KeysAdd = () => {
       .map(labelValue => {
         // eslint-disable-next-line no-var
         var rawKeypair = chloride.crypto_box_keypair()
-        console.log(rawKeypair)
         const pubkeyStr = Buffer.from(rawKeypair.publicKey).toString('base64')
         const secretKeyStr = Buffer.from(rawKeypair.secretKey).toString('base64')
         const keypairWithLabel = JSON.parse(`{"${labelValue}": {
@@ -69,8 +62,6 @@ const KeysAdd = () => {
           "secretKey": "${secretKeyStr}",
           "checked": "true"
         }}`)
-
-        // const newKey = JSON.parse(`{"${labelValue}": {"checked": true}}`);
         setKeys({ ...keypairWithLabel, ...JSON.parse(JSON.stringify(keys)) });
         setLabelValue('');
         return null
@@ -85,53 +76,37 @@ const KeysAdd = () => {
           "checked": "true"
         }`)
 
-        const keypairWithLabel = JSON.parse(`{"${labelValue}": ${JSON.stringify(fromEntries(entries(keypair).filter((entryItem: [string, unknown]) => entryItem[1] !== '' )))}}`)
+        const keypairWithLabel = JSON.parse(`{"${labelValue}": ${JSON.stringify(Object.fromEntries(Object.entries(keypair).filter((entryItem: [string, unknown]) => entryItem[1] !== '' )))}}`)
         console.log({ ...keypairWithLabel, ...JSON.parse(JSON.stringify(keys)) })
         setKeys({ ...keypairWithLabel, ...JSON.parse(JSON.stringify(keys)) });
         setLabelValue('');
         return null
       })
     ].find(() => true)
-  }, [keys, setKeys, labelValue, publicKeyValue, secretKeyValue]);
-
-  const onSubmit = async (event: React.FormEvent) => {
-    // call persistFile or something 
-    event.preventDefault();
-    console.log(event)
-  }
-
-  const addKey = () => {
-    setInFlight(true);
-    const newKey = JSON.parse(`{"${inputValue}": {"checked": true}}`);
-    const newKeys = { ...newKey, ...keys };
-    mutate('Keys', persist('keys', newKeys), {
-      optimisticData: newKeys,
-      rollbackOnError: true,
-    }).then(() => setInFlight(false));
-  };
+  }, [keysdata, labelValue, persist, publicKeyValue, secretKeyValue]);
 
   return (
-    <form onSubmit={onSubmit}>
+    <div>
       <TextField
         id="addKeyLabel"
         placeholder="key label"
         value={labelValue}
-        onKeyPress={event => {
-          [event.key]
-            .filter(theKey => theKey === 'Enter')
-            .forEach(() => {
-              addKeyCallback()
-            });
+        disabled={inFlight}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onKeyPress={(event: any)=> {
+          event.key === 'Enter' && addKeyCallback()
         }}
         onChange={event => {
           setLabelValueCallback(event.target.value);
         }}
         fullWidth
       />
-      <TextField
+
+     <TextField
         id="publicKeyValue"
         placeholder="public key curve25519_pk"
         value={publicKeyValue}
+        disabled={inFlight}
         onKeyPress={event => {
           [event.key]
             .filter(theKey => theKey === 'Enter')
@@ -149,6 +124,7 @@ const KeysAdd = () => {
         id="secretKeyValue"
         placeholder="secret key curve25519_sk"
         value={secretKeyValue}
+        disabled={inFlight}
         onKeyPress={event => {
           [event.key]
             .filter(theKey => theKey === 'Enter')
@@ -161,30 +137,9 @@ const KeysAdd = () => {
         }}
         fullWidth
       />
+    </div>
+  )
 };
 
 export default KeysAdd;
 
-
-// import React, {
-//   FunctionComponent,
-//   useState,
-//   useCallback,
-// } from 'react';
-// import { TextField } from '@mui/material';
-// // import { useKeys } from '../custom-hooks/useKeys';
-// var chloride = require('chloride')
-
-// const KeysAdd: FunctionComponent = () => {
-
-
-
-//       <br />
-//       <pre>
-//         {JSON.stringify(keys, null, 2)}
-//       </pre>
-//     </form>
-//   );
-// };
-
-// export default KeysAdd;

@@ -13,7 +13,9 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "timers": ["node_modules/timers-browserify"],
-      "stream": ["node_modules/stream-browserify"]
+      "stream": ["node_modules/stream-browserify"],
+      "crypto": ["node_modules/crypto-browserify"],
+      "path": ["node_modules/path-browserify"]
     }
   },
   "files": [],
