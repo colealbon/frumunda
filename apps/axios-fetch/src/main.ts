@@ -10,7 +10,7 @@ const axiosWithCache = axios.create({
   adapter: cache.adapter
 })
 
-const handler: Handler = async (event, context) => {
+const handler: Handler = async (event) => {
   return axiosWithCache.get(event.queryStringParameters.url)
   .then(response => {
     return ({

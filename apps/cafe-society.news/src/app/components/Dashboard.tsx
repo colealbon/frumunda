@@ -17,7 +17,6 @@ import Typography from '@mui/material/Typography';
 import PageChooser from './PageChooser';
 import CategoryChooser from './CategoryChooser';
 import { labelOrEcho } from '../utils';
-import { useStacks } from '../react-hooks/useStacks';
 import localforage from 'localforage';
 
 const drawerWidth = 180;

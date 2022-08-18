@@ -241,6 +241,7 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
                         );
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         const hrefVal: unknown = Object.values(
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
                           Object.fromEntries(hrefEntry as [PropertyKey, any])
                         ).find(() => true);
                         const rawTitle: unknown = [

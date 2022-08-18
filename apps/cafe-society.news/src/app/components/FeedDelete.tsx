@@ -1,4 +1,4 @@
-import { useCallback, FunctionComponent, Fragment, useState } from 'react';
+import { FunctionComponent, Fragment, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { useStacks } from '../react-hooks/useStacks';
 
@@ -22,7 +22,9 @@ const FeedDelete: FunctionComponent<{ text: string }> = (props: {
         ),
       })
     );
-    mutate('feeds', persistLocal('feeds', newFeeds), { optimisticData: feeds });
+    setInFlight(true)
+    mutate('feeds', persistLocal('feeds', newFeeds), { optimisticData: feeds })
+    .then(() => setInFlight(false))
   };
 
   return (

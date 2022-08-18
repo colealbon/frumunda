@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import useSWR from 'swr';
 import localforage from 'localforage';
 //import defaultSettings from './defaultSettings.json'
@@ -48,27 +48,24 @@ export function useSettings() {
     shouldRetryOnError: false,
   });
 
-  const persistSettings = useCallback(
-    (newSettings: unknown) => {
-      setInFlight(true);
-      const newSettingsClone = structuredClone(newSettings as object);
+  const persistSettings = (newSettings: unknown) => {
+    setInFlight(true);
+    const newSettingsClone = structuredClone(newSettings as object);
 
-      const updateFn = (newSettings: object) => {
-        return new Promise((resolve) => {
-          localforage.setItem('settings', newSettingsClone).then(() => {
-            setInFlight(false);
-            resolve(newSettingsClone);
-          });
+    const updateFn = (newSettings: object) => {
+      return new Promise((resolve) => {
+        localforage.setItem('settings', newSettingsClone).then(() => {
+          setInFlight(false);
+          resolve(newSettingsClone);
         });
-      };
-      const options = {
-        optimisticData: defaultSettings,
-        rollbackOnError: false,
-      };
-      mutate(updateFn(newSettingsClone), options);
-    },
-    [mutate, defaultSettings]
-  );
+      });
+    };
+    const options = {
+      optimisticData: defaultSettings,
+      rollbackOnError: false,
+    };
+    mutate(updateFn(newSettingsClone), options);
+  }
 
   const factoryReset = () => {
     const newSettingsClone = structuredClone(defaultSettings);
