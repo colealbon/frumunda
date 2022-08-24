@@ -43,7 +43,7 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
   }, [setMobileOpen]);
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex'}} style={{ backgroundColor: '#E7EBF0', padding: '0px'}}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -70,13 +70,13 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
                   selectedCategory === '' ||
                   selectedCategory === 'allCategories'
               )
-              .map(() => labelOrEcho(`${selectedPage}`))}
+              .map(() => labelOrEcho(`${selectedPage}`.replace('posts', 'cafe-society.news')))}
             {[selectedPage]
               .flat()
               .filter(() => selectedCategory !== '')
               .filter(() => selectedCategory !== 'allCategories')
               .map(() =>
-                `posts - ${selectedCategory}`
+                `cafe-society.news - ${selectedCategory}`
                   .replace(` - undefined`, '')
                   .replace(` - null`, '')
               )}

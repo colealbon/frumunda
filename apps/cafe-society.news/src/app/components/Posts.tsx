@@ -2,7 +2,16 @@ import { FunctionComponent, useContext, createContext, Fragment } from 'react';
 import { ParsedFeedContentContext } from './Feed';
 import useSWR from 'swr';
 import Post from './Post';
-import { Link, Typography, Divider, Box } from '@mui/material';
+import { 
+  Card,
+  Link, 
+  Typography, 
+  Divider, 
+  Box,
+  Grid
+} from '@mui/material';
+import { experimentalStyled as styled } from '@mui/material/styles';
+
 import { useSettings } from '../react-hooks/useSettings';
 import { useStacks } from '../react-hooks/useStacks';
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
@@ -144,17 +153,30 @@ const Posts: FunctionComponent = () => {
 
         if (unprocessedCleanPostItems.length === 0) {
           return (
-            <Fragment key={feedLink}>
+            <Card key={feedLink}>
               <Divider />
               <Typography
-                variant="h3"
-                style={{ justifyContent: 'center' }}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
               >
-                <Link href={feedLink} component="button">
+                <Link href={`${feedLink}`} component="button">
                   {`${feedLabel || feedTitle || feedLink}`}
                 </Link>
+                <Typography
+                  variant="caption"
+                  style={{ display: 'flex', justifyContent: 'center' }}
+                >
+                  {feedDescription}
+                </Typography>
               </Typography>
-            </Fragment>
+              <Typography variant="caption">{` (${
+                unprocessedCleanPostItems.length
+              } of ${
+                structuredClone(feedContentEntry[1]).items.length
+              } posts remaining)`}</Typography>
+            </Card>
           );
         }
         return (
@@ -183,20 +205,26 @@ const Posts: FunctionComponent = () => {
                 structuredClone(feedContentEntry[1]).items.length
               } posts remaining)`}</Typography>
               <Divider />
-              {unprocessedCleanPostItems.map((cleanPostItem: object) => {
-                return (
-                  <Fragment key={JSON.stringify(cleanPostItem)}>
-                    <PostContext.Provider
-                      value={cleanPostItem}
-                      key={`postitem-swipeable-list-${
-                        structuredClone(cleanPostItem).link
-                      }`}
-                    >
-                      <Post key={JSON.stringify(cleanPostItem)} />
-                    </PostContext.Provider>
-                  </Fragment>
-                );
-              })}
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                  {unprocessedCleanPostItems.map((cleanPostItem: object) => {
+                    return (
+                      <Grid item xs={3} sm={4} md={4} key={JSON.stringify(cleanPostItem)}>
+                        <PostContext.Provider
+                          value={cleanPostItem}
+                          key={`postitem-swipeable-list-${
+                            structuredClone(cleanPostItem).link
+                          }`}
+                        >
+                          <Card>
+                            <Post key={JSON.stringify(cleanPostItem)} />
+                          </Card>
+                        </PostContext.Provider>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </Box>
               <MarkFeedProcessedButton />
             </Fragment>
           </Box>

@@ -13,7 +13,10 @@ cafe-society.news is the code behind [cafe-society.news](https://cafe-society.ne
 react, blockstack, netlify
 
 ### vision:  
-cafe-society.news exploits externalities emerging from a peer-to-peer decentralized application infrastructure.  cafe-society.news relies primarily on user supplied storage, networking, CPU, and software development.
+
+ a news feed with machine learning - on the cheap
+
+ cafe-society.news relies primarily on user supplied storage, networking, CPU, and software development.
 
 ### current features:  
 - ability to add or delete unlimited news feeds
