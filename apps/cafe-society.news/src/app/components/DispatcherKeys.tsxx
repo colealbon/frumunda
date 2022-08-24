@@ -1,0 +1,128 @@
+import React, {useContext, useState, useCallback, useEffect} from 'react';
+import { useDispatchers } from '../custom-hooks/useDispatchers';
+import { CategoryContext } from './Categories';
+import { DispatcherContext } from './Dispatchers'
+
+import { useKeys } from '../custom-hooks/useKeys';
+import Autocomplete from '@mui/material/Autocomplete';
+import TextField from '@mui/material/TextField';
+import {
+  BlockstackStorageContext,
+} from './BlockstackSessionProvider';
+var fromEntries = require('fromentries')
+var entries = require('object.entries')
+
+const SelectedKeys = () => {
+  const { keys } = useKeys();
+  const { dispatchers, setDispatchers } = useDispatchers()
+  const [selectedKeys, setSelectedKeys] = useState([])
+  const dispatcherContext = useContext(DispatcherContext)
+  const dispatcherLabel = `${dispatcherContext}`
+  const categoryContext = useContext(CategoryContext)
+  const category = `${categoryContext}`
+  const blockstackStorageContext = useContext(BlockstackStorageContext);
+  const blockstackStorage = Object.assign(blockstackStorageContext);
+
+  const setSelectedKeysCallback = useCallback((newKeys) => {
+    const dispatchersForCategory = fromEntries(
+      entries(
+        entries(
+          Object.assign(dispatchers as object || {})
+        )
+        .filter((dispatchersWithCategory: [string, object]) => dispatchersWithCategory[0] === category)
+        .map((categoryEntry: [string, unknown]) => categoryEntry[1])
+        .find(() => true) as object
+      )
+    )
+    const newDispatcher = {
+      ...entries(dispatchersForCategory)
+      .filter((dispatcherItem: [string, object]) => {
+        return dispatcherItem[0] === dispatcherLabel
+      })
+      .map((dispatcherEntry: [string, unknown]) => dispatcherEntry[1])
+      .find(() => true) as object,
+      keys: newKeys.slice()
+    }
+    setSelectedKeys(newKeys)
+    // if this section breaks, try using flatten change unflatten strategy.
+    const newDispatchersForCategory = {...dispatchersForCategory as object, ...JSON.parse(`{"${dispatcherLabel}":${JSON.stringify(newDispatcher)}}`)}
+    const newDispatchers = {...dispatchers as object, ...JSON.parse(`{"${category}":${JSON.stringify(newDispatchersForCategory)}}`)}
+    setDispatchers(newDispatchers)
+
+    const fileContent = JSON.stringify(newDispatchersForCategory, null, 2)
+    blockstackStorage.putFile(`dispatchers_${category}`, fileContent, {
+          encrypt: true,
+    })
+
+  }, [dispatcherLabel, setDispatchers, blockstackStorage, dispatchers, category]);
+
+
+  const setKeysCallback = useCallback((newKeys) => {
+    const newKeysCopy = newKeys.slice()
+    setSelectedKeys(newKeysCopy)
+  }, [])
+
+  const handleChange = () => (event: object, values: object[]) => {
+    const newKeys = values.slice()
+    console.log(newKeys)
+    setKeysCallback(newKeys)
+    setSelectedKeysCallback(newKeys)
+  }
+
+  useEffect(() => () => {
+    const dispatchersForCategory = fromEntries(
+      entries(
+        entries(
+          Object.assign(dispatchers as object || {})
+        )
+        .filter((dispatchersWithCategory: [string, object]) => dispatchersWithCategory[0] === category)
+        .map((categoryEntry: [string, unknown]) => categoryEntry[1])
+        .find(() => true) as object
+      )
+    )
+
+    const defaultKeys = [entries(
+      entries(dispatchersForCategory)
+        .filter((dispatcherItem: [string, string[]]) => {
+          return dispatcherItem[0] === dispatcherLabel
+        })
+        .map((dispatcherEntry: [string, unknown]) => dispatcherEntry[1])
+        .find(() => true) as object
+      ).filter((dispatcherAttributeItem: [string, unknown]) => {
+        return `${dispatcherAttributeItem[0]}` === 'keys'
+      })
+      .map((dispatcherAttributeItem: [string, unknown]) => {
+        return dispatcherAttributeItem[1]
+      }).filter((notEmpty:  object[]) => !!notEmpty)].flat(2)
+
+    const newKeys = defaultKeys.slice()
+    console.log(newKeys)
+    setSelectedKeysCallback(newKeys)
+  }, [setSelectedKeysCallback, dispatchers, category, dispatcherLabel])
+
+  return (
+    <Autocomplete
+      disablePortal
+      id={`${category}-${dispatcherLabel}-keys`}
+      multiple
+      freeSolo
+      options={
+        [Object.keys(keys as object)]
+        .flat(Infinity)
+        //.filter(theKey => 
+      }
+      onChange={handleChange}
+      value={selectedKeys}
+      renderInput={(params) => {
+        return (
+          <TextField
+            {...params}
+            label={`${category} - ${dispatcherLabel} - keys`}
+          />
+        )
+      }}
+    />
+  );
+}
+
+export default SelectedKeys;

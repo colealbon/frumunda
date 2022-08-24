@@ -7,6 +7,7 @@ import CheckedCategory from './CheckedCategory';
 import Category from './Category';
 import Feed from './Feed';
 import Posts from './Posts';
+import Dispatchers from './Dispatchers'
 import Keys from './Keys';
 import Metamask from './Metamask';
 import Stacks from './Stacks';
@@ -220,6 +221,29 @@ export function MainPage() {
             >
               <Suspense fallback={<>...fetching keys </>}>
                 <Keys/>
+              </Suspense>
+            </ErrorBoundary>
+          );
+        })}
+
+      {[selectedPage]
+        .flat()
+        .filter(() => {
+          return selectedPage === 'dispatchers';
+        })
+        .filter(
+          () => selectedCategory === '' || selectedCategory === 'allCategories'
+        )
+        .map(() => {
+          return (
+            <ErrorBoundary
+              key={'errorBoundaryKeys'}
+              fallback={<>error fetching dispatchers</>}
+            >
+              <Suspense fallback={<>...fetching dispatchers </>}>
+                <Category>
+                  <Dispatchers/>
+                </Category>
               </Suspense>
             </ErrorBoundary>
           );

@@ -22,6 +22,10 @@ cafe-society.news exploits externalities emerging from a peer-to-peer decentrali
 - ability to sync machine learning investment between devices via blockstack
 
 ### future features:
+- Peer to peer Digital Rights Management tool for the produced ML payload:
+  - test
+  - 
+  - 
 - ability to share curated content via blockstack (not just algos but content too)
 - financial reporting, report value of tokens based on existing actual bids.
 - option to publish your settings/machine learning work to classifieds section

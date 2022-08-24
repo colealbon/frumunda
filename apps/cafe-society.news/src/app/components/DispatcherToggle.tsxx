@@ -1,0 +1,76 @@
+import React, { useCallback, FunctionComponent, Fragment } from 'react';
+import { Switch, FormControlLabel } from '@material-ui/core';
+import { useDispatchers } from '../custom-hooks/useDispatchers';
+var fromEntries = require('fromentries')
+var entries = require('object.entries')
+
+const DispatcherToggle: FunctionComponent<{ text: string }> = (props: {
+  text: string;
+}) => {
+  const { dispatchers, setDispatchers } = useDispatchers();
+
+  const setDispatchersCallback = useCallback(() => {
+    const newDispatcher = JSON.parse(
+      JSON.stringify({
+        ...fromEntries(
+          entries(JSON.parse(JSON.stringify(dispatchers)))
+            .filter((dispatcher: [string, unknown]) => dispatcher[0] === props.text)
+            .map((dispatcher: [string, unknown]) => {
+              return [
+                dispatcher[0],
+                {
+                  ...fromEntries(
+                    entries({
+                      ...(dispatcher[1] as Record<string, unknown>),
+                    })
+                      .filter(
+                        (attribute: [string, unknown]) =>
+                          attribute[0] === 'checked'
+                      )
+                      .map((attribute: [string, unknown]) => [attribute[0], !attribute[1]])
+                  ),
+                  ...fromEntries(
+                    entries({
+                      ...(dispatcher[1] as Record<string, unknown>),
+                    }).filter((attribute: [string, unknown]) => attribute[0] !== 'checked')
+                  ),
+                },
+              ];
+            })
+        ),
+      })
+    );
+    setDispatchers({ ...JSON.parse(JSON.stringify(dispatchers)), ...newDispatcher });
+  }, [dispatchers, props.text, setDispatchers]);
+
+  return (
+    <Fragment>
+      {entries(JSON.parse(JSON.stringify(dispatchers)))
+        .filter((dispatcher: [string, unknown]) => dispatcher[0] === props.text)
+        .map((dispatcher: [string, unknown]) => {
+          const attributes = dispatcher[1] as Record<string, unknown>;
+          return (
+            <FormControlLabel
+              key={dispatcher[0]}
+              control={
+                <Switch
+                  checked={Object.values(
+                    fromEntries(
+                      entries(attributes).filter(
+                        (attribute: [string, unknown]) => attribute[0] === 'checked'
+                      )
+                    )
+                  ).some(checked => checked)}
+                  onChange={() => setDispatchersCallback()}
+                  name={props.text}
+                />
+              }
+              label={props.text}
+            />
+          );
+        })}
+    </Fragment>
+  );
+};
+
+export default DispatcherToggle;

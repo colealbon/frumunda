@@ -1,0 +1,13 @@
+import React, { FunctionComponent } from 'react';
+import Button from '@material-ui/core/Button';
+import { useDispatchers } from '../custom-hooks/useDispatchers';
+
+const DispatchersReset: FunctionComponent = () => {
+  const { factoryReset } = useDispatchers();
+  return (
+    <Button key="dispatchersreset" onClick={() => factoryReset()}>
+      reset dispatchers
+    </Button>
+  );
+};
+export default DispatchersReset;

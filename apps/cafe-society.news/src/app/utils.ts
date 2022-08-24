@@ -72,7 +72,8 @@ export const labelOrEcho = (index: string) => {
     stacks: 'stacks',
     metamask: 'metamask',
     corsproxies: 'cors proxies',
-    appsettings: 'app settings'
+    appsettings: 'app settings',
+    dispatchers: 'dispatchers'
   })
     .filter((labelsEntry) => labelsEntry[0] === `${index}`)
     .map((labelsEntry) => labelsEntry[1])

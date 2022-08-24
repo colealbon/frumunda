@@ -1,0 +1,12 @@
+{
+  "blockstack-narrowcast": {
+    "checked":true,
+    "keys":["lucky-day","dusty-bottoms", "venus-flytrap", "ned-nederlander"],
+    "action": "encryptThenPostToBlockstack"
+  },
+  "blockstack-broadcast":
+  {
+    "checked":false,
+    "action": "postToBlockstackNoEncryption"
+  }
+}
