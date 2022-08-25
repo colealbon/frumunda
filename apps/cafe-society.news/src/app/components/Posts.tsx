@@ -209,12 +209,11 @@ const Posts: FunctionComponent = () => {
                 structuredClone(feedContentEntry[1]).items.length
               } posts remaining)`}</Typography>
               <Divider />
-
-                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{justifyContent: 'center'}}>
+                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{justifyContent: 'center'}}>
                   {unprocessedCleanPostItems.map((cleanPostItem: object) => {
                     return (
                       <Grid item 
-                      xs={2} 
+                      xs={3} 
                       sm={4} 
                       md={4} 
                       key={JSON.stringify(cleanPostItem)}
