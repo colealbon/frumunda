@@ -8,7 +8,13 @@ import { CategoryContext } from './CheckedCategory';
 import { useStacks } from '../react-hooks/useStacks';
 
 import { ThumbDown, ThumbUp } from '@mui/icons-material';
-import { Link, Box, IconButton, Typography} from '@mui/material';
+import { 
+  Link, 
+  Box, 
+  IconButton, 
+  Typography,
+  Tooltip
+} from '@mui/material';
 import {
   LeadingActions,
   SwipeableList,
@@ -202,6 +208,7 @@ const Post: FunctionComponent = () => {
             >
               <Typography variant="body2">{postItem.description}</Typography>
             </div>
+            <br />
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <div style={{
             display:'flex', 
@@ -212,25 +219,23 @@ const Post: FunctionComponent = () => {
           }}
           >
             <div />
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <Tooltip title={`${Math.round(predictionNotGood * 100)}%`}>
                 <IconButton onClick={(event) => {
                   handleTrain('notgood')
                 }}>
                 <ThumbDown /></IconButton>
-              </div>
-              <div>{`${Math.round(predictionNotGood * 100)}%`}</div>
+              </Tooltip>
             </div>
             <div style={{justifyContent: 'center'}}>{`${category}`}</div>
             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <div>
+              <Tooltip title={`${Math.round(predictionGood * 100)}%`}>
                 <IconButton onClick={(event) => handleTrain('good')}>
                   <ThumbUp />
                 </IconButton>
-              </div>
-              <div>{`${Math.round(predictionGood * 100)}%`}</div>
+              </Tooltip>
+              {/* <div>{`${Math.round(predictionGood * 100)}%`}</div> */}
             </div>
-            <div/>
         </div>
       </div> 
       </div>        
