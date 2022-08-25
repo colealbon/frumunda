@@ -3,6 +3,7 @@ import { ParsedFeedContentContext } from './Feed';
 import useSWR from 'swr';
 import Post from './Post';
 import { 
+  Toolbar,
   Card,
   Link, 
   Typography, 
@@ -153,6 +154,8 @@ const Posts: FunctionComponent = () => {
 
         if (unprocessedCleanPostItems.length === 0) {
           return (
+            <>
+            <div id="back-to-top-anchor" />
             <Card key={feedLink}>
               <Divider />
               <Typography
@@ -177,10 +180,11 @@ const Posts: FunctionComponent = () => {
                 structuredClone(feedContentEntry[1]).items.length
               } posts remaining)`}</Typography>
             </Card>
+            </>
           );
         }
         return (
-          <Box key={feedLink}>
+          <Box key={feedLink} >
             <Fragment key={feedLink}>
               <Divider />
               <Typography

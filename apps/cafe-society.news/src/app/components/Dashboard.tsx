@@ -46,6 +46,7 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
     <Box sx={{ display: 'flex'}} style={{ backgroundColor: '#E7EBF0', padding: '0px'}}>
       <CssBaseline />
       <AppBar
+        
         position="fixed"
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },

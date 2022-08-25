@@ -1,6 +1,6 @@
 import { useContext, FunctionComponent, useState } from 'react';
 import { mutate } from 'swr';
-import { IconButton, Typography } from '@mui/material';
+import { IconButton, Typography, useScrollTrigger } from '@mui/material';
 import { RemoveDone } from '@mui/icons-material';
 import { cleanPostItem, removePunctuation, shortUrl, hashStr } from '../utils';
 import { cleanPostItemType } from './Posts';
@@ -10,6 +10,7 @@ import { CategoryContext } from './CheckedCategory';
 
 const MarkFeedProcessedButton: FunctionComponent = () => {
   const [inFlight, setInFlight] = useState(false);
+  const trigger = useScrollTrigger();
   const { persist } = useStacks();
   const categoryContext = useContext(CategoryContext);
   const category = `${categoryContext}`;
@@ -34,6 +35,15 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
         populateCache: false,
       }
     );
+
+    const anchor =  document.querySelector(
+      "#back-to-top-anchor"
+    );
+
+    if (anchor) {
+      console.log('scrolling')
+      anchor.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+    }
   };
 
   return (
