@@ -8,7 +8,7 @@ import { CategoryContext } from './CheckedCategory';
 import { useStacks } from '../react-hooks/useStacks';
 
 import { ThumbDown, ThumbUp } from '@mui/icons-material';
-import { Link, Box, IconButton} from '@mui/material';
+import { Link, Box, IconButton, Typography} from '@mui/material';
 import {
   LeadingActions,
   SwipeableList,
@@ -18,6 +18,9 @@ import {
   Type as ListType,
 } from 'react-swipeable-list';
 import 'react-swipeable-list/dist/styles.css';
+
+// phoenix program:  cryptocomb - the CIA speaks
+
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bayes = require('classificator');
@@ -167,8 +170,6 @@ const Post: FunctionComponent = () => {
 
   return (
     <>
-
-
       <Box
         sx={{
           display: { xs: 'none', sm: 'block' }
@@ -192,14 +193,14 @@ const Post: FunctionComponent = () => {
             }}
           >
             <div>
-              <Link href={`${postItem.link}`} target="cafe-society">
-                {postItem.title}
+              <Link style={{ textDecoration: 'none' }} href={`${postItem.link}`} target="cafe-society">
+              <Typography variant="h6">{postItem.title}</Typography>
               </Link>
             </div>
             <div
               style={{ display: 'block', width: '100%', overflow: 'wrap' }}
             >
-              {postItem.description}
+              <Typography variant="body2">{postItem.description}</Typography>
             </div>
           <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <div style={{
@@ -237,11 +238,6 @@ const Post: FunctionComponent = () => {
 
       </div>
     </Box>
-
-
-
-
-
 
       <Box
       sx={{

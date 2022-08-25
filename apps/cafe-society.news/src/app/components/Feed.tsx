@@ -336,6 +336,8 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
     fetcher,
     {
       suspense: true,
+      revalidateOnFocus: true,
+      focusThrottleInterval: 60000
     }
   );
 

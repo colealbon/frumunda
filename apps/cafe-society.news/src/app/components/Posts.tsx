@@ -3,15 +3,13 @@ import { ParsedFeedContentContext } from './Feed';
 import useSWR from 'swr';
 import Post from './Post';
 import { 
-  Toolbar,
   Card,
+  CardContent,
   Link, 
   Typography, 
   Divider, 
-  Box,
   Grid
 } from '@mui/material';
-import { experimentalStyled as styled } from '@mui/material/styles';
 
 import { useSettings } from '../react-hooks/useSettings';
 import { useStacks } from '../react-hooks/useStacks';
@@ -79,6 +77,7 @@ const Posts: FunctionComponent = () => {
 
   return (
     <>
+      <div id="back-to-top-anchor" />
       {Object.entries(parsedFeedContent).map((feedContentEntry) => {
         const feedLink: string = feedContentEntry[0];
         const feedTitle: string = structuredClone(feedContentEntry[1]).title;
@@ -155,31 +154,6 @@ const Posts: FunctionComponent = () => {
         if (unprocessedCleanPostItems.length === 0) {
           return (
             <>
-            <div id="back-to-top-anchor" />
-            <Card key={feedLink}>
-              <Divider />
-              <Typography
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}
-              >
-                <Link href={`${feedLink}`} component="button">
-                  {`${feedLabel || feedTitle || feedLink}`}
-                </Link>
-                <Typography
-                  variant="caption"
-                  style={{ display: 'flex', justifyContent: 'center' }}
-                >
-                  {feedDescription}
-                </Typography>
-              </Typography>
-              <Typography variant="caption">{` (${
-                unprocessedCleanPostItems.length
-              } of ${
-                structuredClone(feedContentEntry[1]).items.length
-              } posts remaining)`}</Typography>
-            </Card>
             </>
           );
         }
@@ -193,12 +167,11 @@ const Posts: FunctionComponent = () => {
                   flexDirection: 'column'
                 }}
               >
-                <Link href={`${feedLink}`} component="button">
+                <Link href={`${feedLink}`} style={{textDecoration: 'none'}}>
                   {`${feedLabel || feedTitle || feedLink}`}
                 </Link>
                 <Typography
                   variant="caption"
-                  style={{ display: 'flex', justifyContent: 'center' }}
                 >
                   {feedDescription}
                 </Typography>
@@ -209,7 +182,7 @@ const Posts: FunctionComponent = () => {
                 structuredClone(feedContentEntry[1]).items.length
               } posts remaining)`}</Typography>
               <Divider />
-                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{justifyContent: 'center'}}>
+                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} >
                   {unprocessedCleanPostItems.map((cleanPostItem: object) => {
                     return (
                       <Grid item 
@@ -226,7 +199,9 @@ const Posts: FunctionComponent = () => {
                           }`}
                         >
                           <Card style={{minWidth:'100%'}}>
-                            <Post key={JSON.stringify(cleanPostItem)} />
+                            <CardContent>
+                              <Post key={JSON.stringify(cleanPostItem)} />
+                            </CardContent>
                           </Card>
                         </PostContext.Provider>
                       </Grid>
