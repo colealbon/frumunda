@@ -184,7 +184,7 @@ const Posts: FunctionComponent = () => {
           );
         }
         return (
-          <Box key={feedLink} >
+
             <Fragment key={feedLink}>
               <Divider />
               <Typography
@@ -209,18 +209,24 @@ const Posts: FunctionComponent = () => {
                 structuredClone(feedContentEntry[1]).items.length
               } posts remaining)`}</Typography>
               <Divider />
-              <Box sx={{ flexGrow: 1 }}>
-                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+
+                <Grid container spacing={{ xs: "auto", md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{justifyContent: 'center'}}>
                   {unprocessedCleanPostItems.map((cleanPostItem: object) => {
                     return (
-                      <Grid item xs={3} sm={4} md={4} key={JSON.stringify(cleanPostItem)}>
+                      <Grid item 
+                      xs={"auto"} 
+                      sm={4} 
+                      md={4} 
+                      key={JSON.stringify(cleanPostItem)}
+                      style={{justifyContent: 'center'}}
+                      >
                         <PostContext.Provider
                           value={cleanPostItem}
                           key={`postitem-swipeable-list-${
                             structuredClone(cleanPostItem).link
                           }`}
                         >
-                          <Card>
+                          <Card style={{minWidth:'100%'}}>
                             <Post key={JSON.stringify(cleanPostItem)} />
                           </Card>
                         </PostContext.Provider>
@@ -228,10 +234,10 @@ const Posts: FunctionComponent = () => {
                     );
                   })}
                 </Grid>
-              </Box>
+
               <MarkFeedProcessedButton />
             </Fragment>
-          </Box>
+
         );
       })}
     </>
