@@ -210,11 +210,11 @@ const Posts: FunctionComponent = () => {
               } posts remaining)`}</Typography>
               <Divider />
 
-                <Grid container spacing={{ xs: "auto", md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{justifyContent: 'center'}}>
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{justifyContent: 'center'}}>
                   {unprocessedCleanPostItems.map((cleanPostItem: object) => {
                     return (
                       <Grid item 
-                      xs={"auto"} 
+                      xs={2} 
                       sm={4} 
                       md={4} 
                       key={JSON.stringify(cleanPostItem)}
