@@ -4,10 +4,10 @@
   "science": { "checked": true },
   "bitcoin": { "checked": true },
   "local": { "checked": true },
-  "business": { "checked": false },
+  "business": { "checked": true },
   "world": { "checked": true },
   "politics": { "checked": false },
   "technology": { "checked": true },
   "variety": { "checked": false },
-  "medicine": { "checked": true }
+  "medicine": { "checked": false }
 }

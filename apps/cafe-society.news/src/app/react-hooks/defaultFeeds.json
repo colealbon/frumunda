@@ -76,7 +76,7 @@
     "categories": ["world"]
   },
   "https://ft.com/?format=rss": {
-    "checked": false,
+    "checked": true,
     "categories": ["business"]
   },
   "https://www.scmp.com/rss/5/feed": {
