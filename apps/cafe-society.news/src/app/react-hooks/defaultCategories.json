@@ -9,5 +9,5 @@
   "politics": { "checked": false },
   "technology": { "checked": true },
   "variety": { "checked": false },
-  "us": { "checked": false }
+  "medicine": { "checked": true }
 }

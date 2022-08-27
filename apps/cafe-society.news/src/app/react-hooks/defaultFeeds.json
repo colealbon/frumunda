@@ -1,4 +1,8 @@
 {
+  "https://www.thelancet.com/rssfeed/lancet_current.xml": {
+    "checked": false,
+    "categories": ["medicine"]
+  },
   "https://www.web3daily.co/articles?format=rss": {
     "checked": false,
     "categories": ["bitcoin"]
@@ -60,7 +64,7 @@
     "categories": ["bitcoin"]
   },
   "https://sf.streetsblog.org/feed/": {
-    "checked": false,
+    "checked": true,
     "categories": ["local"]
   },
   "https://www.statnews.com/feed": {
@@ -68,7 +72,7 @@
     "categories": ["technology"]
   },
   "https://rt.com/rss": {
-    "checked": false,
+    "checked": true,
     "categories": ["world"]
   },
   "https://ft.com/?format=rss": {
