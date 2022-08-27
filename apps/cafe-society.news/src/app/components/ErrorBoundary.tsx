@@ -7,6 +7,8 @@ interface Props {
 
 interface State {
   hasError: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  errorInfo?: any;
 }
 
 class ErrorBoundary extends Component<Props, State> {
@@ -20,6 +22,7 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    this.setState({...this.state, errorInfo: error.toString()})
     console.error('Uncaught error:', error, errorInfo);
   }
 
@@ -28,13 +31,11 @@ class ErrorBoundary extends Component<Props, State> {
       return <>
         <h1>Sorry.. there was an error</h1>
         <div />
-        <pre>
-          
+        <pre style={{color: 'red'}}>
+          {this.state.errorInfo}
         </pre>
       </>
-
     }
-
     return this.props.children;
   }
 }

@@ -351,6 +351,7 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
         })
         .map((parsedFeedContent: [string, object]) => {
           const parsedFeedContentObj = Object.fromEntries([parsedFeedContent]);
+          throw new Error('cowboys cannot swim')
           return (
             <ParsedFeedContentContext.Provider
               key={JSON.stringify(parsedFeedContentObj)}
