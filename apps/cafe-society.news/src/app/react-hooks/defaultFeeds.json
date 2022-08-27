@@ -1,38 +1,58 @@
 {
-  "http://rss.sciam.com/ScientificAmerican-Global": {
+  "https://www.web3daily.co/articles?format=rss": {
+    "checked": false,
+    "categories": ["bitcoin"]
+  },
+  "https://newsghana.com.gh/feed": {
+    "checked": false,
+    "categories": ["science"]
+  },
+  "https://whowhatwhy.org/feed/?partner-feed=66620": {
     "checked": true,
     "categories": ["science"]
   },
+  "http://rss.sciam.com/ScientificAmerican-Global": {
+    "checked": false,
+    "categories": ["science"]
+  },
   "https://cryptobriefing.com/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": ["bitcoin"]
   },
-  "https://www.aljazeera.com/xml/rss/all.xml": {
+  "https://www.hindustantimes.com/feed": {
     "checked": true,
+    "categories": ["world"]
+  },
+  "https://www.sciencealert.com/feed": {
+    "checked": true,
+    "categories": ["science"]
+  },
+  "https://www.aljazeera.com/xml/rss/all.xml": {
+    "checked": false,
     "categories": ["world"]
   },
   "https://gcaptain.com/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": ["maritime"]
   },
   "https://bitcoinops.org/feed.xml": {
-    "checked": true,
+    "checked": false,
     "categories": ["bitcoin"]
   },
   "https://electrek.co/web-stories/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": ["technology"]
   },
   "https://www.teslarati.com/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": ["technology"]
   },
   "https://en.mercopress.com/rss/": {
-    "checked": true,
+    "checked": false,
     "categories": ["world"]
   },
   "https://cointelegraph.com/rss": {
-    "checked": true,
+    "checked": false,
     "categories": ["bitcoin"]
   },
   "https://www.coindesk.com/arc/outboundfeeds/rss/?outputType=xml": {
@@ -40,39 +60,39 @@
     "categories": ["bitcoin"]
   },
   "https://sf.streetsblog.org/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": ["local"]
   },
   "https://www.statnews.com/feed": {
-    "checked": true,
+    "checked": false,
     "categories": ["technology"]
   },
   "https://rt.com/rss": {
-    "checked": true,
+    "checked": false,
     "categories": ["world"]
   },
   "https://ft.com/?format=rss": {
-    "checked": true,
+    "checked": false,
     "categories": ["business"]
   },
   "https://www.scmp.com/rss/5/feed": {
-    "checked": true,
+    "checked": false,
     "categories": ["world"]
   },
   "https://oilprice.com/rss/main": {
-    "checked": true,
+    "checked": false,
     "categories": ["world"]
   },
   "https://asiatimes.com/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": ["world"]
   },
   "https://www.france24.com/en/rss": {
-    "checked": true,
+    "checked": false,
     "categories": ["world"]
   },
   "https://evilleeye.com/feed/": {
-    "checked": true,
+    "checked": false,
     "categories": ["local"]
   },
   "https://www.reutersagency.com/feed/": {
