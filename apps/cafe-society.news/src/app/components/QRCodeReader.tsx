@@ -8,6 +8,7 @@ import {
 
 import { QrReader } from 'react-qr-reader';
 
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const sortObjectByKey = (dict: any) => Object.keys(dict).sort().reduce((r, k) => Object.assign(r, { [k]: dict[k] }), {});
 
@@ -16,7 +17,13 @@ export const sortObjectByKey = (dict: any) => Object.keys(dict).sort().reduce((r
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onComplete: any;
   }) => {
-  const [accumulator, setAccumulator] = useState({});
+    type accumulatorType = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [key: string]: any,
+
+    }
+  const defaultAccumulator: accumulatorType = {}
+  const [accumulator, setAccumulator] = useState(defaultAccumulator);
   const [status, setStatus] = useState('')
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,7 +45,7 @@ export const sortObjectByKey = (dict: any) => Object.keys(dict).sort().reduce((r
 
     const valueObj = JSON.parse(`${value}`)
 
-    if ( structuredClone(accumulator)[`${valueObj.chunkNumber}`] !== undefined) {
+    if ( accumulator[`${valueObj.chunkNumber}`] !== undefined) {
       return
     }
 

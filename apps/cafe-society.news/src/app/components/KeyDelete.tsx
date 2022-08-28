@@ -1,5 +1,4 @@
 import React, {
-  useCallback,
   FunctionComponent,
   Fragment,
 } from 'react';
@@ -19,10 +18,9 @@ const KeyDelete: FunctionComponent<{ text: string }> = (props: {
     () => fetchFile('keys', defaultKeys),
     { fallbackData: defaultKeys }
   );
-  const keys = structuredClone(keysdata)
+  const keys = {...keysdata as object}
 
-  const deleteKey = useCallback(() => {
-
+  const deleteKey = () => {
     const newKeys = {
         ...Object.fromEntries(
           Object.entries(JSON.parse(JSON.stringify(keys))).filter((keyEntry: [string, unknown]) => keyEntry[0] !== props.text)
@@ -30,9 +28,9 @@ const KeyDelete: FunctionComponent<{ text: string }> = (props: {
       };
     mutate('keys', persist('keys', newKeys), {
       optimisticData: newKeys,
+      rollbackOnError: false
     })
-    
-  }, [keys, persist, props.text]);
+  };
 
   return (
     <Fragment>

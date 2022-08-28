@@ -16,6 +16,7 @@ import CorsProxiesEdit from './CorsProxiesEdit';
 import FeedsEdit from './FeedsEdit';
 import ErrorBoundary from './ErrorBoundary';
 import { useStacks } from '../react-hooks/useStacks';
+import { Toolbar } from '@mui/material'
 
 import useSWR from 'swr';
 
@@ -36,7 +37,7 @@ export function MainPage() {
         key={'errorBoundaryPosts'}
         fallback={<>error fetching posts</>}
       >
-        <Suspense fallback={`loading and processing posts (be patient...)`}>
+        <Suspense fallback={<><Toolbar />loading and processing posts (be patient...)<Toolbar /><Toolbar><div><Contribute /></div></Toolbar></>}>
           <CheckedCategory>
             <Feed>
               <Posts />

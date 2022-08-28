@@ -16,10 +16,10 @@ const KeyToggle: FunctionComponent<{ text: string }> = (props: {
   const keys = { ...(keysdata as object) }
 
   const setKeysCallback = () => {
-    const newKey = structuredClone(
+    const newKey = 
       {
       ...Object.fromEntries(
-        Object.entries(structuredClone(keys))
+        Object.entries(keys)
           .filter((key: [string, unknown]) => key[0] === props.text)
           .map((key: [string, unknown]) => {
             return [
@@ -44,7 +44,7 @@ const KeyToggle: FunctionComponent<{ text: string }> = (props: {
             ];
           })
       )
-    });
+    };
     const newKeys = {...keys, ...newKey}
 
     mutate('keys', persist('keys', newKeys), {
@@ -56,7 +56,7 @@ const KeyToggle: FunctionComponent<{ text: string }> = (props: {
 
   return (
     <Fragment>
-      {Object.entries(structuredClone(keys))
+      {Object.entries(keys)
         .filter((key: [string, unknown]) => key[0] === props.text)
         .map((key: [string, unknown]) => {
           const attributes = key[1] as Record<string, unknown>;

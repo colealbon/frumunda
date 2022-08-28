@@ -10,6 +10,7 @@ const FeedsReset: FunctionComponent = () => {
     <Button
       key="feedsreset"
       onClick={() => () => {
+        console.log(defaultFeeds)
         mutate('feeds', persistLocal('feeds', defaultFeeds), {
           optimisticData: defaultFeeds,
         });

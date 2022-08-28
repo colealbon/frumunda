@@ -7,6 +7,7 @@ import { ParsedFeedContentContext } from './Feed';
 import { CategoryContext } from './CheckedCategory';
 import { useStacks } from '../react-hooks/useStacks';
 
+
 import { ThumbDown, ThumbUp } from '@mui/icons-material';
 import { 
   Link, 
@@ -41,7 +42,7 @@ const Post: FunctionComponent = () => {
   const id = `${postItem.link}`;
 
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
-  const parsedFeedContent = structuredClone(parsedFeedContentContext);
+  const parsedFeedContent = {...parsedFeedContentContext};
   const keyForFeed = Object.keys(parsedFeedContent)[0];
   const processedFilenameForFeed = hashStr(`processed_${category}_${shortUrl(keyForFeed)}`);
 

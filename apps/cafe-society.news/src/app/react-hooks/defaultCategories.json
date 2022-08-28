@@ -7,7 +7,7 @@
   "business": { "checked": true },
   "world": { "checked": true },
   "politics": { "checked": false },
-  "technology": { "checked": true },
+  "technology": { "checked": false },
   "variety": { "checked": false },
   "medicine": { "checked": false }
 }

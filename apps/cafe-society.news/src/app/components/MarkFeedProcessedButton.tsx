@@ -1,21 +1,21 @@
 import { useContext, FunctionComponent, useState } from 'react';
 import { mutate } from 'swr';
-import { IconButton, Typography, useScrollTrigger } from '@mui/material';
+import { IconButton, Typography} from '@mui/material';
 import { RemoveDone } from '@mui/icons-material';
 import { cleanPostItem, removePunctuation, shortUrl, hashStr } from '../utils';
-import { cleanPostItemType } from './Posts';
+import { cleanPostItemType, feedValueType } from '../types';
 import { ParsedFeedContentContext } from './Feed';
 import { useStacks } from '../react-hooks/useStacks';
 import { CategoryContext } from './CheckedCategory';
 
+
 const MarkFeedProcessedButton: FunctionComponent = () => {
   const [inFlight, setInFlight] = useState(false);
-  const trigger = useScrollTrigger();
   const { persist } = useStacks();
   const categoryContext = useContext(CategoryContext);
   const category = `${categoryContext}`;
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
-  const parsedFeedContent = structuredClone(parsedFeedContentContext);
+  const parsedFeedContent = {...parsedFeedContentContext};
   const keyForFeed = Object.keys(parsedFeedContent)[0];
   const filenameForFeed = hashStr(`processed_${category}_${shortUrl(keyForFeed)}`);
 
@@ -41,7 +41,6 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
     );
 
     if (anchor) {
-      console.log('scrolling')
       anchor.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
     }
   };
@@ -50,11 +49,10 @@ const MarkFeedProcessedButton: FunctionComponent = () => {
     <>
       {Object.entries(parsedFeedContent).map((feedContentEntry) => {
         const feedLink: string = feedContentEntry[0];
-        const currentPosts = structuredClone({
-          ...(feedContentEntry[1] as object),
-        })
+        const feedValue: feedValueType = {...feedContentEntry[1] as feedValueType}
+        const currentPosts = feedValue
           .items.map((postItem: cleanPostItemType) => cleanPostItem(postItem))
-          .map((postItem: cleanPostItemType) =>
+          .map((postItem) =>
             removePunctuation(`${postItem.title} ${postItem.description}`)
           );
 

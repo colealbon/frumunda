@@ -2,10 +2,13 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import localforage from 'localforage';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type settingsType = {[key: string]: any}
+
 export function useSettings() {
   const [inFlight, setInFlight] = useState(false);
 
-  const defaultSettings = {
+  const defaultSettings : settingsType = {
     hideProcessedPosts: {
       label: 'hide processed posts',
       checked: true,
@@ -49,7 +52,7 @@ export function useSettings() {
 
   const persistSettings = (newSettings: unknown) => {
     setInFlight(true);
-    const newSettingsClone = structuredClone(newSettings as object);
+    const newSettingsClone: settingsType = {...newSettings as settingsType};
 
     const updateFn = (newSettings: object) => {
       return new Promise((resolve) => {
@@ -67,7 +70,7 @@ export function useSettings() {
   }
 
   const factoryReset = () => {
-    const newSettingsClone = structuredClone(defaultSettings);
+    const newSettingsClone: settingsType = {...defaultSettings as settingsType};
     persistSettings(newSettingsClone);
   };
 

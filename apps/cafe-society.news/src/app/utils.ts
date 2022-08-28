@@ -1,5 +1,6 @@
 import { hash } from 'tweetnacl';
 import { convert } from 'html-to-text';
+import { cleanPostItemType } from './types'
 
 export const removePunctuation = (text: string) => {
   return `${text}`
@@ -81,25 +82,15 @@ export const labelOrEcho = (index: string) => {
     .find(() => true)}`;
 };
 
-export const cleanPostItem = (postItem: {
-  title: string;
-  link: string;
-  description: string;
-}) => {
+
+export const cleanPostItem = (postItem: cleanPostItemType ) => {
   return {
     title: cleanTags(
-      structuredClone({ ...(postItem as object) }).title['$text'] ||
-        `${structuredClone({ ...(postItem as object) }).title}`
+      postItem.title['$text'] || `${postItem.title}`
     ),
     description: removeTrackingGarbage(
-      cleanTags(
-        (structuredClone({ ...(postItem as object) }).description &&
-          structuredClone({ ...(postItem as object) }).description['$text']) ||
-          `${structuredClone({ ...(postItem as object) }).description}`
-      )
+      cleanTags(`${postItem.description['$text'] || postItem.description}`)
     ),
-    link:
-      structuredClone({ ...(postItem as object) }).link['$text'] ||
-      `${structuredClone({ ...(postItem as object) }).link}`,
+    link: `${postItem.link['$text'] || postItem.link}`
   };
 };

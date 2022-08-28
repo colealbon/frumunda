@@ -24,7 +24,7 @@
     "categories": ["bitcoin"]
   },
   "https://www.hindustantimes.com/feed": {
-    "checked": true,
+    "checked": false,
     "categories": ["world"]
   },
   "https://www.sciencealert.com/feed": {
