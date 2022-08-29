@@ -4,9 +4,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Card, 
-  CardContent,
-  ListItemText
 } from '@mui/material';
 import FeedsAdd from './FeedsAdd';
 import FeedsReset from './FeedsReset';
@@ -32,9 +29,7 @@ const FeedsEdit: FunctionComponent = () => {
   );
   const feeds = { ...(feedsdata as object) };
   return (
-    <div
-      style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px' }}
-    >
+    <>
       <FeedsAdd />
       <div />
       <FeedsReset />
@@ -50,25 +45,19 @@ const FeedsEdit: FunctionComponent = () => {
               {feed}
             </AccordionSummary>
             <AccordionDetails>
-              <Card variant="outlined" key={`feed-edit-${feed}`}>
-                <CardContent>
-                  <div>
-                    <FeedDelete text={feed} />
-                    <FeedToggle text={feed} />
-                  </div>
-                  <div>
-                    <FeedCategories text={feed} />
-                  </div>
-                  <CardContent>
-                    <FeedLabel text={feed} />
-                  </CardContent>
-                </CardContent>
-              </Card>
+              <div>
+                <FeedDelete text={feed} />
+                <FeedToggle text={feed} />
+              </div>
+              <div>
+                <FeedCategories text={feed} />
+              </div>
+              <FeedLabel text={feed} />
             </AccordionDetails>
           </Accordion>
         );
       })}
-    </div>
+    </>
   );
 };
 
