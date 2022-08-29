@@ -2,7 +2,8 @@ import { FunctionComponent, useContext, createContext, Fragment } from 'react';
 import { ParsedFeedContentContext } from './Feed';
 import useSWR from 'swr';
 import Post from './Post';
-import { 
+import {
+  Box,
   Card,
   CardContent,
   Link, 
@@ -181,7 +182,7 @@ const Posts: FunctionComponent = () => {
               } posts remaining)`}</Typography>
               <Divider />
               <br />
-                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{minWidth: '100%', justifyContent: 'center'}} >
+                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{justifyContent: 'start', minWidth: '100%'}} >
                   {unprocessedCleanPostItems.map(cleanPostItem => {
                     return (
                       <Grid item 
@@ -189,7 +190,7 @@ const Posts: FunctionComponent = () => {
                       sm={4} 
                       md={4} 
                       key={JSON.stringify(cleanPostItem)}
-                      style={{justifyContent: 'center', alignItems: 'center', minWidth:'300px'}}
+                      style={{minWidth:'300px', alignItems:'center'}}
                       >
                         <PostContext.Provider
                           value={cleanPostItem}
@@ -197,17 +198,18 @@ const Posts: FunctionComponent = () => {
                             cleanPostItem['link']
                           }`}
                         >
-                          <Card style={{minWidth:'100%'}}>
-                            <CardContent>
-                              <Post key={JSON.stringify(cleanPostItem)} />
-                            </CardContent>
-                          </Card>
+                          <Box style={{minWidth:'100%', justifyContent: 'center'}}>
+                            <Card style={{minWidth:'100%'}}>
+                              <CardContent>
+                                <Post key={JSON.stringify(cleanPostItem)} />
+                              </CardContent>
+                            </Card>
+                          </Box>
                         </PostContext.Provider>
                       </Grid>
                     );
                   })}
                 </Grid>
-
               <MarkFeedProcessedButton />
             </Fragment>
 
