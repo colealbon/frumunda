@@ -181,7 +181,7 @@ const Posts: FunctionComponent = () => {
               } posts remaining)`}</Typography>
               <Divider />
               <br />
-                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{minWidth: '100%'}} >
+                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{minWidth: '100%', justifyContent: 'center'}} >
                   {unprocessedCleanPostItems.map(cleanPostItem => {
                     return (
                       <Grid item 
