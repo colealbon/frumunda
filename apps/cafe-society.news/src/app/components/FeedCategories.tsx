@@ -1,14 +1,14 @@
 import { FunctionComponent, Fragment } from 'react';
 import useSWR, { mutate } from 'swr';
 import { Chip } from '@mui/material';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultCategories from '../react-hooks/defaultCategories.json';
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
 
 const FeedCategories: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { fetchFileLocal, persistLocal } = useStacks();
+  const { fetchFileLocal, persistLocal } = useStorage();
   const { data: feedsdata } = useSWR(
     'feeds',
     fetchFileLocal('feeds', defaultFeeds),

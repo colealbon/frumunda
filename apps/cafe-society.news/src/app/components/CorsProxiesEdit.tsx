@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react';
 import useSWR from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
 
@@ -11,7 +11,7 @@ import CorsProxyToggle from './CorsProxyToggle';
 import CorsProxyDelete from './CorsProxyDelete';
 
 const CorsProxiesEdit: FunctionComponent = () => {
-  const { fetchFileLocal } = useStacks();
+  const { fetchFileLocal } = useStorage();
   const { data: corsProxiesdata } = useSWR(
     'corsProxies',
     fetchFileLocal('corsProxies', defaultCorsProxies),

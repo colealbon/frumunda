@@ -2,12 +2,12 @@ import { FunctionComponent, Fragment, useState } from 'react';
 import { IconButton } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
 import useSWR, { mutate } from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { persistLocal } = useStacks();
+  const { persistLocal } = useStorage();
   const { data: categories } = useSWR('categories');
   const [inFlight, setInFlight] = useState(false);
 

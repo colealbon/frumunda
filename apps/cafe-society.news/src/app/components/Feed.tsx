@@ -12,7 +12,7 @@ import { cleanTags } from '../utils';
 import xml2js from 'xml2js';
 import axios from 'axios';
 
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
 
@@ -31,7 +31,7 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
     // reload Mainpage?
   }, [category]);
 
-  const { fetchFileLocal } = useStacks();
+  const { fetchFileLocal } = useStorage();
   const { data: feedsdata } = useSWR('feeds', fetchFileLocal('feeds', {}), {
     fallbackData: defaultFeeds,
   });

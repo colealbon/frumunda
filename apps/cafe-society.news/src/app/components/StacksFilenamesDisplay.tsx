@@ -2,10 +2,10 @@ import { FunctionComponent, Fragment } from 'react';
 import StacksFileDelete from './StacksFileDelete';
 import { Box, Typography } from '@mui/material';
 import useSWR from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 const StacksFilenamesDisplay: FunctionComponent = () => {
-  const { fetchStacksFilenames } = useStacks();
+  const { fetchStacksFilenames } = useStorage();
   const { data: stacksFilenamesdata } = useSWR(
     'stacksFilenames',
     fetchStacksFilenames,

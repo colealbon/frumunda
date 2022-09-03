@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react';
 import useSWR from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultCategories from '../react-hooks/defaultCategories.json';
 
 import CategoriesAdd from './CategoriesAdd';
@@ -10,7 +10,7 @@ import CategoryToggle from './CategoryToggle';
 import CategoryDelete from './CategoryDelete';
 
 const CategoriesEdit: FunctionComponent = () => {
-  const { fetchFileLocal } = useStacks();
+  const { fetchFileLocal } = useStorage();
   const { data: categories } = useSWR(
     'categories',
     fetchFileLocal('categories', defaultCategories),

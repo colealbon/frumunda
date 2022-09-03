@@ -4,14 +4,14 @@ import React, {
 } from 'react';
 import { IconButton } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultKeys from '../react-hooks/defaultKeys.json'
 import useSWR, {mutate} from 'swr';
 
 const KeyDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { fetchFile, persist } = useStacks();
+  const { fetchFile, persist } = useStorage();
 
   const { data: keysdata } = useSWR(
     'keys',

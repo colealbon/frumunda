@@ -2,13 +2,13 @@ import { FunctionComponent, useState, Fragment, useCallback } from 'react';
 import { IconButton, Typography } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
 import useSWR, { mutate } from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 const StacksFileDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
   const [deleted, setDeleted] = useState(false);
-  const { fetchStacksFilenames, deleteFile } = useStacks();
+  const { fetchStacksFilenames, deleteFile } = useStorage();
   const { data: stacksFilenamesdata } = useSWR(
     'stacksFilenames',
     fetchStacksFilenames

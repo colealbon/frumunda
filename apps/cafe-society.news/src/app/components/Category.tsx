@@ -1,13 +1,13 @@
 import { FunctionComponent, createContext, ReactNode } from 'react';
 import useSWR from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultCategories from '../react-hooks/defaultCategories.json';
 type Props = { children: ReactNode };
 
 export const CategoryContext = createContext('');
 
 const Classifiers: FunctionComponent<Props> = ({ children }: Props) => {
-  const { fetchFileLocal } = useStacks();
+  const { fetchFileLocal } = useStorage();
   const { data: categoriesdata } = useSWR(
     'categories',
     fetchFileLocal('categories', defaultCategories),

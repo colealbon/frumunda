@@ -1,6 +1,6 @@
 import { ChangeEvent, useState, useCallback, FunctionComponent } from 'react';
 import useSWR, { mutate } from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import { TextField } from '@mui/material';
 
 type Props = { text: string };
@@ -9,7 +9,7 @@ const FeedLabelEdit: FunctionComponent<Props> = ({ text }: Props) => {
   const [inputValue, setInputValue] = useState('');
   const [inFlight, setInFlight] = useState(false);
   const { data: feeds } = useSWR('feeds');
-  const { persist } = useStacks();
+  const { persist } = useStorage();
 
   const defaultFeedLabel =
     Object.entries(feeds as object)

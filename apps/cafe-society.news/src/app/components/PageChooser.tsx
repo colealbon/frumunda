@@ -9,12 +9,12 @@ import {
   AccordionSummary,
   AccordionDetails
 } from '@mui/material';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 import { labelOrEcho } from '../utils';
 
 const PageChooser: FunctionComponent = () => {
-  const { fetchFileLocal, persistLocal } = useStacks();
+  const { fetchFileLocal, persistLocal } = useStorage();
   const { data: selectedPage } = useSWR(
     'selectedPage',
     fetchFileLocal('selectedPage', ''),

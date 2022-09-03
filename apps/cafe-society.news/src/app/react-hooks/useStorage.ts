@@ -5,7 +5,7 @@ import useSWR, { mutate } from 'swr';
 import debounce from 'debounce-by-key';
 import promiseRetry from 'promise-retry';
 
-export function useStacks() {
+export function useStorage() {
   const appConfig = new AppConfig(['store_write', 'publish_data']);
   const userSession: UserSession = new UserSession({ appConfig });
 

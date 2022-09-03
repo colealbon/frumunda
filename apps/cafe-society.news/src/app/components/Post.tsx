@@ -5,7 +5,7 @@ import { removePunctuation, shortUrl, hashStr } from '../utils';
 import { PostContext } from './Posts';
 import { ParsedFeedContentContext } from './Feed';
 import { CategoryContext } from './CheckedCategory';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 
 import { ThumbDown, ThumbUp } from '@mui/icons-material';
@@ -33,7 +33,7 @@ import 'react-swipeable-list/dist/styles.css';
 const bayes = require('classificator');
 
 const Post: FunctionComponent = () => {
-  const { persist, fetchFile } = useStacks();
+  const { persist, fetchFile } = useStorage();
 
   const postContext = useContext(PostContext);
   const postItem = Object.assign(postContext);

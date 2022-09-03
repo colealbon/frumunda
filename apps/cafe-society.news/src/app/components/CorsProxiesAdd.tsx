@@ -1,11 +1,11 @@
 import { ChangeEvent, useState, useCallback } from 'react';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import { TextField } from '@mui/material';
 import useSWR, { mutate } from 'swr';
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
 
 const CorsProxiesAdd = () => {
-  const { fetchFileLocal, persistLocal } = useStacks();
+  const { fetchFileLocal, persistLocal } = useStorage();
   const { data: corsProxiesdata } = useSWR(
     'corsProxies',
     fetchFileLocal('corsProxies', defaultCorsProxies),

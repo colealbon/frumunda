@@ -1,12 +1,12 @@
 import { FunctionComponent } from 'react';
 import Button from '@mui/material/Button';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultKeys from '../react-hooks/defaultKeys.json'
 import {mutate} from 'swr';
 
 
 const KeysReset: FunctionComponent = () => {
-  const { persist } = useStacks();
+  const { persist } = useStorage();
   return (
     <Button key="keysreset" onClick={() => {
       mutate('keys', persist('keys', defaultKeys), {

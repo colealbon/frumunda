@@ -1,6 +1,6 @@
 import { FunctionComponent, Fragment, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 import { IconButton } from '@mui/material';
 import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
@@ -10,7 +10,7 @@ const FeedDelete: FunctionComponent<{ text: string }> = (props: {
 }) => {
   const [inFlight, setInFlight] = useState(false);
   const { data: feeds } = useSWR('feeds');
-  const { persistLocal } = useStacks();
+  const { persistLocal } = useStorage();
 
   const deleteFeed = () => {
     const newFeeds = JSON.parse(

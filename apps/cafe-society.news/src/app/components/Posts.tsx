@@ -14,7 +14,7 @@ import {
 
 import {feedValueType} from '../types'
 import { settingsType, useSettings } from '../react-hooks/useSettings';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
 import { CategoryContext } from './CheckedCategory';
 
@@ -51,7 +51,7 @@ const Posts: FunctionComponent = () => {
     mlThresholdConfidence
   } = settings as settingsType;
 
-  const { fetchFile, fetchFileLocal } = useStacks();
+  const { fetchFile, fetchFileLocal } = useStorage();
 
   const { data: feedsdata } = useSWR(
     'feeds',

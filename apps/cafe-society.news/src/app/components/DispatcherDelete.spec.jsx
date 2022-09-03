@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import CorsProxyToggle from './CorsProxyToggle'
+import DispatcherDelete from './DispatcherDelete'
 
 let container;
 
@@ -13,7 +13,7 @@ afterEach(() => {
   container = null;
 });
 
-it('can render CorsProxyToggle', () => {
-    ReactDOM.createRoot(container).render(<CorsProxyToggle />);
+it('can render and update a dispatcher delete component', () => {
+    ReactDOM.createRoot(container).render(<DispatcherDelete />);
 });
 

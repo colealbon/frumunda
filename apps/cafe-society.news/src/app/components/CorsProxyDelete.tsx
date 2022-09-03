@@ -2,13 +2,13 @@ import { FunctionComponent, Fragment, useState } from 'react';
 import { IconButton } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
 import useSWR, { mutate } from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
 
 const CorsProxyDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { persistLocal, fetchFileLocal } = useStacks();
+  const { persistLocal, fetchFileLocal } = useStorage();
   const { data: corsProxiesdata } = useSWR(
     'corsProxies',
     fetchFileLocal('corsProxies', defaultCorsProxies),

@@ -2,12 +2,12 @@ import { FunctionComponent, Fragment, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { Switch, FormControlLabel, Typography } from '@mui/material';
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 const FeedToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { fetchFileLocal, persistLocal } = useStacks();
+  const { fetchFileLocal, persistLocal } = useStorage();
   const [inFlight, setInFlight] = useState(false);
   const { data: feedsdata } = useSWR(
     'feeds',

@@ -1,13 +1,13 @@
 import { FunctionComponent, Fragment, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { Switch, FormControlLabel, Typography } from '@mui/material';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
   const { data: categories } = useSWR('categories');
-  const { persistLocal } = useStacks();
+  const { persistLocal } = useStorage();
   const [inFlight, setInFlight] = useState(false);
 
   const toggleCategory = () => {

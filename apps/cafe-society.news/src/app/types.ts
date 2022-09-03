@@ -11,3 +11,9 @@ export type feedValueType = {
   description: string;
   items: [cleanPostItemType]
 }
+
+export type feedType = {
+  [key: string]: {
+    checked: boolean, categories: string[]
+  }
+}

@@ -7,11 +7,11 @@ import {
   Collapse,
 } from '@mui/material';
 import useSWR, { mutate } from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultCategories from '../react-hooks/defaultCategories.json';
 
 const CategoryChooserCategories: FunctionComponent = () => {
-  const { fetchFileLocal, persistLocal } = useStacks();
+  const { fetchFileLocal, persistLocal } = useStorage();
   const { data: categoriesdata } = useSWR(
     'categories',
     fetchFileLocal('categories', defaultCategories),

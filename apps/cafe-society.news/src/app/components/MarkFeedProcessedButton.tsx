@@ -5,13 +5,13 @@ import { RemoveDone } from '@mui/icons-material';
 import { cleanPostItem, removePunctuation, shortUrl, hashStr } from '../utils';
 import { cleanPostItemType, feedValueType } from '../types';
 import { ParsedFeedContentContext } from './Feed';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import { CategoryContext } from './CheckedCategory';
 
 
 const MarkFeedProcessedButton: FunctionComponent = () => {
   const [inFlight, setInFlight] = useState(false);
-  const { persist } = useStacks();
+  const { persist } = useStorage();
   const categoryContext = useContext(CategoryContext);
   const category = `${categoryContext}`;
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);

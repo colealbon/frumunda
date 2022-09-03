@@ -1,11 +1,11 @@
 import { FunctionComponent } from 'react';
 import Button from '@mui/material/Button';
 import defaultCategories from '../react-hooks/defaultCategories.json';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import { mutate } from 'swr';
 
 const CategoriesReset: FunctionComponent = () => {
-  const { persistLocal } = useStacks();
+  const { persistLocal } = useStorage();
 
   const factoryReset = () => {
     mutate('categories', persistLocal('categories', defaultCategories), {

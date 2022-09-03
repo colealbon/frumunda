@@ -1,9 +1,9 @@
 import { FunctionComponent } from 'react';
 import { Typography } from '@mui/material';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 const StacksProfileDisplay: FunctionComponent = () => {
-  const { userSession } = useStacks();
+  const { userSession } = useStorage();
   if (!userSession.isUserSignedIn()) {
     return <span></span>;
   }

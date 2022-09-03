@@ -3,14 +3,14 @@ import KeysAdd from './KeysAdd';
 import KeysReset from './KeysReset';
 import KeyToggle from './KeyToggle';
 import KeyDelete from './KeyDelete';
-import {useStacks} from '../react-hooks/useStacks'
+import {useStorage} from '../react-hooks/useStorage'
 import useSWR from 'swr'
 import defaultKeys from '../react-hooks/defaultKeys.json'
 import {Box} from '@mui/material'
 
 const Keys: FunctionComponent = () => {
 
-  const { fetchFile } = useStacks();
+  const { fetchFile } = useStorage();
   const { data: keysdata } = useSWR(
     'keys',
     () => fetchFile('keys', defaultKeys),

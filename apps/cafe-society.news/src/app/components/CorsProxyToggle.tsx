@@ -1,13 +1,13 @@
 import { FunctionComponent, Fragment, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { Switch, FormControlLabel, Typography } from '@mui/material';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
 
 const CorsProxyToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { fetchFileLocal } = useStacks();
+  const { fetchFileLocal } = useStorage();
   const { data: corsProxiesdata } = useSWR(
     'corsProxies',
     fetchFileLocal('corsProxies', defaultCorsProxies),
@@ -15,7 +15,7 @@ const CorsProxyToggle: FunctionComponent<{ text: string }> = (props: {
   );
   const corsProxies = { ...(corsProxiesdata as object) };
 
-  const { persistLocal } = useStacks();
+  const { persistLocal } = useStorage();
   const [inFlight, setInFlight] = useState(false);
 
   const toggleCorsProxy = () => {

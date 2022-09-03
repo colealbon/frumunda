@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-
 import Contribute from './Contribute';
 import AppSettings from './AppSettings';
 import Classifier from './Classifier';
@@ -15,13 +14,13 @@ import CategoriesEdit from './CategoriesEdit';
 import CorsProxiesEdit from './CorsProxiesEdit';
 import FeedsEdit from './FeedsEdit';
 import ErrorBoundary from './ErrorBoundary';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import { Toolbar } from '@mui/material'
 
 import useSWR from 'swr';
 
 export function MainPage() {
-  const { fetchFileLocal } = useStacks();
+  const { fetchFileLocal } = useStorage();
   const { data: selectedPage } = useSWR(
     'selectedPage',
     fetchFileLocal('selectedPage', 'posts')
@@ -47,7 +46,7 @@ export function MainPage() {
       </ErrorBoundary>
     );
   };
-
+  // this whole thing could be ternaries, but really should be handled with react router or reach router. 
   return (
     <>
       {[selectedPage]
@@ -60,7 +59,8 @@ export function MainPage() {
         )
         .map(() => (
           <Contribute key="contribute" />
-        ))}
+        ))
+      }
       {[selectedPage]
         .flat()
         .filter(() => selectedPage === '')

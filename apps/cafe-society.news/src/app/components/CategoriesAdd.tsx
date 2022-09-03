@@ -1,5 +1,5 @@
 import { ChangeEvent, useState, useCallback } from 'react';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import { TextField } from '@mui/material';
 import useSWR, { mutate } from 'swr';
 
@@ -7,7 +7,7 @@ const CategoriesAdd = () => {
   const { data: categories } = useSWR('categories');
   const [inFlight, setInFlight] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const { persistLocal } = useStacks();
+  const { persistLocal } = useStorage();
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {

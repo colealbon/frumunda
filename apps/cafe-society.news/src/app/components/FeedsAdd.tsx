@@ -1,13 +1,14 @@
 import { ChangeEvent, useState, useCallback } from 'react';
 import useSWR, { mutate } from 'swr';
 import { TextField } from '@mui/material';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
+import { feedType } from '../types'
 
 const FeedsAdd = () => {
   const [inputValue, setInputValue] = useState('');
   const [inFlight, setInFlight] = useState(false);
   const { data: feeds } = useSWR('feeds');
-  const { persistLocal } = useStacks();
+  const { persistLocal } = useStorage();
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -17,15 +18,26 @@ const FeedsAdd = () => {
   );
 
   const addFeed = () => {
-    const newFeed = JSON.parse(
+    const newFeed: feedType = JSON.parse(
       `{"${inputValue}": {"checked": true, "categories": []}}`
     );
     const newFeeds = { ...newFeed, ...feeds };
     setInFlight(true);
     mutate('feeds', persistLocal('feeds', newFeeds), {
       optimisticData: newFeeds,
-    }).then(() => setInFlight(false));
+    }).then(() => {
+      setInputCallback('')
+      setInFlight(false)
+    })
   };
+
+  const handlersForKeyPress: {[key: string]: () => void} = {
+    "Enter": () => addFeed()
+  }
+
+  const handleKeyPress: (event: { key: string;}) => void = ((event) => {
+    return handlersForKeyPress[event.key]()
+  })
 
   return (
     <TextField
@@ -33,14 +45,7 @@ const FeedsAdd = () => {
       id="addFeedTextField"
       placeholder="add feed here"
       value={inputValue}
-      onKeyPress={(event: { key: string }) => {
-        [event.key]
-          .filter((theKey) => theKey === 'Enter')
-          .forEach(() => {
-            addFeed();
-            setInputCallback('');
-          });
-      }}
+      onKeyPress={handleKeyPress}
       onChange={(
         event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       ) => {

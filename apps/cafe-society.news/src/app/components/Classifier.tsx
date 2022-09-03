@@ -21,7 +21,7 @@ import {
   Snackbar,
 } from '@mui/material';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -42,7 +42,7 @@ const Classifier: FunctionComponent = () => {
   const category = `${categoryContext}`;
   const [inputValue, setInputValue] = useState('');
   const filenameForClassifier = `classifier_${category}`.replace(/_$/, '');
-  const { persist, fetchFile } = useStacks();
+  const { persist, fetchFile } = useStorage();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const handleSnackbarClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {

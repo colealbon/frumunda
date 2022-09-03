@@ -11,11 +11,11 @@ import FeedCategories from './FeedCategories';
 import FeedToggle from './FeedToggle';
 import FeedDelete from './FeedDelete';
 import FeedLabel from './FeedLabel';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
 
 const FeedsEdit: FunctionComponent = () => {
-  const { fetchFileLocal } = useStacks();
+  const { fetchFileLocal } = useStorage();
 
   const [expanded, setExpanded] = useState<string | false>('');
   const handleChange =

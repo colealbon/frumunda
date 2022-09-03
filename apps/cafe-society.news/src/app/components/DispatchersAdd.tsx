@@ -6,7 +6,7 @@ import {
 } from 'react';
 import { TextField } from '@mui/material'
 import { CategoryContext } from './Category';
-import { useStacks } from '../react-hooks/useStacks'
+import { useStorage } from '../react-hooks/useStorage'
 import useSWR, {mutate} from 'swr'
 import defaultDispatchers from '../react-hooks/defaultDispatchers.json'
 
@@ -15,7 +15,7 @@ const DispatchersAdd: FunctionComponent = () => {
   const [inFlight, setInFlight] = useState(false);
   const category = `${categoryContext}`
   const [inputValue, setInputValue] = useState('');
-  const { persist, fetchFile } = useStacks();
+  const { persist, fetchFile } = useStorage();
   const { data: dispatchersdata } = useSWR(`dispatchers_${category}`, () => fetchFile(`dispatchers_${category}`, defaultDispatchers), {
     fallbackData: defaultDispatchers,
     suspense: true
@@ -67,7 +67,6 @@ const DispatchersAdd: FunctionComponent = () => {
        }}
        fullWidth
       />
-      {`DispatchersAdd - ${category}`}
     </div>
   )
 }

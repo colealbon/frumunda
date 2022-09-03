@@ -1,14 +1,14 @@
 import Dashboard from './Dashboard';
 import MainPage from './MainPage';
 import { mutate } from 'swr';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import { MetaMaskProvider } from "metamask-react";
 import defaultKeys from '../react-hooks/defaultKeys.json'
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
 
 export function App() {
   
-  const { fetchFileLocal, loadUserData, fetchFile } = useStacks();
+  const { fetchFileLocal, loadUserData, fetchFile } = useStorage();
 
   loadUserData();
   mutate('keys', fetchFile('keys', defaultKeys), {

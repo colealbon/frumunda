@@ -1,26 +1,24 @@
 import {
   FunctionComponent,
-  useContext
+  useContext,
+  useState
 } from 'react';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
+} from '@mui/material'
 import { CategoryContext } from './Category';
 import DispatchersAdd from './DispatchersAdd'
+import DispatcherDelete from './DispatcherDelete'
 import defaultDispatchers from '../react-hooks/defaultDispatchers.json'
-import { useStacks } from '../react-hooks/useStacks'
+import { useStorage } from '../react-hooks/useStorage'
 import useSWR, {mutate} from 'swr'
 
-
-const postToBlockstackNoEncryption = (content: string) => console.log('postToBlockstackNoEncryption')
-const encryptThenPostToBlockstack = (content: string, keys: string[]) => console.log('encryptToKeys')
-
+// const postToBlockstackNoEncryption = (content: string) => console.log('postToBlockstackNoEncryption')
+// const encryptThenPostToBlockstack = (content: string, keys: string[]) => console.log('encryptToKeys')
 // export type dispatchers = { action: any[]; checked: boolean, keys?: string[]};
-
-
 // import DispatcherKeys from './DispatcherKeys'
-// import {
-//   Accordion,
-//   AccordionSummary,
-//   AccordionDetails,
-// } from '@material-ui/core';
 // import {
 //   DeleteOutlined
 // } from '@material-ui/icons'
@@ -33,14 +31,19 @@ const encryptThenPostToBlockstack = (content: string, keys: string[]) => console
 // } from './BlockstackSessionProvider';
 // export const DispatcherContext = React.createContext({});
 // var promiseRetry = require('promise-retry');
-// var fromEntries = require('fromentries')
-// var entries = require('object.entries')
 
 const Dispatchers: FunctionComponent = () => {
   const categoryContext = useContext(CategoryContext)
   const category = `${categoryContext}`
+  const [expanded, setExpanded] = useState({})
+  const handleAccordionChange = (panel: string) => (
+    event: unknown,
+    isExpanded: boolean
+  ) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
-  const { fetchFile } = useStacks();
+  const { fetchFile } = useStorage();
   const { data: dispatchersdata } = useSWR(`dispatchers_${category}`, () => fetchFile(`dispatchers_${category}`, defaultDispatchers), {
     fallbackData: defaultDispatchers,
     suspense: true
@@ -60,9 +63,27 @@ const Dispatchers: FunctionComponent = () => {
   return (
     <div>
       <DispatchersAdd />
-      <pre>
-      {JSON.stringify(dispatchers, null, 2)}
-      </pre>
+      <div>
+        {
+        Object.keys(dispatchers).map(dispatcher => {
+        return (
+          <Accordion
+              key={`${category}${dispatcher[0]}`}
+              expanded={expanded === `${category}${dispatcher[0]}`}
+              onChange={handleAccordionChange(`${category}${dispatcher[0]}`)}
+              TransitionProps={{ unmountOnExit: true }}
+            >
+            <AccordionSummary>
+              {`${dispatcher}`}
+            </AccordionSummary>
+            <AccordionDetails>
+              <DispatcherDelete text={dispatcher} />
+            </AccordionDetails>
+            </Accordion>
+        )
+        })
+      }
+      </div>
     </div>
   )
 }
@@ -77,12 +98,7 @@ export default Dispatchers;
 //   const category = `${categoryContext}`
 //   const [expanded, setExpanded] = React.useState<string | false>(false);
 //   const [inputValue, setInputValue] = useState('');
-//   const handleAccordionChange = (panel: string) => (
-//     event: React.ChangeEvent<{}>,
-//     isExpanded: boolean
-//   ) => {
-//     setExpanded(isExpanded ? panel : false);
-//   };
+
 
 //   const setInputCallback = useCallback(
 //     (newInputValue: string) => {
@@ -172,12 +188,7 @@ export default Dispatchers;
 //         const dispatcherLabel = `${dispatcher[0]}`
 //         return (
 //           <DispatcherContext.Provider key={dispatcher.toString()} value={dispatcherLabel}>
-//             <Accordion
-//               key={`${category}${dispatcher[0]}`}
-//               expanded={expanded === `${category}${dispatcher[0]}`}
-//               onChange={handleAccordionChange(`${category}${dispatcher[0]}`)}
-//               TransitionProps={{ unmountOnExit: true }}
-//             >
+
 //               <AccordionSummary>
 //                   <>{dispatcherLabel}</>
 //                   <IconButton aria-label="Delete Dispatcher" onClick={(event: any) => {

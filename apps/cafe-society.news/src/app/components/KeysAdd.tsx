@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useStacks } from '../react-hooks/useStacks';
+import { useStorage } from '../react-hooks/useStorage';
 import { TextField } from '@mui/material';
 import useSWR, { mutate } from 'swr';
 
@@ -8,7 +8,7 @@ var chloride = require('chloride')
 
 const KeysAdd = () => {
 
-  const { persist } = useStacks();
+  const { persist } = useStorage();
   const { data: keysdata } = useSWR('keys');
 
   const [inFlight, setInFlight] = useState(false);
