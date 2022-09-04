@@ -26,9 +26,6 @@ import {
 } from 'react-swipeable-list';
 import 'react-swipeable-list/dist/styles.css';
 
-// phoenix program:  cryptocomb - the CIA speaks
-
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bayes = require('classificator');
 
@@ -298,14 +295,6 @@ const Post: FunctionComponent = () => {
 
 export default Post;
 
-// const ItemContent = styled.div`
-// display: flex;
-// align-items: center;
-// justify-content: center;
-// width: 100%;
-// user-select: none
-// `;
-
 const ActionContent = styled.div`
   height: 100%;
   display: flex;
@@ -315,17 +304,6 @@ const ActionContent = styled.div`
   padding-right: 10px;
   padding-left: 10px;
 `;
-
-// const ItemRow = styled.div`
-// width: 100%;
-// display: flex;
-// `;
-
-// const ItemColumn = styled.div`
-// display: flex;
-// flex-direction: column;
-// align-items: flex-start;
-// `;
 
 const ItemColumnCentered = styled.div`
   display: flex;

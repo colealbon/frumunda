@@ -12,7 +12,7 @@ import {
   Grid
 } from '@mui/material';
 
-import {feedValueType} from '../types'
+import { feedValueType } from '../types'
 import { settingsType, useSettings } from '../react-hooks/useSettings';
 import { useStorage } from '../react-hooks/useStorage';
 import defaultFeeds from '../react-hooks/defaultFeeds.json';
@@ -156,63 +156,62 @@ const Posts: FunctionComponent = () => {
             </div>
           );
         }
+
         return (
-
-            <Fragment key={feedLink}>
-              <Divider />
+          <Fragment key={feedLink}>
+            <Divider />
+            <Typography
+              style={{
+                display: 'flex',
+                flexDirection: 'column'
+              }}
+            >
+              <Link href={`${feedLink}`} target="_blank" style={{textDecoration: 'none'}}>
+                {`${feedLabel || feedTitle || feedLink}`}
+              </Link>
               <Typography
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}
+                variant="caption"
               >
-                <Link href={`${feedLink}`} target="_blank" style={{textDecoration: 'none'}}>
-                  {`${feedLabel || feedTitle || feedLink}`}
-                </Link>
-                <Typography
-                  variant="caption"
-                >
-                  {feedDescription}
-                </Typography>
+                {feedDescription}
               </Typography>
-              <Typography variant="caption">{` (${
-                unprocessedCleanPostItems.length
-              } of ${
-                feedValue.items.length
-              } posts remaining)`}</Typography>
-              <Divider />
-              <br />
-                <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{justifyContent: 'start', minWidth: '100%'}} >
-                  {unprocessedCleanPostItems.map(cleanPostItem => {
-                    return (
-                      <Grid item 
-                      xs={3} 
-                      sm={4} 
-                      md={4} 
-                      key={JSON.stringify(cleanPostItem)}
-                      style={{minWidth:'300px', alignItems:'center'}}
+            </Typography>
+            <Typography variant="caption">{` (${
+              unprocessedCleanPostItems.length
+            } of ${
+              feedValue.items.length
+            } posts remaining)`}</Typography>
+            <Divider />
+            <br />
+              <Grid container spacing={{ xs: 3, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }} style={{justifyContent: 'start', minWidth: '100%'}} >
+                {unprocessedCleanPostItems.map(cleanPostItem => {
+                  return (
+                    <Grid item 
+                    xs={3} 
+                    sm={4} 
+                    md={4} 
+                    key={JSON.stringify(cleanPostItem)}
+                    style={{minWidth:'300px', alignItems:'center'}}
+                    >
+                      <PostContext.Provider
+                        value={cleanPostItem}
+                        key={`postitem-swipeable-list-${
+                          cleanPostItem['link']
+                        }`}
                       >
-                        <PostContext.Provider
-                          value={cleanPostItem}
-                          key={`postitem-swipeable-list-${
-                            cleanPostItem['link']
-                          }`}
-                        >
-                          <Box style={{minWidth:'100%', justifyContent: 'center'}}>
-                            <Card style={{minWidth:'100%'}}>
-                              <CardContent>
-                                <Post key={JSON.stringify(cleanPostItem)} />
-                              </CardContent>
-                            </Card>
-                          </Box>
-                        </PostContext.Provider>
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              <MarkFeedProcessedButton />
-            </Fragment>
-
+                        <Box style={{minWidth:'100%', justifyContent: 'center'}}>
+                          <Card style={{minWidth:'100%'}}>
+                            <CardContent>
+                              <Post key={JSON.stringify(cleanPostItem)} />
+                            </CardContent>
+                          </Card>
+                        </Box>
+                      </PostContext.Provider>
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            <MarkFeedProcessedButton />
+          </Fragment>
         );
       })}
     </>

@@ -1,19 +1,15 @@
-import ReactDOM from 'react-dom/client';
-import Classifier from './Classifier'
+import { createContext } from 'react'
+import { render } from '@testing-library/react';
+import Classifier from './Classifier';
+const CategoryContext = createContext('');
 
-let container;
-
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
+describe('Classifier', () => {
+  it('should render successfully', () => {
+    const { baseElement } = render(
+      <CategoryContext.Provider value={'science'}>
+        <Classifier />);
+      </CategoryContext.Provider>
+    )
+    expect(baseElement).toBeTruthy();
+  });
 });
-
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
-});
-
-it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<Classifier />);
-});
-

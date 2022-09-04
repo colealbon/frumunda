@@ -1,6 +1,8 @@
+import { createContext } from 'react'
 import { render } from '@testing-library/react';
-
 import Contribute from './Contribute';
+const CategoryContext = createContext('');
+
 
 describe('Contribute', () => {
   it('should render successfully', () => {
@@ -8,3 +10,8 @@ describe('Contribute', () => {
     expect(baseElement).toBeTruthy();
   });
 });
+
+
+{/* <CategoryContext.Provider key={`${category}`} value={`${category}`}>
+{children}
+</CategoryContext.Provider> */}

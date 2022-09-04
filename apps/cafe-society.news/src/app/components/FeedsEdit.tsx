@@ -37,6 +37,7 @@ const FeedsEdit: FunctionComponent = () => {
       {Object.keys({ ...feeds }).map((feed) => {
         return (
           <Accordion 
+            key={feed}
             style={{padding: '0px'}}
             expanded={expanded === feed}
             onChange={handleChange(feed)}

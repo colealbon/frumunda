@@ -25,8 +25,6 @@ import { useStorage } from '../react-hooks/useStorage';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const bayes = require('classificator');
 
-// import VisibilitySensor from 'react-visibility-sensor';
-
 const Classifier: FunctionComponent = () => {
   const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -63,20 +61,6 @@ const Classifier: FunctionComponent = () => {
     );
 
   let classifier = bayes();
-
-  const [expandedQRCodeSender, setExpandedQRCodeSender] = useState<string | false>(false);
-  const handleChangeQRCodeSender =
-    (panel: string) => (event: React.SyntheticEvent, newExpandedQRCodeSender: boolean) => {
-      setExpandedQRCodeSender(newExpandedQRCodeSender ? panel : false);
-    };
-
-  const [expandedQRCodeReader, setExpandedQRCodeReader] = useState<string | false>(false);
-  const handleChangeQRCodeReader =
-    (panel: string) => (event: React.SyntheticEvent, newExpandedQRCodeReader: boolean) => {
-      setExpandedQRCodeReader(newExpandedQRCodeReader ? panel : false);
-    };
-
-
 
   const filename = `classifier_${category}`.replace(/_$/, '')
 
