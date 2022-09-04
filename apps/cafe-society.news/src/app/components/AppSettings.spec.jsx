@@ -1,43 +1,32 @@
 import {Suspense} from 'react';
 import '@testing-library/jest-dom'
 import AppSettings from './AppSettings'
-import { render, screen, waitFor } from '@testing-library/react';
-import "fake-indexeddb/auto";
+import { render, screen, waitFor, act} from '@testing-library/react';
 
 describe('AppSettings', () => {
   describe('AppSettings component', () => {
-    beforeEach( async () => {
-      render(<Suspense fallback={'loading'}><AppSettings /></Suspense>)
+    beforeEach(async () => {
+      await act(() => render(<Suspense fallback={'loading'}><AppSettings /></Suspense>))
     })
-    it ('renders settings hide processed posts', async () => {
-      await waitFor(() => {
-        const target = screen.getByText('hide processed posts');
-        expect(target).toBeInTheDocument()
-      })
+    it ('renders processed posts', () => {
+      const target = screen.getByText('hide processed posts');
+      expect(target).toBeInTheDocument()
     })
-    it ('renders settings disable machine learning', async () => {
-      await waitFor(() => {
-        const target = screen.getByText('disable machine learning');
-        expect(target).toBeInTheDocument()
-      })
+    it ('renders disable machine learning', () => {
+      const target = screen.getByText('disable machine learning');
+      expect(target).toBeInTheDocument()
     })
-    it ('renders settings ignore machine learning under', async () => {
-      await waitFor(() => {
-        const target = screen.getByText('ignore machine learning under 100 documents');
-        expect(target).toBeInTheDocument()
-      })
+    it ('renders ignore ml under 100', () => {
+      const target = screen.getByText('ignore machine learning under 100 documents');
+      expect(target).toBeInTheDocument()
     })
-    it ('renders settings machine learning confidence threshold', async () => {
-      await waitFor(() => {
-        const target = screen.getByText('machine learning confidence threshold: .99');
-        expect(target).toBeInTheDocument()
-      })
+    it ('renders ml confidence threshold', () => {
+      const target = screen.getByText('machine learning confidence threshold: .99');
+      expect(target).toBeInTheDocument()
     })
-    it ('renders reset button', async () => {
-      await waitFor(() => {
-        const target = screen.getByText('reset app settings');
-        expect(target).toBeInTheDocument()
-      })
+    it ('renders reset button',  () => {
+      const target = screen.getByText('reset app settings');
+      expect(target).toBeInTheDocument()
     })
   });
 });
