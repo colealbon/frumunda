@@ -8,8 +8,6 @@ import {
 } from 'react';
 import useSWR, { mutate } from 'swr';
 import { CategoryContext } from './Category';
-import QRCodeSender from './QRCodeSender';
-import QRCodeReader from './QRCodeReader';
 import { 
   TextField, 
   Divider, 
@@ -134,55 +132,8 @@ const Classifier: FunctionComponent = () => {
           <ListItemText sx={{ pl: 2 }} primary={`${category}`} />
         </AccordionSummary>
         <AccordionDetails>
-          <Accordion 
-            style={{padding: '0px'}}
-            expanded={expandedQRCodeSender === 'showQRCodeSenderPanel'}
-            onChange={handleChangeQRCodeSender('showQRCodeSenderPanel')} 
-          >
-            <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
-              <ListItemText sx={{ pl: 2 }} primary={`show qr code`} />
-            </AccordionSummary>
-            <AccordionDetails style={{padding: '0px'}}>
-              <QRCodeSender text={JSON.stringify(JSON.parse(classifier.toJson()), null, 2)} />
-            </AccordionDetails>
-          </Accordion>
-          <Accordion 
-              style={{padding: '0px'}}
-              expanded={expandedQRCodeReader === 'showQRCodeReaderPanel'}
-              onChange={handleChangeQRCodeReader('showQRCodeReaderPanel')}
-              TransitionProps={{ unmountOnExit: true }} 
-            >
-            <AccordionSummary style={{justifyContent: 'start', padding: '0px'}} >
-              <ListItemText sx={{ pl: 2 }} primary={`read qr code`} />
-            </AccordionSummary>
-            <AccordionDetails>
-              <QRCodeReader onComplete={(text: string) => {
-                setInputCallback(text)
-                handleChangeQRCodeReader('showQRCodeReaderPanel')
-                let newClassifier = bayes();
-                try {
-                  newClassifier = bayes.fromJson(text);
-                } catch (error) {
-                  setSnackbarOpen(true);
-                  return
-                }
-                mutate(
-                  filenameForClassifier,
-                  persist(filenameForClassifier, JSON.parse(newClassifier.toJson())),
-                  {
-                    optimisticData: newClassifier,
-                    rollbackOnError: false,
-                    revalidate: false,
-                    populateCache: false,
-                  }
-                ).then(() => alert('new classifier persisted'))
-              }}/>
-            </AccordionDetails>
-          </Accordion>
-          <Divider />
-          <div/>
           <form onSubmit={onSubmit}>
-          <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained">
               submit
             </Button>
             <Divider />

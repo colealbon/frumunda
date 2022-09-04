@@ -27,10 +27,6 @@ export function useSettings() {
       checked: true,
       value: 0.97,
     },
-    showClassifierOverride: {
-      label: 'show classifier override',
-      checked: false,
-    },
   };
 
   const fetcher = () => {

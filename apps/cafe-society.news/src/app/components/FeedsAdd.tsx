@@ -35,8 +35,12 @@ const FeedsAdd = () => {
     "Enter": () => addFeed()
   }
 
-  const handleKeyPress: (event: { key: string;}) => void = ((event) => {
+  const onKeyPress: (event: { key: string;}) => void = (event) => {
     return handlersForKeyPress[event.key]()
+  }
+
+  const onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void = ((event) => {
+    return setInputCallback(event.target.value);
   })
 
   return (
@@ -45,12 +49,8 @@ const FeedsAdd = () => {
       id="addFeedTextField"
       placeholder="add feed here"
       value={inputValue}
-      onKeyPress={handleKeyPress}
-      onChange={(
-        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-      ) => {
-        setInputCallback(event.target.value);
-      }}
+      onKeyPress={onKeyPress}
+      onChange={onChange}
       fullWidth
     />
   );
