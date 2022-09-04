@@ -1,7 +1,7 @@
 import {Suspense} from 'react';
 import '@testing-library/jest-dom'
 import AppSettings from './AppSettings'
-import { render, screen, waitFor, act} from '@testing-library/react';
+import { render, screen, act} from '@testing-library/react';
 
 describe('AppSettings', () => {
   describe('AppSettings component', () => {
