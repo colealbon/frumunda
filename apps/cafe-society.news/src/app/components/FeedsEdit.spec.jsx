@@ -1,19 +1,16 @@
-import ReactDOM from 'react-dom/client';
+import {Suspense} from 'react';
+import '@testing-library/jest-dom'
 import FeedsEdit from './FeedsEdit'
+import { render, screen, act} from '@testing-library/react';
 
-let container;
-
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
+describe('FeedsEdit', () => {
+  describe('FeedsEdit component', () => {
+    beforeEach(async () => {
+      await act(async () => await render(<Suspense fallback={'loading'}><FeedsEdit /></Suspense>))
+    })
+    it ('renders reset feeds', async () => {
+      const target = screen.getByText('reset feeds');
+      expect(target).toBeInTheDocument()
+    })
+  });
 });
-
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
-});
-
-it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<FeedsEdit />);
-});
-

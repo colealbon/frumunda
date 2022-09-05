@@ -47,6 +47,7 @@ const FeedsAdd = () => {
     <TextField
       disabled={inFlight}
       id="addFeedTextField"
+      title="add feed here"
       placeholder="add feed here"
       value={inputValue}
       onKeyPress={onKeyPress}
