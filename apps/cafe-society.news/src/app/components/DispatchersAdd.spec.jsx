@@ -1,19 +1,16 @@
-import ReactDOM from 'react-dom/client';
+import {Suspense} from 'react';
+import '@testing-library/jest-dom'
 import DispatchersAdd from './DispatchersAdd'
+import { render, screen, act} from '@testing-library/react';
 
-let container;
-
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
+describe('DispatchersAdd', () => {
+  describe('DispatchersAdd component', () => {
+    beforeEach(async () => {
+      await act(async () => await render(<Suspense fallback={'loading'}><DispatchersAdd /></Suspense>))
+    })
+    it ('renders reset feeds', async () => {
+      const target = screen.getByPlaceholderText('add dispatcher name here');
+      expect(target).toBeInTheDocument()
+    })
+  });
 });
-
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
-});
-
-it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<DispatchersAdd />);
-});
-

@@ -1,22 +1,18 @@
 import {
   FunctionComponent,
-  useContext,
   useState,
   useCallback
 } from 'react';
 import { TextField } from '@mui/material'
-import { CategoryContext } from './Category';
 import { useStorage } from '../react-hooks/useStorage'
 import useSWR, {mutate} from 'swr'
 import defaultDispatchers from '../react-hooks/defaultDispatchers.json'
 
 const DispatchersAdd: FunctionComponent = () => {
-  const categoryContext = useContext(CategoryContext)
   const [inFlight, setInFlight] = useState(false);
-  const category = `${categoryContext}`
   const [inputValue, setInputValue] = useState('');
   const { persist, fetchFile } = useStorage();
-  const { data: dispatchersdata } = useSWR(`dispatchers_${category}`, () => fetchFile(`dispatchers_${category}`, defaultDispatchers), {
+  const { data: dispatchersdata } = useSWR(`dispatchers`, () => fetchFile(`dispatchers`, defaultDispatchers), {
     fallbackData: defaultDispatchers,
     suspense: true
   });
@@ -35,7 +31,7 @@ const DispatchersAdd: FunctionComponent = () => {
     );
     const newDispatchers = { ...newDispatcher, ...dispatchers };
     setInFlight(true);
-    mutate(`dispatchers_${category}`, persist(`dispatchers_${category}`, newDispatchers), {
+    mutate(`dispatchers`, persist(`dispatchers`, newDispatchers), {
       optimisticData: newDispatchers,
       rollbackOnError: false
     }).then(() => {
@@ -50,7 +46,7 @@ const DispatchersAdd: FunctionComponent = () => {
       <TextField
         id="addDispatcherTextField"
         disabled={inFlight}
-        placeholder={`add ${category} dispatcher here`}
+        placeholder={`add dispatcher name here`}
         value={inputValue}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onKeyPress={(event: any ) => {
