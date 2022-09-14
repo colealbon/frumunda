@@ -3,29 +3,34 @@ import {useStorage} from '../react-hooks/useStorage'
 import useSWR, {mutate} from 'swr'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import {dispatcherValueType} from '../types'
 
 const DispatcherKeys: FunctionComponent<{ dispatcherLabel: string }> = (props: {
   dispatcherLabel: string;
 }) => {
-  const { fetchFile, persist } = useStorage();
+  const { persistLocal } = useStorage();
+  const { data: dispatchersdata } = useSWR('dispatchers');
+
+  const dispatchers: object = dispatchersdata as object;
+
+  const keysForDispatcher = Object.entries(dispatchers)
+    .filter((dispatcherEntry) => dispatcherEntry[0] === props.dispatcherLabel)
+    .map(dispatcherEntry => dispatcherEntry[1])
+    .find(() => true)['keys']
+
   const { data: keysdata } = useSWR('keys');
   const keys = { ...(keysdata as object) };
-
-  const { data: keysfordispatcherdata } = useSWR(
-    `keys_${props.dispatcherLabel}`,
-    () => fetchFile(`keys_${props.dispatcherLabel}`, []),
-    { 
-      fallbackData: [],
-      suspense: true,
-      shouldRetryOnError: true,
-      errorRetryInterval: 100
-    }
-  );
-  const keysForDispatcher = keysfordispatcherdata as string[]
-
+  
   const handleChange = (e: SyntheticEvent, newValue: string[]) => {
-    mutate(`keys_${props.dispatcherLabel}`, persist(`keys_${props.dispatcherLabel}`, newValue), {
-      optimisticData: newValue,
+    const newDispatcher =  Object.fromEntries(Object.entries(dispatchers).filter((dispatcherEntry) => {
+      return dispatcherEntry[0] === props.dispatcherLabel
+    }).map(dispatcherEntry => {
+      return [dispatcherEntry[0],  {...dispatcherEntry[1], ...{keys: newValue}} as dispatcherValueType ]
+    })
+    )
+    const newDispatchers = {...dispatchers, ...newDispatcher}
+    mutate('dispatchers', persistLocal('dispatchers', newDispatchers), {
+      optimisticData: newDispatchers,
       rollbackOnError: false
     })
   };
@@ -41,7 +46,7 @@ const DispatcherKeys: FunctionComponent<{ dispatcherLabel: string }> = (props: {
         .flat(Infinity)
       }
       onChange={(e, value) => handleChange(e, value as string[])}
-      defaultValue={keysForDispatcher}
+      value={keysForDispatcher}
       renderInput={(params) => {
         return (
           <TextField

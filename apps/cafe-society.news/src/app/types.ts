@@ -4,6 +4,14 @@ export type cleanPostItemType = {
   description: {[key: string]: string}
 }
 
+export type dispatcherValueType = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+  checked: boolean;
+  action: string;
+  keys?: [string]
+}
+
 export type feedValueType = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
