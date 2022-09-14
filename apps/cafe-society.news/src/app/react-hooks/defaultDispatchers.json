@@ -4,8 +4,7 @@
     "keys":["lucky-day","dusty-bottoms", "venus-flytrap", "ned-nederlander"],
     "action": "encryptThenPostToBlockstack"
   },
-  "blockstack-broadcast":
-  {
+  "blockstack-broadcast": {
     "checked":false,
     "action": "postToBlockstackNoEncryption"
   }

@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import Dispatchers from './Dispatchers'
+import DispatchersEdit from './DispatchersEdit'
 
 let container;
 
@@ -14,6 +14,6 @@ afterEach(() => {
 });
 
 it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<Dispatchers />);
+    ReactDOM.createRoot(container).render(<DispatchersEdit />);
 });
 

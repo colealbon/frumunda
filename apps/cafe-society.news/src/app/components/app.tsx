@@ -4,6 +4,7 @@ import { mutate } from 'swr';
 import { useStorage } from '../react-hooks/useStorage';
 import { MetaMaskProvider } from "metamask-react";
 import defaultKeys from '../react-hooks/defaultKeys.json'
+import defaultDispatchers from '../react-hooks/defaultDispatchers.json'
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
 
 export function App() {
@@ -13,6 +14,9 @@ export function App() {
   loadUserData();
   mutate('keys', fetchFile('keys', defaultKeys), {
     optimisticData: defaultKeys,
+  });
+  mutate('dispatchers', fetchFileLocal('dispatchers', defaultDispatchers), {
+    optimisticData: defaultDispatchers,
   });
   mutate('corsProxies', fetchFileLocal('corsProxies', defaultCorsProxies), {
     optimisticData: defaultCorsProxies,

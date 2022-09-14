@@ -1,22 +1,13 @@
-import {
-  FunctionComponent,
-  useState,
-  useCallback
-} from 'react';
-import { TextField } from '@mui/material'
-import { useStorage } from '../react-hooks/useStorage'
-import useSWR, {mutate} from 'swr'
-import defaultDispatchers from '../react-hooks/defaultDispatchers.json'
+import { ChangeEvent, useState, useCallback } from 'react';
+import { useStorage } from '../react-hooks/useStorage';
+import { TextField } from '@mui/material';
+import useSWR, { mutate } from 'swr';
 
-const DispatchersAdd: FunctionComponent = () => {
+const DispatchersAdd = () => {
+  const { data: dispatchers } = useSWR('dispatchers');
   const [inFlight, setInFlight] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const { persist, fetchFile } = useStorage();
-  const { data: dispatchersdata } = useSWR(`dispatchers`, () => fetchFile(`dispatchers`, defaultDispatchers), {
-    fallbackData: defaultDispatchers,
-    suspense: true
-  });
-  const dispatchers = { ...dispatchersdata as object };
+  const { persistLocal } = useStorage();
 
   const setInputCallback = useCallback(
     (newInputValue: string) => {
@@ -26,45 +17,37 @@ const DispatchersAdd: FunctionComponent = () => {
   );
 
   const addDispatcher = () => {
-    const newDispatcher = JSON.parse(
-      `{"${inputValue}": {"checked":true}}`
-    );
-    const newDispatchers = { ...newDispatcher, ...dispatchers };
     setInFlight(true);
-    mutate(`dispatchers`, persist(`dispatchers`, newDispatchers), {
+    const newDispatcher = JSON.parse(`{"${inputValue}": {"checked": true}}`);
+    const newDispatchers = { ...newDispatcher, ...dispatchers };
+    mutate('dispatchers', persistLocal('dispatchers', newDispatchers), {
       optimisticData: newDispatchers,
       rollbackOnError: false
-    }).then(() => {
-      setInFlight(false)
-      //mutate(`dispatchers_${category}`)
-    });
-    
+    }).then(() => setInFlight(false));
   };
 
   return (
-    <div>
-      <TextField
-        id="addDispatcherTextField"
-        disabled={inFlight}
-        placeholder={`add dispatcher name here`}
-        value={inputValue}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onKeyPress={(event: any ) => {
-          [event.key]
-            .filter(theKey => theKey === 'Enter')
-            .forEach(() => {
-              addDispatcher();
-              setInputCallback('');
+    <TextField
+      disabled={inFlight}
+      id="addDispatcherTextField"
+      placeholder="add dispatcher name here"
+      value={inputValue}
+      onKeyPress={(event: { key: string }) => {
+        [event.key]
+          .filter((theKey) => theKey === 'Enter')
+          .forEach(() => {
+            addDispatcher();
+            setInputCallback('');
           });
-       }}
-       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-       onChange={(event: any ) => {
-         setInputCallback(event.target.value);
-       }}
-       fullWidth
-      />
-    </div>
-  )
-}
+      }}
+      onChange={(
+        event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      ) => {
+        setInputCallback(event.target.value);
+      }}
+      fullWidth
+    />
+  );
+};
 
 export default DispatchersAdd;

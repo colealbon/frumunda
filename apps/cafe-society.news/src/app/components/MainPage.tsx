@@ -6,7 +6,7 @@ import CheckedCategory from './CheckedCategory';
 import Category from './Category';
 import Feed from './Feed';
 import Posts from './Posts';
-import Dispatchers from './Dispatchers'
+import DispatchersEdit from './DispatchersEdit'
 import Keys from './Keys';
 import Metamask from './Metamask';
 import Stacks from './Stacks';
@@ -43,7 +43,7 @@ export function MainPage() {
         <Classifier/>
       </Category>,
     "keys": () => <Keys />,
-    "dispatchers": () =>  <Dispatchers />,
+    "dispatchers": () =>  <DispatchersEdit />,
     "appsettings": () =>  <AppSettings />
   }
 

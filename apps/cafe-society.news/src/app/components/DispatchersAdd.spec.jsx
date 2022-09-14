@@ -4,7 +4,7 @@ import DispatchersAdd from './DispatchersAdd'
 import { render, screen, act} from '@testing-library/react';
 
 describe('DispatchersAdd', () => {
-  describe('DispatchersAdd component', () => {
+  describe('textbox placeholder text', () => {
     beforeEach(async () => {
       await act(async () => await render(<Suspense fallback={'loading'}><DispatchersAdd /></Suspense>))
     })

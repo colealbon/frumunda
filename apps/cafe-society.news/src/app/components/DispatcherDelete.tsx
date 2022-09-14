@@ -3,25 +3,19 @@ import { IconButton } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
 import useSWR, { mutate } from 'swr';
 import { useStorage } from '../react-hooks/useStorage';
-import defaultDispatchers from '../react-hooks/defaultDispatchers.json';
 
 const DispatcherDelete: FunctionComponent<{ text: string }> = (props: {
   text: string;
 }) => {
-  const { persistLocal, fetchFileLocal } = useStorage();
-  const { data: dispatchersdata } = useSWR(
-    'Dispatchers',
-    fetchFileLocal('Dispatchers', defaultDispatchers),
-    { fallbackData: defaultDispatchers }
-  );
-  const dispatchers = { ...(dispatchersdata as object) };
+  const { persistLocal } = useStorage();
+  const { data: dispatchers } = useSWR('dispatchers');
   const [inFlight, setInFlight] = useState(false);
 
   const deleteDispatcher = () => {
     setInFlight(true);
     const newDispatchers = {
       ...Object.fromEntries(
-        Object.entries(dispatchers).filter(
+        Object.entries({ ...dispatchers }).filter(
           (dispatcher: [string, unknown]) => dispatcher[0] !== props.text
         )
       ),
@@ -34,14 +28,14 @@ const DispatcherDelete: FunctionComponent<{ text: string }> = (props: {
 
   return (
     <Fragment>
-      {Object.entries(dispatchers)
+      {Object.entries({ ...dispatchers })
         .filter((dispatcher: [string, unknown]) => dispatcher[0] === props.text)
         .map((dispatcher: [string, unknown]) => {
           return (
             <Fragment key={`${dispatcher}`}>
               <IconButton
                 disabled={inFlight}
-                aria-label="delete dispatcher"
+                aria-label="Delete Dispatcher"
                 onClick={deleteDispatcher}
               >
                 <DeleteOutlined />

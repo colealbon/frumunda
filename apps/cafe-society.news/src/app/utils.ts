@@ -16,8 +16,10 @@ export const removeTrackingGarbage = (text: string) => {
     .replace(/\[httpselectrekcowebstories.*$/g, '')
     .replace(/-- read more on .*/g, '')
     .replace(/-- Read more on .*/g, '')
+    .replace(/News Ghana.?http.? /g, '')
     .replace(/\n/g, ' ')
     .replace(/\s{2,}/g, ' ');
+    
 };
 
 export const cleanTags = (text: string) => {
