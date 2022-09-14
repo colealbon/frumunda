@@ -15,9 +15,9 @@ export function App() {
   mutate('keys', fetchFile('keys', defaultKeys), {
     optimisticData: defaultKeys,
   });
-  mutate('dispatchers', fetchFileLocal('dispatchers', defaultDispatchers), {
-    optimisticData: defaultDispatchers,
-  });
+  
+  mutate('dispatchers', fetchFileLocal('dispatchers', defaultDispatchers));
+
   mutate('corsProxies', fetchFileLocal('corsProxies', defaultCorsProxies), {
     optimisticData: defaultCorsProxies,
   });

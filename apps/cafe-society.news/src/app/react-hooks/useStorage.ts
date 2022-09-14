@@ -46,7 +46,7 @@ export function useStorage() {
       });
     };
 
-  const fetchFile = (filename: string, defaultValue: object | string) => {
+  const fetchFile = (filename: string, defaultValue: object | string | string[]) => {
     return new Promise((resolve, reject) => {
       if (!userSession.isUserSignedIn()) {
         localforage.getItem(filename).then((value: unknown) => {
