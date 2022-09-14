@@ -15,8 +15,8 @@
 # development
 # npx nx build news-train --configuration=development; netlify dev
 
-npx nx build news-train --configuration=production
-netlify deploy --dir=./dist/apps/news-train
+npx nx build cafe-society.news --configuration=production
+netlify deploy --dir=./dist/apps/cafe-society.news
 
 # docker build -t news-train .
 #
