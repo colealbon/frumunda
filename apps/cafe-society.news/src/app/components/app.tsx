@@ -6,6 +6,7 @@ import { MetaMaskProvider } from "metamask-react";
 import defaultKeys from '../react-hooks/defaultKeys.json'
 import defaultDispatchers from '../react-hooks/defaultDispatchers.json'
 import defaultCorsProxies from '../react-hooks/defaultCorsProxies.json';
+import CssBaseline from '@mui/material/CssBaseline';
 
 export function App() {
   
@@ -29,6 +30,7 @@ export function App() {
 
   return (
     <MetaMaskProvider>
+      <CssBaseline />
       <Dashboard>
         <MainPage />
       </Dashboard>
