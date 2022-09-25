@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# lint and jest "hard" is a more aggressive rule set only for changed files
 sh "$(dirname -- "$0")/lint-hard.sh"
+sh "$(dirname -- "$0")/jest-hard.sh"
 nx test

@@ -1,6 +1,6 @@
 import { FunctionComponent, Fragment, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { Switch, FormControlLabel, Typography } from '@mui/material';
+import { Switch, FormControlLabel } from '@mui/material';
 import { useStorage } from '../react-hooks/useStorage';
 
 const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
@@ -78,7 +78,7 @@ const CategoryToggle: FunctionComponent<{ text: string }> = (props: {
                   name={props.text}
                 />
               }
-              label={<Typography>{props.text}</Typography>}
+              label={<>{props.text}</>}
             />
           );
         })}
