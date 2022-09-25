@@ -51,7 +51,7 @@ export function MainPage() {
   
   return (
     <ErrorBoundary fallback={<>`error fetching ${pageToRender}`</>}>
-      <Suspense fallback={<><Toolbar />loading and processing (be patient...)<Toolbar /><Toolbar><div><Contribute /></div></Toolbar></>}>
+      <Suspense fallback={<><Toolbar />loading and processing (be patient...)</>}>
       {
         contentForPage[pageToRender]()
       }

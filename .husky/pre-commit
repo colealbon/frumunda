@@ -1,8 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-# LINTLIST=`git diff --name-only | grep .tsx | grep -v json`
-# echo $LINTLIST xargs nx lint --noEslintrc --eslintConfig=./eslintrc-hardcore.json --lintFilePatterns=$LINTLIST
-git diff --name-only | grep -v json | grep --line-buffered .tsx | awk '{system("nx lint --noEslintrc --eslintConfig=./eslintrc-hard.json --lintFilePatterns=" $1)}'
-
+sh "$(dirname -- "$0")/lint-hard.sh"
 nx test

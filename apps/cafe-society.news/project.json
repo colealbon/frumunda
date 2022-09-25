@@ -82,6 +82,17 @@
         "lintFilePatterns": ["apps/cafe-society.news/**/*.{ts,tsx,js,jsx}"]
       }
     },
+
+    "lint-staged": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/cafe-society.news/**/*.{ts,tsx,js,jsx}"],
+        "noEslintrc": true,
+        "eslintConfig": "./eslintrc-hard.json"
+      }
+    },
+    
     "test": {
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/cafe-society.news"],

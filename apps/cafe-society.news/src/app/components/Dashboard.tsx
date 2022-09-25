@@ -12,7 +12,7 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Divider, Toolbar } from '@mui/material';
+import { Toolbar } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import PageChooser from './PageChooser';
 import CategoryChooser from './CategoryChooser';
@@ -44,22 +44,14 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
 
   return (
     <Box sx={{ display: 'flex'}} style={{ backgroundColor: '#E7EBF0', padding: '0px'}}>
-      
-      <AppBar
-        
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-        }}
-      >
+      <AppBar>
         <Toolbar>
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            sx={{ mr: 2 }}
           >
             <MenuIcon />
           </IconButton>
@@ -84,12 +76,6 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
           </Typography>
         </Toolbar>
       </AppBar>
-
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
-      >
         <Suspense fallback={<>loading categories...</>}>
           <Drawer
             variant="temporary"
@@ -100,7 +86,7 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
               keepMounted: true, // Better open performance on mobile.
             }}
             sx={{
-              display: { xs: 'block', sm: 'none' },
+              display: 'block',
               '& .MuiDrawer-paper': {
                 boxSizing: 'border-box',
                 width: drawerWidth,
@@ -108,36 +94,16 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
             }}
           >
             <Toolbar />
-            <Divider />
             <CategoryChooser />
             <PageChooser />
           </Drawer>
-          <Drawer
-            variant="permanent"
-            sx={{
-              display: { xs: 'none', sm: 'block' },
-              '& .MuiDrawer-paper': {
-                boxSizing: 'border-box',
-                width: drawerWidth,
-              },
-            }}
-            open
-          >
-            <Toolbar />
-            <Divider />
-            <Suspense fallback={<>loading menu items</>}>
-              <CategoryChooser />
-              <PageChooser />
-            </Suspense>
-          </Drawer>
         </Suspense>
-      </Box>
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: '100%'
         }}
       >
         <Toolbar />
