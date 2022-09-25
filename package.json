@@ -67,7 +67,7 @@
     "@types/debounce": "^1.2.1",
     "@types/deep-equal": "^1.0.1",
     "@types/html-to-text": "^8.1.0",
-    "@types/jest": "^27.4.1",
+    "@types/jest": "^27.5.2",
     "@types/node": "^16.11.41",
     "@types/react": "^18.0.12",
     "@types/react-dom": "18.0.3",
@@ -95,7 +95,7 @@
     "pre-commit": "^1.2.2",
     "prettier": "^2.6.2",
     "react-test-renderer": "^18.1.0",
-    "ts-jest": "27.1.4",
+    "ts-jest": "^27.1.4",
     "ts-node": "~10.8.0",
     "typescript": "~4.7.2"
   }
