@@ -1,46 +1,14 @@
-import React, { useCallback } from 'react';
 import { Switch, FormControlLabel } from '@mui/material';
 import { useSettings } from '../react-hooks/useSettings';
 
 const AppSettingsToggle = (props: {
-  name: string;
+  name: string
 }) => {
-  const { settings, persistSettings } = useSettings();
-  const setSettingsCallback = useCallback(() => {
-    const newSetting = {...Object.fromEntries(
-      Object.entries(JSON.parse(JSON.stringify(settings)))
-        .filter((setting: [string, unknown]) => setting[0] === props.name)
-        .map((setting: [string, unknown]) => {
-          return [
-            setting[0],
-            {
-              ...Object.fromEntries(
-                Object.entries({
-                  ...(setting[1] as Record<string, unknown>),
-                })
-                  .filter(
-                    (attribute: [string, unknown]) =>
-                      attribute[0] === 'checked'
-                  )
-                  .map((attribute: [string, unknown]) => [attribute[0], !attribute[1]])
-              ),
-              ...Object.fromEntries(
-                Object.entries({
-                  ...(setting[1] as Record<string, unknown>),
-                }).filter((attribute: [string, unknown]) => attribute[0] !== 'checked')
-              ),
-            },
-          ];
-        })
-        ),
-      }
-    persistSettings({ ...settings as object, ...newSetting });
-  }, [settings, props.name, persistSettings]);
+  const { settings, toggle } = useSettings();
 
   return (
-
     <div style={{display: 'flex', flexDirection: 'column'}}>
-      {Object.entries(JSON.parse(JSON.stringify(settings)))
+      {Object.entries(settings as object)
         .filter((setting: [string, unknown]) => setting[0] === props.name)
         .map((setting: [string, unknown]) => {
           const attributes = setting[1] as Record<string, unknown>;
@@ -56,7 +24,7 @@ const AppSettingsToggle = (props: {
                       )
                     )
                   ).some(checked => checked)}
-                  onChange={setSettingsCallback}
+                  onChange={toggle(props.name)}
                   name={props.name}
                 />
               }

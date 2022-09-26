@@ -6,7 +6,7 @@ import AppSettingsReset from './AppSettingsReset';
 import {useSettings} from '../react-hooks/useSettings'
 
 const Settings: FunctionComponent = () => {
-  const {settings} = useSettings()
+  const {settings } = useSettings()
   return (
     <>
       <Box p={1}>
