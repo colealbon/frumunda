@@ -5,7 +5,6 @@ const AppSettingsToggle = (props: {
   name: string
 }) => {
   const { settings, toggle } = useSettings();
-
   return (
     <div style={{display: 'flex', flexDirection: 'column'}}>
       {Object.entries(settings as object)
