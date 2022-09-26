@@ -17,26 +17,12 @@ const AppSettingsToggle = (props: {
               key={setting[0]}
               control={
                 <Switch
-                  checked={Object.values(
-                    Object.fromEntries(
-                      Object.entries(attributes).filter(
-                        (attribute: [string, unknown]) => attribute[0] === 'checked'
-                      )
-                    )
-                  ).some(checked => checked)}
+                  checked={attributes['checked'] as boolean}
                   onChange={toggle(props.name)}
                   name={props.name}
                 />
               }
-              label={`${
-                [
-                  Object.entries(attributes).find(
-                    (attribute: [string, unknown]) => attribute[0] === 'label'
-                  ),
-                ]
-                  .flat()
-                  .slice(-1)[0]
-              }`}
+              label={attributes['label'] as string}
             />
           );
         })}
