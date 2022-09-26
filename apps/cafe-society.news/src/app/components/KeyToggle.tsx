@@ -61,23 +61,18 @@ const KeyToggle: FunctionComponent<{ text: string }> = (props: {
         .map((key: [string, unknown]) => {
           const attributes = key[1] as Record<string, unknown>;
           return (
-            <FormControlLabel
+            <Switch
+              key={props.text}
               disabled={inFlight}
-              key={key[0]}
-              control={
-                <Switch
-                  checked={Object.values(
-                    Object.fromEntries(
-                      Object.entries(attributes).filter(
-                        (attribute: [string, unknown]) => attribute[0] === 'checked'
-                      )
-                    )
-                  ).some(checked => checked)}
-                  onChange={() => setKeysCallback()}
-                  name={props.text}
-                />
-              }
-              label={props.text}
+              checked={Object.values(
+                Object.fromEntries(
+                  Object.entries(attributes).filter(
+                    (attribute: [string, unknown]) => attribute[0] === 'checked'
+                  )
+                )
+              ).some(checked => checked)}
+              onChange={() => setKeysCallback()}
+              name={props.text}
             />
           );
         })}
