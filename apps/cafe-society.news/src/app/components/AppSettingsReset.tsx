@@ -1,12 +1,10 @@
-import React, { FunctionComponent } from 'react';
+import {FunctionComponent} from 'react';
 import {Button}  from '@mui/material';
-import { useSettings } from '../react-hooks/useSettings';
-
+import {useSettings} from '../react-hooks/useSettings'
 const AppSettingsReset: FunctionComponent = () => {
-  const { factoryReset } = useSettings();
-  const handleOnClick = () => factoryReset()
+  const { factoryReset } = useSettings()
   return (
-    <Button key="appsettingsreset" onClick={handleOnClick}>
+    <Button key="appsettingsreset" onClick={factoryReset}>
       reset app settings
     </Button>
   );

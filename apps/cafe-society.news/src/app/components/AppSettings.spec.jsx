@@ -2,6 +2,7 @@ import {Suspense} from 'react';
 import '@testing-library/jest-dom'
 import AppSettings from './AppSettings'
 import { render, screen, act} from '@testing-library/react';
+import user from '@testing-library/user-event'
 
 describe('AppSettings', () => {
   describe('AppSettings component', () => {
@@ -27,6 +28,14 @@ describe('AppSettings', () => {
     it ('renders reset button',  () => {
       const target = screen.getByText('reset app settings');
       expect(target).toBeInTheDocument()
+    })
+
+    it ('renders reset app settings button', () => {
+      const target = screen.getByRole('button', {
+        name: /reset app settings/i
+      })
+      expect(target).toBeInTheDocument()
+      // user.click(target)
     })
   });
 });

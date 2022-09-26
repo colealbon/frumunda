@@ -1,19 +1,20 @@
-import ReactDOM from 'react-dom/client';
-import AppSettingsReset from './AppSettingsToggle'
+import { Suspense } from 'react';
+import '@testing-library/jest-dom'
+import AppSettingsReset from './AppSettingsReset'
+import { render, screen, act } from '@testing-library/react';
+import user from '@testing-library/user-event'
 
-let container;
-
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
+describe('AppSettingsReset', () => {
+  describe('AppSettingsReset - reset app settings button', () => {
+    const handleOnClick = jest.fn()
+    beforeEach(async () => {
+      await act(async () => await render(<Suspense fallback={'loading'}><AppSettingsReset onClick={handleOnClick}/></Suspense>))
+    })
+    it ('renders clickable reset app settings button', () => {
+      const target = screen.getByRole('button', {
+        name: /reset app settings/i
+      })
+      user.click(target)
+    })
+  });
 });
-
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
-});
-
-it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<AppSettingsReset />);
-});
-

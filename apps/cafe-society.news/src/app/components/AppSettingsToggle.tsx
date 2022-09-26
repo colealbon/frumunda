@@ -7,37 +7,34 @@ const AppSettingsToggle = (props: {
 }) => {
   const { settings, persistSettings } = useSettings();
   const setSettingsCallback = useCallback(() => {
-    const newSetting = JSON.parse(
-      JSON.stringify({
-        ...Object.fromEntries(
-          Object.entries(JSON.parse(JSON.stringify(settings)))
-            .filter((setting: [string, unknown]) => setting[0] === props.name)
-            .map((setting: [string, unknown]) => {
-              return [
-                setting[0],
-                {
-                  ...Object.fromEntries(
-                    Object.entries({
-                      ...(setting[1] as Record<string, unknown>),
-                    })
-                      .filter(
-                        (attribute: [string, unknown]) =>
-                          attribute[0] === 'checked'
-                      )
-                      .map((attribute: [string, unknown]) => [attribute[0], !attribute[1]])
-                  ),
-                  ...Object.fromEntries(
-                    Object.entries({
-                      ...(setting[1] as Record<string, unknown>),
-                    }).filter((attribute: [string, unknown]) => attribute[0] !== 'checked')
-                  ),
-                },
-              ];
-            })
+    const newSetting = {...Object.fromEntries(
+      Object.entries(JSON.parse(JSON.stringify(settings)))
+        .filter((setting: [string, unknown]) => setting[0] === props.name)
+        .map((setting: [string, unknown]) => {
+          return [
+            setting[0],
+            {
+              ...Object.fromEntries(
+                Object.entries({
+                  ...(setting[1] as Record<string, unknown>),
+                })
+                  .filter(
+                    (attribute: [string, unknown]) =>
+                      attribute[0] === 'checked'
+                  )
+                  .map((attribute: [string, unknown]) => [attribute[0], !attribute[1]])
+              ),
+              ...Object.fromEntries(
+                Object.entries({
+                  ...(setting[1] as Record<string, unknown>),
+                }).filter((attribute: [string, unknown]) => attribute[0] !== 'checked')
+              ),
+            },
+          ];
+        })
         ),
-      })
-    );
-    persistSettings({ ...JSON.parse(JSON.stringify(settings)), ...newSetting });
+      }
+    persistSettings({ ...settings as object, ...newSetting });
   }, [settings, props.name, persistSettings]);
 
   return (
@@ -59,7 +56,7 @@ const AppSettingsToggle = (props: {
                       )
                     )
                   ).some(checked => checked)}
-                  onChange={() => setSettingsCallback()}
+                  onChange={setSettingsCallback}
                   name={props.name}
                 />
               }

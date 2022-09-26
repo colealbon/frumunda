@@ -2,5 +2,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 # lint and jest "hard" is a more aggressive rule set only for changed files
-sh "$(dirname -- "$0")/lint-hard.sh"
-# nx test
+# sh "$(dirname -- "$0")/lint-hard.sh"

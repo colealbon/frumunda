@@ -1,7 +1,7 @@
-import {Suspense} from 'react';
+import { Suspense } from 'react';
 import '@testing-library/jest-dom'
 import Keys from './Keys'
-import { render, screen, act} from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import { setupServer } from 'msw/node'
 import { rest } from 'msw'
 
@@ -45,8 +45,6 @@ describe('Keys', () => {
     })
     it ('renders stuff from storage', async () => {
       expect(await screen.findByText('lucky-day')).toBeVisible()
-      // const target = screen.getByText('reset keys');
-      // expect(target).toBeInTheDocument()
     })
 
   });
