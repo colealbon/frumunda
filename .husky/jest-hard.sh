@@ -8,5 +8,5 @@ if [ `echo $filelist | wc -w` -lt 1 ]; then
 fi
 for filename in $filelist; 
 do
-  nx test --all --codeCoverage --skip-nx-cache --jestConfig=./jest-hard.config.ts --findRelatedTests=${filename}
+  nx test --codeCoverage --jestConfig=./jest-hard.config.ts --findRelatedTests=${filename}
 done;
