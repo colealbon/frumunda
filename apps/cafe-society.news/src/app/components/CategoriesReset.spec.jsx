@@ -1,19 +1,21 @@
-import ReactDOM from 'react-dom/client';
+import { Suspense } from 'react';
+import '@testing-library/jest-dom'
 import CategoriesReset from './CategoriesReset'
+import { render, screen, act } from '@testing-library/react';
+import user from '@testing-library/user-event'
 
-let container;
-
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
-});
-
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
-});
-
-it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<CategoriesReset />);
+describe('CategoriesReset', () => {
+  describe('CategoriesReset - reset app settings button', () => {
+    const handleOnClick = jest.fn()
+    beforeEach(async () => {
+      await act(async () => await render(<Suspense fallback={'loading'}><CategoriesReset onClick={handleOnClick}/></Suspense>))
+    })
+    it ('renders clickable reset app settings button', () => {
+      const target = screen.getByRole('button', {
+        name: /reset categories/i
+      })
+      user.click(target)
+    })
+  });
 });
 

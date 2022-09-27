@@ -15,13 +15,28 @@ describe('CategoriesEdit', () => {
     })
 
     it ('categories add control adds a category', async () => {
-      const target = screen.getByPlaceholderText('add category here');
-      user.type(target, 'banana{enter}')
+      const addBanana = screen.getByPlaceholderText('add category here');
+      user.type(addBanana, 'banana{enter}')
       await waitFor(() => {
-        const createdBanana = screen.getByText(/banana/i)
-        expect(createdBanana).toBeInTheDocument()
+        const bananaCategory = screen.getByText(/banana/i)
+        expect(bananaCategory).not.toBeNull()
       })
     })
-  });
+    it ('reset button removes spurious category', async () => {
+      const addBanana = screen.getByPlaceholderText('add category here');
+      user.type(addBanana, 'banana{enter}')
+      await waitFor(() => {
+        const bananaCategory = screen.getByText(/banana/i)
+        expect(bananaCategory).not.toBeNull()
+      })
+      const resetButton = screen.getByRole('button', {
+        name: /reset categories/i
+      })
+      user.click(resetButton)
+      await waitFor(() => {
+        expect(screen.findByText(/banana/i).toBeUndefined)
+      })
+    })
+  })
 });
 

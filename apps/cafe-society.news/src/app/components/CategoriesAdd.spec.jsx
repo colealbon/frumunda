@@ -12,7 +12,5 @@ describe('CategoriesAdd', () => {
       const target = screen.getByPlaceholderText('add category here');
       expect(target).toBeInTheDocument()
     })
-
-
   });
 });
