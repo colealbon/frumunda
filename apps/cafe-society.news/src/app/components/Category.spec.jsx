@@ -1,19 +1,25 @@
-import ReactDOM from 'react-dom/client';
-import Category from './Category'
+import { Suspense, useContext} from 'react';
+import '@testing-library/jest-dom'
+import Category, {CategoryContext} from './Category'
+import { render, screen, act, waitFor } from '@testing-library/react';
 
-let container;
-
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
-});
-
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
-});
-
-it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<Category />);
+describe('Category', () => {
+  describe('Category component', () => {
+    const DisplayCategory = () => {
+      const categoryContext = useContext(CategoryContext);
+      const category = `${categoryContext}`;
+      return (
+        <div>{category}</div>
+    )}
+    beforeEach(async () => {
+      await act(async () => await render(<Suspense fallback={'loading'}><Category><DisplayCategory /></Category></Suspense>))
+    })
+    it ('renders add category control', async () => {
+      await waitFor(() => {
+        const findCategory = screen.getByText(/maritime/i)
+        expect(findCategory).not.toBeNull()
+      })
+    })
+  })
 });
 

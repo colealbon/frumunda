@@ -6,7 +6,7 @@ type Props = { children: ReactNode };
 
 export const CategoryContext = createContext('');
 
-const Classifiers: FunctionComponent<Props> = ({ children }: Props) => {
+const Category: FunctionComponent<Props> = ({ children }: Props) => {
   const { fetchFileLocal } = useStorage();
   const { data: categoriesdata } = useSWR(
     'categories',
@@ -30,4 +30,4 @@ const Classifiers: FunctionComponent<Props> = ({ children }: Props) => {
   )
 };
 
-export default Classifiers;
+export default Category;
