@@ -1,27 +1,35 @@
 import { FunctionComponent } from 'react';
-import useSWR from 'swr';
+import useSWR, {mutate} from 'swr';
 import { useStorage } from '../react-hooks/useStorage';
 import defaultCategories from '../react-hooks/defaultCategories.json';
 
 import CategoriesAdd from './CategoriesAdd';
-import CategoriesReset from './CategoriesReset';
+import Button from '@mui/material/Button';
 
 import CategoryToggle from './CategoryToggle';
 import CategoryDelete from './CategoryDelete';
 
 const CategoriesEdit: FunctionComponent = () => {
-  const { fetchFileLocal } = useStorage();
+  const { fetchFileLocal, persistLocal } = useStorage();
   const { data: categories } = useSWR(
     'categories',
     fetchFileLocal('categories', defaultCategories),
     { fallbackData: defaultCategories }
   );
 
+  const factoryReset = () => {
+    mutate('categories', persistLocal('categories', defaultCategories), {
+      optimisticData: defaultCategories,
+    });
+  };
+
   return (
     <>
       <CategoriesAdd key="CategoriesAdd" />
       <div />
-      <CategoriesReset />
+      <Button onClick={factoryReset}>
+        reset categories
+      </Button>
       <div />
       {Object.keys(categories as object).map((category) => {
         return (
