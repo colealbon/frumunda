@@ -27,7 +27,7 @@ export function App() {
     'selectedCategory',
     fetchFileLocal('selectedCategory', 'allCategories')
   );
-
+  console.count()
   return (
     <MetaMaskProvider>
       <CssBaseline />

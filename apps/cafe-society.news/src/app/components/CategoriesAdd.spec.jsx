@@ -1,19 +1,18 @@
-import ReactDOM from 'react-dom/client';
+import { Suspense } from 'react';
+import '@testing-library/jest-dom'
 import CategoriesAdd from './CategoriesAdd'
+import { render, screen, act } from '@testing-library/react';
 
-let container;
+describe('CategoriesAdd', () => {
+  describe('CategoriesAdd component', () => {
+    beforeEach(async () => {
+      await act(async () => await render(<Suspense fallback={'loading'}><CategoriesAdd /></Suspense>))
+    })
+    it ('renders add category control', () => {
+      const target = screen.getByPlaceholderText('add category here');
+      expect(target).toBeInTheDocument()
+    })
 
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
+
+  });
 });
-
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
-});
-
-it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<CategoriesAdd />);
-});
-

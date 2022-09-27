@@ -32,7 +32,7 @@ const Keys: FunctionComponent = () => {
                 <Box flexShrink={0}>
                   <KeyDelete text={key} />
                 </Box>
-                <Box >{key}</Box>
+                <Box ><Typography>{key}</Typography></Box>
               </Box>
             </Box>
           );
