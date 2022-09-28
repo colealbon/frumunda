@@ -32,16 +32,5 @@ describe('CategoryChooser', () => {
         expect(screen.findByText(/business/i).toBeUndefined)
       })
     })
-    // it ('click icon opens the drawer', async () => {
-    //   const openDrawerButton = screen.getByRole('button', {
-    //     name: /open drawer/i
-    //   })
-    //   // user.click(openDrawerButton)
-    //   // await waitFor(() => {
-    //   //   expect(true).toEqual(true)
-    //   //   // const getText = screen.getByText(/posts/i)
-    //   //   // expect(getText).toBeVisible()
-    //   // })
-    // })
   })
 });

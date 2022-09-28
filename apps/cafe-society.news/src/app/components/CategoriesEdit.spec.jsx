@@ -37,6 +37,20 @@ describe('CategoriesEdit', () => {
         expect(screen.findByText(/banana/i).toBeUndefined)
       })
     })
+
+    it ('reset button removes spurious category', async () => {
+      await waitFor(() => {
+        const scienceCategory = screen.getByText(/science/i)
+        expect(scienceCategory).not.toBeNull()
+      })
+      const deleteScienceButton = screen.getByRole('button', {
+        name: /delete category science/i
+      })
+      user.click(deleteScienceButton)
+      await waitFor(() => {
+        expect(screen.findByText(/science/i).toBeUndefined)
+      })
+    })
   })
 });
 

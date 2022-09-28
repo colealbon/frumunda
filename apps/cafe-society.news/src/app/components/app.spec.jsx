@@ -17,3 +17,15 @@ it('can render and update a classifier component', () => {
     ReactDOM.createRoot(container).render(<App />);
 });
 
+    // it ('click icon opens the drawer', async () => {
+    //   const openDrawerButton = screen.getByRole('button', {
+    //     name: /open drawer/i
+    //   })
+    //   // user.click(openDrawerButton)
+    //   // await waitFor(() => {
+    //   //   expect(true).toEqual(true)
+    //   //   // const getText = screen.getByText(/posts/i)
+    //   //   // expect(getText).toBeVisible()
+    //   // })
+    // })
+

@@ -9,21 +9,13 @@ const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
 }) => {
   const { persistLocal } = useStorage();
   const { data: categories } = useSWR('categories');
-  const [inFlight, setInFlight] = useState(false);
 
   const deleteCategory = () => {
-    setInFlight(true);
-    const newCategories = {
-      ...Object.fromEntries(
-        Object.entries({ ...categories }).filter(
-          (category: [string, unknown]) => category[0] !== props.text
-        )
-      ),
-    };
+    const newCategories = {...categories}.delete(props.text)
     mutate('categories', persistLocal('categories', newCategories), {
       optimisticData: newCategories,
       rollbackOnError: true,
-    }).then(() => setInFlight(false));
+    });
   };
 
   return (
@@ -34,8 +26,7 @@ const CategoryDelete: FunctionComponent<{ text: string }> = (props: {
           return (
             <Fragment key={`${category}`}>
               <IconButton
-                disabled={inFlight}
-                aria-label="Delete Category"
+                aria-label={`delete category ${category}`}
                 onClick={deleteCategory}
               >
                 <DeleteOutlined />
