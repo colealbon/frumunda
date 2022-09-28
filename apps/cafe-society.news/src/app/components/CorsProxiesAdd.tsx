@@ -37,7 +37,7 @@ const CorsProxiesAdd = () => {
     <TextField
       disabled={inFlight}
       id="addCorsProxyTextField"
-      placeholder="add corsProxy here"
+      placeholder="add cors proxy here"
       value={inputValue}
       onKeyPress={(event: { key: string }) => {
         [event.key]

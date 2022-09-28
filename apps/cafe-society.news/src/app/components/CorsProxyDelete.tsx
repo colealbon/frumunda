@@ -1,4 +1,4 @@
-import { FunctionComponent, Fragment, useState } from 'react';
+import { FunctionComponent, Fragment } from 'react';
 import { IconButton } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
 import useSWR, { mutate } from 'swr';
@@ -15,10 +15,8 @@ const CorsProxyDelete: FunctionComponent<{ text: string }> = (props: {
     { fallbackData: defaultCorsProxies }
   );
   const corsProxies = { ...(corsProxiesdata as object) };
-  const [inFlight, setInFlight] = useState(false);
 
   const deleteCorsProxy = () => {
-    setInFlight(true);
     const newCorsProxies = {
       ...Object.fromEntries(
         Object.entries(corsProxies).filter(
@@ -40,8 +38,7 @@ const CorsProxyDelete: FunctionComponent<{ text: string }> = (props: {
           return (
             <Fragment key={`${corsProxy}`}>
               <IconButton
-                disabled={inFlight}
-                aria-label="Delete CorsProxy"
+                aria-label={`delete cors proxy ${corsProxy}`}
                 onClick={deleteCorsProxy}
               >
                 <DeleteOutlined />

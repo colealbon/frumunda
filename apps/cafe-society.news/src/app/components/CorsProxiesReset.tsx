@@ -13,7 +13,7 @@ const CorsProxiesReset: FunctionComponent = () => {
 
   return (
     <Button key="corsProxiesreset" onClick={() => factoryReset()}>
-      reset corsProxies
+      reset cors proxies
     </Button>
   );
 };
