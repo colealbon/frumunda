@@ -3,6 +3,7 @@ import {useStorage} from '../react-hooks/useStorage'
 import useSWR, {mutate} from 'swr'
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import defaultDispatchers from '../react-hooks/defaultDispatchers.json'
 import {dispatcherValueType} from '../types'
 
 const DispatcherKeys: FunctionComponent<{ dispatcherLabel: string }> = (props: {
@@ -11,7 +12,10 @@ const DispatcherKeys: FunctionComponent<{ dispatcherLabel: string }> = (props: {
   const { persistLocal } = useStorage();
   const { data: dispatchersdata } = useSWR('dispatchers');
 
-  const dispatchers: object = dispatchersdata as object;
+  const { data: dispatchers } = useSWR('dispatchers', {
+    suspense: true,
+    fallbackData: defaultDispatchers
+  });
 
   const keysForDispatcher = Object.entries(dispatchers)
     .filter((dispatcherEntry) => dispatcherEntry[0] === props.dispatcherLabel)

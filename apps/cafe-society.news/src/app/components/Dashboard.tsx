@@ -80,8 +80,8 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
           <Drawer
             variant="temporary"
             open={mobileOpen}
-            onClose={() => setDrawerClosed()}
-            onBlur={() => setDrawerClosed()}
+            onClose={setDrawerClosed}
+            onBlur={setDrawerClosed}
             ModalProps={{
               keepMounted: true, // Better open performance on mobile.
             }}

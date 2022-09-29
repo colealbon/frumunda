@@ -1,5 +1,6 @@
 import { FunctionComponent} from 'react';
 import useSWR from 'swr';
+import defaultDispatchers from '../react-hooks/defaultDispatchers.json'
 import { useStorage } from '../react-hooks/useStorage';
 
 import {
@@ -15,7 +16,8 @@ import DispatchersReset from './DispatchersReset';
 
 const DispatchersEdit: FunctionComponent = () => {
   const { data: dispatchers } = useSWR('dispatchers', {
-    suspense: true
+    suspense: true,
+    fallbackData: defaultDispatchers
   });
 
   return (

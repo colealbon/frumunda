@@ -35,7 +35,7 @@ const DispatcherDelete: FunctionComponent<{ text: string }> = (props: {
             <Fragment key={`${dispatcher}`}>
               <IconButton
                 disabled={inFlight}
-                aria-label="Delete Dispatcher"
+                aria-label={`delete dispatcher ${dispatcher[0]}`}
                 onClick={deleteDispatcher}
               >
                 <DeleteOutlined />

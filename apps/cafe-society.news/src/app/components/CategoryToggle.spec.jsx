@@ -13,7 +13,7 @@ afterEach(() => {
   container = null;
 });
 
-it('can render and update a classifier component', () => {
+it('can render and update a CategoryToggle component', () => {
     ReactDOM.createRoot(container).render(<CategoryToggle />);
 });
 
