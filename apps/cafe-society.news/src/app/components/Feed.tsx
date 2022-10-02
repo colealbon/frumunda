@@ -341,11 +341,16 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
     }
   );
 
-  const parsedContent: unknown = { ...(parsedContentdata as object) };
+  const parsedContent: object = { ...(parsedContentdata as object) };
+
+  if (Object.keys(parsedContent).length === 0) {
+    return <div>{`unable to fetch feed content for category`}</div>
+  }
 
   return (
     <Grid>
-      {Object.entries(parsedContent as object)
+      {
+        Object.entries(parsedContent as object)
         .filter((parsedFeedContent) => {
           return !!parsedFeedContent[1];
         })
@@ -359,7 +364,8 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
               {children}
             </ParsedFeedContentContext.Provider>
           );
-        })}
+        })
+      }
     </Grid>
   );
 };
