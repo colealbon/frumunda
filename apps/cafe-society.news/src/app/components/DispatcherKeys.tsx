@@ -11,11 +11,12 @@ const DispatcherKeys: FunctionComponent<{ dispatcherLabel: string }> = (props: {
 }) => {
   const { persistLocal } = useStorage();
   const { data: dispatchersdata } = useSWR('dispatchers');
+  const dispatchers: object = {...dispatchersdata as object}
 
-  const { data: dispatchers } = useSWR('dispatchers', {
-    suspense: true,
-    fallbackData: defaultDispatchers
-  });
+  // const { data: dispatchers } = useSWR('dispatchers', {
+  //   suspense: true,
+  //   fallbackData: defaultDispatchers
+  // });
 
   const keysForDispatcher = Object.entries(dispatchers)
     .filter((dispatcherEntry) => dispatcherEntry[0] === props.dispatcherLabel)

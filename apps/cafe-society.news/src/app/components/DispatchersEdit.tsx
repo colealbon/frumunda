@@ -38,7 +38,7 @@ const DispatchersEdit: FunctionComponent = () => {
               <AccordionDetails>
               <DispatcherDelete text={dispatcher} />
               <DispatcherToggle text={dispatcher} />
-              <DispatcherKeys dispatcherLabel={dispatcher} />
+              {/* <DispatcherKeys dispatcherLabel={dispatcher} /> */}
               </AccordionDetails>
             </Accordion>
           </div>

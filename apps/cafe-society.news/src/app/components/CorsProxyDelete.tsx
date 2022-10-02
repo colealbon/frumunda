@@ -27,7 +27,7 @@ const CorsProxyDelete: FunctionComponent<{ text: string }> = (props: {
     mutate('corsProxies', persistLocal('corsProxies', newCorsProxies), {
       optimisticData: newCorsProxies,
       rollbackOnError: true,
-    }).then(() => setInFlight(false));
+    })
   };
 
   return (
