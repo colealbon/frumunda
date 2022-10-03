@@ -9,6 +9,8 @@ describe('ErrorBoundary', () => {
       throw(new Error("this is a test error"))
     }
     beforeEach(async () => {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      jest.spyOn(console, 'error').mockImplementation(() => {});
       render(<Suspense fallback={'loading'}><ErrorBoundary><TestErrorBoundary /></ErrorBoundary></Suspense>)
     })
     it ('renders error boundary', async () => {

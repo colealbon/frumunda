@@ -38,7 +38,7 @@ const Category: FunctionComponent<Props> = ({ children }: Props) => {
         .find(() => true);
     })
     .map((categoryEntry) => categoryEntry[0]);
-
+  
   return (
     <>
       {checkedCategories.map((category) => {
