@@ -15,8 +15,13 @@ import CorsProxiesEdit from './CorsProxiesEdit';
 import FeedsEdit from './FeedsEdit';
 import ErrorBoundary from './ErrorBoundary';
 import { Canvas, useFrame } from '@react-three/fiber'
+import { MeshDistortMaterial, Html } from '@react-three/drei'
+import styled, { ThemeProvider, useTheme } from 'styled-components'
 import { useStorage } from '../react-hooks/useStorage';
 import useSWR from 'swr';
+import {
+  Toolbar
+} from '@mui/material'
 
 export function MainPage() {
 
@@ -51,6 +56,17 @@ export function MainPage() {
       </mesh>
     )
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const Sphere = (props: any) => {
+    const theme = useTheme()
+    return (
+      <mesh {...props}>
+        <sphereGeometry args={[1, 3, 64]} />
+        <MeshDistortMaterial speed={1} color={theme.colors.third} toneMapped={false} />
+      </mesh>
+    )
+  }
   
   const contentForPage: {[key: string]: () => ReactElement} = {
     "contribute": () => <Contribute />,
@@ -75,20 +91,33 @@ export function MainPage() {
   const pageToRender = `${selectedPage || 'posts'}`
   
   return (
-    <ErrorBoundary fallback={<>`error fetching ${pageToRender}`</>}>
-      <Suspense fallback={
+    <ThemeProvider
+    theme={{
+      colors: {
+        primary: '#b16268',
+        secondary: 'rgba(255, 155, 0, 0.8)',
+        third: 'orange'
+      },
+    }}>
+      <ErrorBoundary fallback={<>`error fetching ${pageToRender}`</>}>
+        <Suspense fallback={
+          <>
+          <Toolbar />
         <Canvas>
-          <ambientLight intensity={0.5} />
-          <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+          <ambientLight />
+          <pointLight position={[10, 10, 5]} />
           <pointLight position={[-10, -10, -10]} />
-          <ThreeBox position={[.5, -1, 1]} />
+          <Sphere scale={2.5} />
         </Canvas>
-      }>
-      {
-        contentForPage[pageToRender]()
-      }
-      </Suspense>
-    </ErrorBoundary>
+        </>
+        }>
+        <Toolbar />
+        {
+          contentForPage[pageToRender]()
+        }
+        </Suspense>
+      </ErrorBoundary>
+    </ThemeProvider>
   )
 }
 
