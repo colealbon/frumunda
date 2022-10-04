@@ -106,7 +106,6 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
           width: '100%'
         }}
       >
-        <Toolbar />
         {children}
       </Box>
     </Box>
