@@ -35,7 +35,7 @@ const Navigator: FunctionComponent<Props> = ({ children }: Props) => {
   }, [mobileOpen, setMobileOpen]);
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -131,7 +131,7 @@ const Navigator: FunctionComponent<Props> = ({ children }: Props) => {
         <Toolbar />
         {children}
       </Box>
-    </Box>
+    </div>
   );
 };
 

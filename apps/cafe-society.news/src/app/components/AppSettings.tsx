@@ -9,14 +9,14 @@ const Settings: FunctionComponent = () => {
   const {settings } = useSettings()
   return (
     <>
-      <Box p={1}>
+      <div>
         {Object.keys(settings as object).map(appSetting => {
           return <AppSettingsToggle name={appSetting} key={appSetting} />;
         })}
-      </Box>
-      <Box p={1}>
+      </div>
+      <div>
         <AppSettingsReset />
-      </Box>
+      </div>
     </>
   );
 };

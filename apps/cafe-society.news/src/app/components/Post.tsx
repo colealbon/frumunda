@@ -173,82 +173,9 @@ const Post: FunctionComponent = () => {
   );
 
   return (
-    <>
-      <Box
-        sx={{
-          display: { xs: 'none', sm: 'block' }
-        }}
-      >
-      <div
-        style={{ width: '100%', display: 'flex', flexDirection: 'column' }}
-        key={postItem.link}
-      >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'centered',
-            paddingBottom: '25px',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <div>
-              <Link style={{ textDecoration: 'none' }} href={`${postItem.link}`} target="cafe-society">
-              <Typography variant="h6">{postItem.title}</Typography>
-              </Link>
-            </div>
-            <div
-              style={{ display: 'block', width: '100%', overflow: 'wrap' }}
-            >
-              <Typography variant="body2">{postItem.description}</Typography>
-            </div>
-            <br />
-          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <div style={{
-            display:'flex', 
-            flexDirection: 'row', 
-            alignItems: 'center',
-            justifyContent:'space-between',
-            maxWidth:'300px'
-          }}
-          >
-            <div />
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <Tooltip title={`${Math.round(predictionNotGood * 100)}%`}>
-                <IconButton onClick={(event) => {
-                  handleTrain('notgood')
-                }}>
-                <ThumbDown /></IconButton>
-              </Tooltip>
-            </div>
-            <div style={{justifyContent: 'center'}}>{`${category}`}</div>
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-              <Tooltip title={`${Math.round(predictionGood * 100)}%`}>
-                <IconButton onClick={(event) => handleTrain('good')}>
-                  <ThumbUp />
-                </IconButton>
-              </Tooltip>
-              {/* <div>{`${Math.round(predictionGood * 100)}%`}</div> */}
-            </div>
-        </div>
-      </div> 
-      </div>        
-    </div>
 
-      </div>
-    </Box>
-
-      <Box
-      sx={{
-        display: { xs: 'block', sm: 'none' }
-      }}
-      >
         <div
-          style={{ width: '100%' }}
+          style={{ width: '100%'}}
           className="basic-swipeable-list__container"
           key={postItem.link}
         >
@@ -288,8 +215,6 @@ const Post: FunctionComponent = () => {
             </SwipeableListItem>
           </SwipeableList>
         </div>
-      </Box>
-    </>
   );
 };
 

@@ -43,7 +43,7 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
   }, [setMobileOpen]);
 
   return (
-    <Box sx={{ display: 'flex'}} style={{ padding: '0px'}}>
+    <>
       <AppBar>
         <Toolbar>
           <IconButton
@@ -110,7 +110,7 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
       >
         {children}
       </Box>
-    </Box>
+    </>
   );
 };
 

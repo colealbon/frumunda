@@ -198,13 +198,11 @@ const Posts: FunctionComponent = () => {
                           cleanPostItem['link']
                         }`}
                       >
-                        <Box style={{minWidth:'100%', justifyContent: 'center'}}>
-                          <Card style={{minWidth:'100%'}}>
-                            <CardContent>
-                              <Post key={JSON.stringify(cleanPostItem)} />
-                            </CardContent>
-                          </Card>
-                        </Box>
+                        <Card style={{minWidth:'100%'}}>
+                          <CardContent>
+                            <Post key={JSON.stringify(cleanPostItem)} />
+                          </CardContent>
+                        </Card>
                       </PostContext.Provider>
                     </Grid>
                   );

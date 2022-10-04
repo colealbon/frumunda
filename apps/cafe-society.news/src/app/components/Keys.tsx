@@ -6,7 +6,7 @@ import KeyDelete from './KeyDelete';
 import {useStorage} from '../react-hooks/useStorage'
 import useSWR from 'swr'
 import defaultKeys from '../react-hooks/defaultKeys.json'
-import {Box, Typography} from '@mui/material'
+import {Typography} from '@mui/material'
 
 const Keys: FunctionComponent = () => {
 
@@ -20,27 +20,25 @@ const Keys: FunctionComponent = () => {
 
   return (
     <>
-      <Box p={1}>
+      <div>
         <KeysAdd />
-      </Box>
-      <Box p={1} maxWidth={600}>
+      </div>
+      <div>
         {Object.keys(keys).map(key => {
           return (
-            <Box key={key}>
-              <Box display="flex">
-                <KeyToggle text={key} />
-                <Box flexShrink={0}>
-                  <KeyDelete text={key} />
-                </Box>
-                <Box ><Typography>{key}</Typography></Box>
-              </Box>
-            </Box>
+            <div key={key}>
+              <KeyToggle text={key} />
+              <div />
+              <KeyDelete text={key} />
+              <div />
+              <Typography>{key}</Typography>
+            </div>
           );
         })}
-      </Box>
-      <Box p={1}>
+      </div>
+      <div>
         <KeysReset />
-      </Box>
+      </div>
     </>
   );
 };

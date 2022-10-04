@@ -19,8 +19,7 @@ const StacksFilenamesDisplay: FunctionComponent = () => {
 
   return (
     <Fragment key="stacksFilenamesDisplay">
-      <Box sx={{ maxHeight: 300, width: '100%', overflow: 'auto' }}>
-        <Box>
+      <div style={{ maxHeight: 300, width: '100%', overflow: 'auto' }}>
           {[...(stacksFilenames as string[])]
             .filter((stacksFilename) => stacksFilename !== '')
             .map((stacksFilename) => {
@@ -28,8 +27,7 @@ const StacksFilenamesDisplay: FunctionComponent = () => {
                 <StacksFileDelete key={stacksFilename} text={stacksFilename} />
               );
             })}
-        </Box>
-      </Box>
+      </div>
       {[...(stacksFilenames as string[])]
         .map((stacksFilename) => (
           <Typography key={`${stacksFilename}typography`} variant="caption">
