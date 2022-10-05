@@ -37,7 +37,7 @@ export function MainPage() {
     const theme = useTheme()
     return (
       <mesh {...props}>
-        <sphereGeometry args={[1, 3, 64]} />
+        <sphereGeometry args={[1, 64, 64]} />
         <MeshDistortMaterial speed={1} color={theme.colors.third} toneMapped={false} />
       </mesh>
     )
@@ -70,26 +70,29 @@ export function MainPage() {
     theme={{
       colors: {
         primary: '#b16268',
-        secondary: 'rgba(255, 155, 0, 0.8)',
+        secondary: 'rgba(246, 248, 25)',
         third: 'orange'
       },
     }}>
       <ErrorBoundary fallback={<>`error fetching ${pageToRender}`</>}>
         <Suspense fallback={
-          <>
-          <Toolbar />
         <Canvas>
-          <ambientLight />
-          <pointLight position={[10, 10, 5]} />
-          <pointLight position={[-10, -10, -10]} />
-          <Sphere scale={2.5} />
-        </Canvas>
-        </>
+        <ambientLight />
+        <pointLight position={[10, 10, 5]} />
+        <pointLight position={[-10, -10, -10]} />
+        <Sphere scale={2} />
+      </Canvas>
         }>
         <Toolbar />
         {
           contentForPage[pageToRender]()
         }
+          <Canvas>
+            <ambientLight />
+            <pointLight position={[10, 10, 5]} />
+            <pointLight position={[-10, -10, -10]} />
+            <Sphere scale={2} />
+          </Canvas>
         </Suspense>
       </ErrorBoundary>
     </ThemeProvider>

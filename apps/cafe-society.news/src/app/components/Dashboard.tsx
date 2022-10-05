@@ -105,7 +105,6 @@ const Dashboard: FunctionComponent<Props> = ({ children }: Props) => {
           p: 3,
           width: '100%',
           height: '100%'
-
         }}
       >
         {children}

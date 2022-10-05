@@ -16,7 +16,8 @@ body,
 
 body {
   font-family: 'Inter var', sans-serif;
-  background: #f0f0f0;
+  /* background: #f0f0f0; */
+  background: rgba(246, 248, 252, .5)
 }
 
 .overlay {
