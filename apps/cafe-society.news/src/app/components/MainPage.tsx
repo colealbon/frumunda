@@ -14,9 +14,9 @@ import CategoriesEdit from './CategoriesEdit';
 import CorsProxiesEdit from './CorsProxiesEdit';
 import FeedsEdit from './FeedsEdit';
 import ErrorBoundary from './ErrorBoundary';
-import { Canvas, useFrame } from '@react-three/fiber'
-import { MeshDistortMaterial, Html } from '@react-three/drei'
-import styled, { ThemeProvider, useTheme } from 'styled-components'
+import { Canvas } from '@react-three/fiber'
+import { MeshDistortMaterial } from '@react-three/drei'
+import { ThemeProvider, useTheme } from 'styled-components'
 import { useStorage } from '../react-hooks/useStorage';
 import useSWR from 'swr';
 import {
@@ -76,12 +76,12 @@ export function MainPage() {
     }}>
       <ErrorBoundary fallback={<>`error fetching ${pageToRender}`</>}>
         <Suspense fallback={
-        <Canvas>
-        <ambientLight />
-        <pointLight position={[10, 10, 5]} />
-        <pointLight position={[-10, -10, -10]} />
-        <Sphere scale={2} />
-      </Canvas>
+          <Canvas>
+          <ambientLight />
+          <pointLight position={[10, 10, 5]} />
+          <pointLight position={[-10, -10, -10]} />
+          <Sphere scale={2} />
+        </Canvas>
         }>
         <Toolbar />
         {

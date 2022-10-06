@@ -2,14 +2,18 @@ import { ChangeEvent, useState, useCallback, FunctionComponent } from 'react';
 import useSWR, { mutate } from 'swr';
 import { useStorage } from '../react-hooks/useStorage';
 import { TextField } from '@mui/material';
+import defaultFeeds from '../react-hooks/defaultFeeds.json';
 
 type Props = { text: string };
 
 const FeedLabelEdit: FunctionComponent<Props> = ({ text }: Props) => {
   const [inputValue, setInputValue] = useState('');
   const [inFlight, setInFlight] = useState(false);
-  const { data: feeds } = useSWR('feeds');
-  const { persist } = useStorage();
+  const { persist, fetchFileLocal } = useStorage();
+  const { data: feedsdata } = useSWR('feeds', fetchFileLocal('feeds', {}), {
+    fallbackData: defaultFeeds,
+  });
+  const feeds = { ...(feedsdata as object) };
 
   const defaultFeedLabel =
     Object.entries(feeds as object)
@@ -51,7 +55,7 @@ const FeedLabelEdit: FunctionComponent<Props> = ({ text }: Props) => {
       label={`${defaultFeedLabel}`}
       disabled={inFlight}
       id="editFeedLabelTextField"
-      placeholder={`${defaultFeedLabel}`}
+      placeholder={'Add feed label here (optional)'}
       value={inputValue}
       onKeyPress={(event: { key: string }) => {
         [event.key]

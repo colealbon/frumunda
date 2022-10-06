@@ -1,19 +1,16 @@
-import ReactDOM from 'react-dom/client';
+import {Suspense} from 'react';
+import '@testing-library/jest-dom'
 import FeedLabel from './FeedLabel'
+import { render, screen, act} from '@testing-library/react';
 
-let container;
-
-beforeEach(() => {
-  container = document.createElement('div');
-  document.body.appendChild(container);
+describe('FeedLabel', () => {
+  describe('feed label placeholder text', () => {
+    beforeEach(async () => {
+      await act(async () => await render(<Suspense fallback={'loading'}><FeedLabel text='science' /></Suspense>))
+    })
+    it ('renders reset feeds', async () => {
+      const target = screen.getByPlaceholderText('Add feed label here (optional)');
+      expect(target).toBeInTheDocument()
+    })
+  });
 });
-
-afterEach(() => {
-  document.body.removeChild(container);
-  container = null;
-});
-
-it('can render and update a classifier component', () => {
-    ReactDOM.createRoot(container).render(<FeedLabel />);
-});
-
