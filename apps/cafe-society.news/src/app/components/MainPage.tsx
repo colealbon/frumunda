@@ -1,4 +1,4 @@
-import { Suspense, ReactElement, useRef, useState } from 'react';
+import { Suspense, ReactElement } from 'react';
 import Contribute from './Contribute';
 import AppSettings from './AppSettings';
 import Classifier from './Classifier';
@@ -15,13 +15,15 @@ import CorsProxiesEdit from './CorsProxiesEdit';
 import FeedsEdit from './FeedsEdit';
 import ErrorBoundary from './ErrorBoundary';
 import { Canvas } from '@react-three/fiber'
-import { MeshDistortMaterial } from '@react-three/drei'
-import { ThemeProvider, useTheme } from 'styled-components'
+import { Stars } from '@react-three/drei'
+import { ThemeProvider } from 'styled-components'
 import { useStorage } from '../react-hooks/useStorage';
 import useSWR from 'swr';
+
 import {
   Toolbar
 } from '@mui/material'
+import earth from './earth.jpeg'
 
 export function MainPage() {
 
@@ -33,15 +35,6 @@ export function MainPage() {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const Sphere = (props: any) => {
-    const theme = useTheme()
-    return (
-      <mesh {...props}>
-        <sphereGeometry args={[1, 64, 64]} />
-        <MeshDistortMaterial speed={1} color={theme.colors.third} toneMapped={false} />
-      </mesh>
-    )
-  }
   
   const contentForPage: {[key: string]: () => ReactElement} = {
     "contribute": () => <Contribute />,
@@ -76,23 +69,19 @@ export function MainPage() {
     }}>
       <ErrorBoundary fallback={<>`error fetching ${pageToRender}`</>}>
         <Suspense fallback={
-          <Canvas>
-          <ambientLight />
-          <pointLight position={[10, 10, 5]} />
-          <pointLight position={[-10, -10, -10]} />
-          <Sphere scale={2} />
-        </Canvas>
+          <div style={{ height:'100vh', backgroundColor: 'black' }}>
+            <Canvas>
+              <Stars />
+              <ambientLight />
+              <pointLight position={[10, 10, 5]} />
+              <pointLight position={[-10, -10, -10]} />
+            </Canvas>
+          </div>
         }>
         <Toolbar />
-        {
-          contentForPage[pageToRender]()
-        }
-          <Canvas>
-            <ambientLight />
-            <pointLight position={[10, 10, 5]} />
-            <pointLight position={[-10, -10, -10]} />
-            <Sphere scale={2} />
-          </Canvas>
+          {
+            contentForPage[pageToRender]()
+          } 
         </Suspense>
       </ErrorBoundary>
     </ThemeProvider>

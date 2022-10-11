@@ -1,7 +1,8 @@
 import { FunctionComponent, Fragment, useState } from 'react';
-import { Switch, FormControlLabel } from '@mui/material';
+import { Switch } from '@mui/material';
 import { useStorage } from '../react-hooks/useStorage';
 import useSWR, { mutate } from 'swr';
+import defaultKeys from '../react-hooks/defaultKeys.json'
 
 const KeyToggle: FunctionComponent<{ text: string }> = (props: {
   text: string;
@@ -10,7 +11,8 @@ const KeyToggle: FunctionComponent<{ text: string }> = (props: {
   const [inFlight, setInFlight] = useState(false);
 
   const { data: keysdata } = useSWR(
-    'keys'
+    'keys',
+    {fallbackData: defaultKeys}
   );
 
   const keys = { ...(keysdata as object) }
@@ -62,7 +64,9 @@ const KeyToggle: FunctionComponent<{ text: string }> = (props: {
           const attributes = key[1] as Record<string, unknown>;
           return (
             <Switch
+              data-testid={`toggle_${props.text}`}
               key={props.text}
+              title={`toggle_${props.text}`}
               disabled={inFlight}
               checked={Object.values(
                 Object.fromEntries(
@@ -72,7 +76,7 @@ const KeyToggle: FunctionComponent<{ text: string }> = (props: {
                 )
               ).some(checked => checked)}
               onChange={() => setKeysCallback()}
-              name={props.text}
+              name={`toggle_${props.text}`}
             />
           );
         })}

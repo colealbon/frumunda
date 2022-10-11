@@ -1,9 +1,10 @@
 import { Suspense } from 'react';
 import '@testing-library/jest-dom'
 import Keys from './Keys'
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, waitFor} from '@testing-library/react';
 import { setupServer } from 'msw/node'
 import { rest } from 'msw'
+import user from '@testing-library/user-event'
 
 const server = setupServer(
   rest.get(
@@ -45,6 +46,16 @@ describe('Keys', () => {
     it ('renders stuff from storage', async () => {
       expect(await screen.findByText('lucky-day')).toBeVisible()
     })
+    it ('toggle is clickable', async () => {
+      const toggleControl = await screen.getByTestId('toggle_lucky-day')
+      user.click(toggleControl)
+      // await waitFor(() => {
+      //   const bananaCorsproxy = screen.getByText(/banana/i)
+      //   expect(bananaCorsproxy).not.toBeNull()
+      // })
+
+    })
+    
 
   });
 });
