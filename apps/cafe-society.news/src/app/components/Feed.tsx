@@ -93,7 +93,6 @@ const Feed: FunctionComponent<Props> = ({ children }: Props) => {
             const feedKey = feed.toString().split(',')[0];
             fetchFeedContent(feedKey, corsProxies)
               .then((fetchedContent: object) => {
-                //console.log(fetchedContent)
                 return [fetchedContent].flat().forEach((fetchedContentItem) => {
                   resolve([
                     feedKey,

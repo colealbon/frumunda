@@ -55,6 +55,15 @@ describe('Keys', () => {
       // })
 
     })
+
+    it ('cors proxies add control adds a keys', async () => {
+      const addBanana = screen.getByPlaceholderText('key label');
+      user.type(addBanana, 'banana{enter}')
+      await waitFor(() => {
+        const bananaCorsproxy = screen.getByText(/banana/i)
+        expect(bananaCorsproxy).not.toBeNull()
+      })
+    })
     
 
   });

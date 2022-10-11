@@ -1,7 +1,9 @@
-import { hash } from 'tweetnacl';
+import nacl, { hash } from 'tweetnacl';
 import { convert } from 'html-to-text';
 import { cleanPostItemType } from './types'
 import xml2js from 'xml2js';
+
+import naclutil from 'tweetnacl-util';
 
 export const parseFeedContentMulti = (fetchedContent: object) => {
   return new Promise((resolve, reject) => {
@@ -234,7 +236,8 @@ export const cleanTags = (text: string) => {
 
 export const hashStr = (text: string) => {
   return removePunctuation(
-    encodeURIComponent(hash(new Buffer(text)).toString())
+    
+    encodeURIComponent(hash(naclutil.decodeUTF8(text)).toString())
   );
 };
 

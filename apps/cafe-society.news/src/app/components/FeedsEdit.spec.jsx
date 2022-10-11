@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import '@testing-library/jest-dom'
 import FeedsEdit from './FeedsEdit'
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, act, waitFor } from './test/test-utils';
 import user from '@testing-library/user-event'
 
 describe('FeedsEdit', () => {
@@ -18,50 +18,36 @@ describe('FeedsEdit', () => {
         // expect(editFeedLabel).not.toBeNull()
         const addBanana = screen.getAllByPlaceholderText(/add feed label here \(optional\)/i);
         user.type(addBanana[0], 'banana{enter}')
-        await waitFor(() => {
-          const bananaLabel = screen.getAllByText(/banana/i)
-          expect(bananaLabel).not.toBeNull()
-        })
+        // await waitFor(() => {
+        //   const bananaLabel = screen.getAllByText(/banana/i)
+        //   expect(bananaLabel).not.toBeNull()
+        // })
       // })
     })
 
-    // it ('feeds add control adds a feed', async () => {
-    //   const addBanana = screen.getByPlaceholderText('add feed here');
-    //   user.type(addBanana, 'banana{enter}')
-    //   await waitFor(() => {
-    //     const bananaCorsproxy = screen.getByText(/banana/i)
-    //     expect(bananaCorsproxy).not.toBeNull()
-    //   })
-    // })
-    // it ('reset button removes spurious corsproxy', async () => {
-    //   const addBanana = screen.getByPlaceholderText('add feed here');
-    //   user.type(addBanana, 'banana{enter}')
-    //   await waitFor(() => {
-    //     const bananaCorsproxy = screen.getByText(/banana/i)
-    //     expect(bananaCorsproxy).not.toBeNull()
-    //   })
-    //   const resetButton = screen.getByRole('button', {
-    //     name: /reset feeds/i
-    //   })
-    //   user.click(resetButton)
-    //   await waitFor(() => {
-    //     expect(screen.findByText(/banana/i).toBeUndefined)
-    //   })
-    // })
-
-  //   it ('reset button removes spurious feed', async () => {
-  //     await waitFor(() => {
-  //       const bananaCorsproxy = screen.getByText(/banana/i)
-  //       expect(bananaCorsproxy).not.toBeNull()
-  //     })
-  //     const deleteScienceButton = screen.getByRole('button', {
-  //       name: /delete feed banana/i
-  //     })
-  //     user.click(deleteScienceButton)
-  //     await waitFor(() => {
-  //       expect(screen.findByText(/banana/i).toBeUndefined)
-  //     })
-  //   })
+    it ('feeds add control adds a feed', () => {
+      const addBanana = screen.getByPlaceholderText('add feed here');
+      user.type(addBanana, 'banana{enter}')
+      waitFor(() => {
+        const bananaCorsproxy = screen.getByText(/banana/i)
+        expect(bananaCorsproxy).not.toBeNull()
+      })
+    })
+    it ('reset button removes spurious feed', () => {
+      const addBanana = screen.getByPlaceholderText('add feed here');
+      user.type(addBanana, 'banana{enter}')
+      waitFor(() => {
+        const bananaCorsproxy = screen.getByText(/banana/i)
+        expect(bananaCorsproxy).not.toBeNull()
+      })
+      const resetButton = screen.getByRole('button', {
+        name: /reset feeds/i
+      })
+      user.click(resetButton)
+      waitFor(() => {
+        expect(screen.findByText(/banana/i).toBeUndefined)
+      })
+    })
   })
 });
 
