@@ -1,4 +1,4 @@
-import { FunctionComponent, useContext } from 'react';
+import { FunctionComponent, useContext, ReactNode } from 'react';
 import useSWR, { mutate } from 'swr';
 import styled from 'styled-components';
 import { removePunctuation, shortUrl, hashStr } from '../utils';
@@ -6,15 +6,10 @@ import { PostContext } from './Posts';
 import { ParsedFeedContentContext } from './Feed';
 import { CategoryContext } from './CheckedCategory';
 import { useStorage } from '../react-hooks/useStorage';
-
-
 import { ThumbDown, ThumbUp } from '@mui/icons-material';
+import { predictionType } from '../types'
 import { 
-  Link, 
-  Box, 
-  IconButton, 
-  Typography,
-  Tooltip
+  Link
 } from '@mui/material';
 import {
   LeadingActions,
@@ -31,18 +26,16 @@ const bayes = require('classificator');
 
 const Post: FunctionComponent = () => {
   const { persist, fetchFile } = useStorage();
-
   const postContext = useContext(PostContext);
   const postItem = Object.assign(postContext);
+  const id = `${postItem.link}`;
   const categoryContext = useContext(CategoryContext);
   const category = `${categoryContext}`;
-  const id = `${postItem.link}`;
-
   const parsedFeedContentContext = useContext(ParsedFeedContentContext);
   const parsedFeedContent = {...parsedFeedContentContext};
+
   const keyForFeed = Object.keys(parsedFeedContent)[0];
   const processedFilenameForFeed = hashStr(`processed_${category}_${shortUrl(keyForFeed)}`);
-
   const mlText = removePunctuation(
     `${postItem.title} ${postItem.description} ${postItem.summary}`
   );
@@ -107,83 +100,66 @@ const Post: FunctionComponent = () => {
     // console.log('[handle on click]', id);
   };
 
-  let predictionNotGood = -0.001;
-  let predictionGood = -0.001;
 
-  try {
-    if (classifier !== undefined) {
-      const prediction = classifier.categorize(`${mlText}`);
-      predictionNotGood = parseFloat(
-        prediction.likelihoods
-          ?.filter(
-            (likelihood: { proba: string }) => likelihood.proba !== `NaN`
-          )
-          .find(
-            (likelihood: { category: string }) =>
-              likelihood && likelihood.category === 'notgood'
-          )?.proba || 0.0
-      );
-
-      predictionGood = parseFloat(
-        prediction.likelihoods
-          ?.filter(
-            (likelihood: { proba: string }) => likelihood.proba !== `NaN`
-          )
-          .find(
-            (likelihood: { category: string }) =>
-              likelihood && likelihood.category === 'good'
-          )?.proba || 0.0
-      );
+  const predict = (
+    mlText: string, 
+    category: string,
+    classifier: {
+      categorize: (mlText: string) => {likelihoods: {proba: string, category: string}[]},
+      likelihoods?: {proba?: string, category?: string}[]
+    }) => {
+      try {
+        return parseFloat(
+          classifier.categorize(`${mlText}`).likelihoods
+            ?.filter(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (likelihood: any) => likelihood?.proba.toString() !== `NaN`
+            )
+            .find(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (likelihood: any) =>
+                likelihood?.category.toString() === category
+            )?.proba || '0.0'
+        ) || -0.001;
+      } catch (error) {
+        return -0.001
+      }
     }
-  } catch (err) {
-    // console.log(err)
-  }
 
-  const leadingActions = () => (
-
-    <LeadingActions>
-      <SwipeAction onClick={() => handleTrain('good')} destructive={true}>
-        <ActionContent>
-          <ItemColumnCentered>
-            {`${category}`}
-            <span className="icon">
-              <ThumbUp />
-            </span>
-            {`${Math.round(predictionGood * 100)}%`}
-          </ItemColumnCentered>
-        </ActionContent>
-      </SwipeAction>
-    </LeadingActions>
-  );
-
-  const trailingActions = () => (
+  const swipeActions = (classifierCategory: string, iconComponent: ReactNode) => (
     <TrailingActions>
-      <SwipeAction destructive={true} onClick={() => handleTrain('notgood')}>
+      <SwipeAction destructive={true} onClick={() => handleTrain(category)}>
         <ActionContent>
           <ItemColumnCentered>
             {`${category}`}
             <span className="icon">
-              <ThumbDown />
+              {iconComponent}
             </span>
-            {`${Math.round(predictionNotGood * 100)}%`}
+            {`${Math.round(predict( mlText, classifierCategory, classifier) * 100)}%`}
           </ItemColumnCentered>
         </ActionContent>
       </SwipeAction>
     </TrailingActions>
   );
 
-  return (
+  //{`${Math.round(parseFloat(predict( mlText, 'notGood', classifier))) * 100)}%`}
 
+  return (
         <div
           style={{ width: '100%'}}
           className="basic-swipeable-list__container"
           key={postItem.link}
         >
-          <SwipeableList fullSwipe={true} threshold={0.5} type={ListType.IOS}>
+          <SwipeableList 
+            fullSwipe={true} 
+            threshold={0.5}
+            type={ListType.IOS} 
+            destructiveCallbackDelay={100} 
+          >
             <SwipeableListItem
               key={id}
-              leadingActions={leadingActions()}
-              trailingActions={trailingActions()}
+              leadingActions={swipeActions('good', <ThumbUp />)}
+              trailingActions={swipeActions('notgood', <ThumbDown />)}
               onClick={handleOnClick()}
             >
               <div
